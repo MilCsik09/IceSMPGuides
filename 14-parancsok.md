@@ -1,48 +1,60 @@
-# 12. Küldetések ✅
+# 14. Parancsok listája 📜
 
-A **küldetések** kis feladatok, amikért **jutalmat** kapsz (általában kaszt-XP-t, néha pénzt
-vagy különleges hatást). 
+Itt minden parancsot megtalálsz egy helyen. A `< >` közé **te írsz be** valamit; a `[ ]` azt
+jelenti, hogy **elhagyható**.
 
-Parancsok:
-- `/quest list` — a felvehető és aktív küldetéseid.
-- `/quest accept <id>` — felveszel egy küldetést.
-- `/quest info` — megnézed az aktív küldetéseid állását.
-- `/quest abandon <id>` — feladsz egy küldetést.
+> A legtöbb dolgot a `/profile` menüből kattintgatva is megcsinálhatod — a parancsok a gyorsabb
+> útnak vannak.
 
-A haladásodat a képernyő alján (action bar) is követheted. Amikor teljesíted a feladatot, a
-jutalom **automatikusan** jár.
+## Mindennapi parancsok (mindenkinek)
 
-## Kaszt-próbák (a kezdő küldetések)
-
-Mindegyik kaszthoz tartozik egy bevezető próba. Jutalom: **200 kaszt-XP**.
-
-| Küldetés | Kaszt | Feladat |
+| Parancs | Aliasok | Mit csinál |
 |---|---|---|
-| **A Harcos Próbája** | Harcos | Ölj meg **15 szörnyet** |
-| **Az Íjász Próbája** | Íjász | Vadássz le **12 szörnyet** |
-| **A Varázsló Próbája** | Varázsló | Szedj **10 virágot** |
-| **Az Orgyilkos Próbája** | Orgyilkos | Ölj meg **10 szörnyet** |
+| `/profile` | `karakter`, `char`, `status` | A **karakterlap** — kaszt, spec, szakma, talent, képesség-fa menük |
+| `/faction join <frakció>` | `/f` | Belépés egy frakcióba (`red`/`blue`/`neutral`) |
+| `/faction leave` | `/f` | Kilépés a frakcióból |
+| `/faction king vote <játékos>` | `/f` | Szavazás a frakciód királyára |
+| `/bank balance` | `wallet`, `vault` | Banki egyenlegeid |
+| `/bank deposit` | | Tokenek bankba helyezése |
+| `/bank withdraw <valuta> <összeg>` | | Tokenek kivétele |
+| `/currency balance` | `money`, `eco` | Egyenleg gyorsnézet |
+| `/currency pay <játékos> <összeg> [valuta]` | | Pénz utalása |
+| `/currency exchange <összeg> <honnan> <hová>` | | Valutaváltás |
+| `/currency rates` | | Aktuális árfolyamok |
+| `/market` | `piac`, `ah` | Piactér böngésző (vásárlás) |
+| `/market sell <ár> [valuta]` | | A kézben tartott tárgy eladása |
+| `/market cancel` | | Saját eladásaid visszavonása |
+| `/spec list` / `/spec choose <id>` | `specializacio` | Specializációk |
+| `/spec respec <class\|profession>` | | Specializáció visszaváltása |
+| `/talent` / `/talent spend <class\|profession> <talent>` | `talentfa` | Talentek |
+| `/profession join <szakma>` / `/profession info` | `prof`, `szakma` | Szakmák |
+| `/class givecatalyst` | `kaszt`, `job` | Elveszett Képesség Katalizátor pótlása |
+| `/quest list` / `/quest accept <id>` / `/quest info` | `quests`, `kuldetes` | Küldetések |
+| `/souls` / `/souls champion` | `soul`, `lelek` | Lélekszilánk (csak Nekromanta) |
+| `/events season` / `/events blood-moon` | `event`, `esemeny` | Világesemények állása |
 
-## Sötét Beavatás (a Nekromanta kapuja)
+## Király-parancsok (csak a frakció királyának)
 
-- **Sötét Beavatás:** zarándokolj el a **Sötét romvárosba** (a Sötét frakció területére).
-  Jutalom: **100 kaszt-XP**. **Ezt teljesítve nyílik meg a Nekromanta specializáció** (Sötét
-  frakció + bűnös állapot is kell hozzá).
+| Parancs | Mit csinál |
+|---|---|
+| `/faction treasury withdraw <összeg>` | Kivétel a frakciókasszából |
+| `/faction king tax <százalék>` | Frakció adókulcs beállítása |
+| `/faction raid <célfrakció>` | Háború (raid) hirdetése |
 
-## Vezeklés-lánc (a sötét paktum megtörése) 🙏
+## Admin parancsok (csak adminoknak)
 
-Ez az **egyetlen mód**, hogy egy bűnös (sinner) játékos megszabaduljon a **sötét paktumtól**.
-Három részből áll, sorban:
-
-| Rész | Feladat | Jutalom |
-|---|---|---|
-| **Vezeklés I — A Penge** | Pusztíts el **30 erős szörnyet** (min. Lvl 2) | 150 kaszt-XP |
-| **Vezeklés II — Az Alázat** | Fogj ki **20 halat** | 150 kaszt-XP |
-| **Vezeklés III — A Feloldozás** | Győzz le **50 elit szörnyet** (min. Lvl 4) | 400 kaszt-XP + 100 Semleges token + **a paktum megtörik!** |
-
-A harmadik rész végén **lekerül rólad a bűnös jelölés** — feloldozást nyersz, és újra szabad
-vagy.
+| Parancs | Mit csinál |
+|---|---|
+| `/icesmp reload` | Konfiguráció újratöltése |
+| `/class addxp\|setxp\|...` | Kaszt-adatok kezelése |
+| `/profession set\|clear\|addxp` | Szakma-adatok kezelése |
+| `/spec reset <játékos>` | Specializációk törlése |
+| `/sinner <játékos> set\|clear\|add` | Bűnös állapot kezelése |
+| `/relic give` | Relikvia adása |
+| `/territory setcapital\|claim\|remove` | Területek kezelése |
+| `/exchangeboard place\|remove` | Árfolyamtábla lerakása/törlése |
+| `/events intro [játékos]` | Bemutató újrajátszása |
 
 ---
 
-➡️ Tovább: [Frakcióterületek](13-teruletek.md) • [Vissza a tartalomhoz](README.md)
+[Vissza a tartalomhoz](README.md)

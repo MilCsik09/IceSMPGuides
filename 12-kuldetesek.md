@@ -1,47 +1,48 @@
-# 10. Világesemények ✅
+# 12. Küldetések ✅
 
-Időnként **különleges dolgok** történnek az egész szerveren. Ezekre figyelj — extra jutalmat
-(vagy extra veszélyt!) hozhatnak.
+A **küldetések** kis feladatok, amikért **jutalmat** kapsz (általában kaszt-XP-t, néha pénzt
+vagy különleges hatást). 
 
-## Mob-szintezés (a világ nehézsége) 🧟
+Parancsok:
+- `/quest list` — a felvehető és aktív küldetéseid.
+- `/quest accept <id>` — felveszel egy küldetést.
+- `/quest info` — megnézed az aktív küldetéseid állását.
+- `/quest abandon <id>` — feladsz egy küldetést.
 
-A világ **kifelé egyre veszélyesebb**:
-- A spawntól távolodva a szörnyek **erősödnek**: **minden 1000 blokk = +1 mob-szint** (max 10).
-- A magasabb szintű szörny **több életű és erősebb**, de cserébe **több kaszt-XP-t** és nagyobb
-  eséllyel **lélekkövet (Sötét token)** ad.
-- A **spawner-ből / parancsból** érkező szörnyek **nem** skálázódnak — így a farmok
-  biztonságosak maradnak.
-- A szint-névtábla (`[Lvl X]`) alapból **csak akkor látszik, ha ránézel** a szörnyre — így nem
-  zsúfolja tele a képernyőt falakon át vagy messziről.
+A haladásodat a képernyő alján (action bar) is követheted. Amikor teljesíted a feladatot, a
+jutalom **automatikusan** jár.
 
-## Vérhold-éjszaka 🌕
+## Kaszt-próbák (a kezdő küldetések)
 
-Ritkán beköszönt egy **vérhold**:
-- A szörnyek **+pár szintet** kapnak (még erősebbek).
-- A **lélekkő-drop esélye megnő** — kockázatos, de jövedelmező éjszaka.
-- Egy üzenet jelzi mindenkinek, amikor kezdődik.
+Mindegyik kaszthoz tartozik egy bevezető próba. Jutalom: **200 kaszt-XP**.
 
-## Világboss 👹
+| Küldetés | Kaszt | Feladat |
+|---|---|---|
+| **A Harcos Próbája** | Harcos | Ölj meg **15 szörnyet** |
+| **Az Íjász Próbája** | Íjász | Vadássz le **12 szörnyet** |
+| **A Varázsló Próbája** | Varázsló | Szedj **10 virágot** |
+| **Az Orgyilkos Próbája** | Orgyilkos | Ölj meg **10 szörnyet** |
 
-Időnként egy hatalmas **világboss** szörny jelenik meg egy véletlen játékos közelében (ragyog,
-hogy könnyű észrevenni):
-- Aki **leüti**, annak a **frakciója kasszát + liga-pontot** kap.
-- A **legyőző játékos** egy időleges **harci buffot** (Erő + Védelem) kap.
+## Sötét Beavatás (a Nekromanta kapuja)
 
-## Szezonális liga 🏆
+- **Sötét Beavatás:** zarándokolj el a **Sötét romvárosba** (a Sötét frakció területére).
+  Jutalom: **100 kaszt-XP**. **Ezt teljesítve nyílik meg a Nekromanta specializáció** (Sötét
+  frakció + bűnös állapot is kell hozzá).
 
-A frakciók **pontot gyűjtenek** a **raid-** és **világboss-győzelmekből**. A szezon végén
-(alapból 60 nap) a **vezető frakció kasszája jutalmat kap**, és a pontok lenullázódnak — kezdődik
-az új szezon. Az aktuális állást a `/events season` mutatja.
+## Vezeklés-lánc (a sötét paktum megtörése) 🙏
 
-## Bemutató (intro)
+Ez az **egyetlen mód**, hogy egy bűnös (sinner) játékos megszabaduljon a **sötét paktumtól**.
+Három részből áll, sorban:
 
-Amikor **először** lépsz be, lejátszódik egy rövid, hangulatos **cím-szekvencia**. Ez csak
-egyszer fut le. (Admin újra le tudja játszani.)
+| Rész | Feladat | Jutalom |
+|---|---|---|
+| **Vezeklés I — A Penge** | Pusztíts el **30 erős szörnyet** (min. Lvl 2) | 150 kaszt-XP |
+| **Vezeklés II — Az Alázat** | Fogj ki **20 halat** | 150 kaszt-XP |
+| **Vezeklés III — A Feloldozás** | Győzz le **50 elit szörnyet** (min. Lvl 4) | 400 kaszt-XP + 100 Semleges token + **a paktum megtörik!** |
 
-> Ezeket az eseményeket a `/events` paranccsal nézheted meg (`/events season`, `/events
-> blood-moon`).
+A harmadik rész végén **lekerül rólad a bűnös jelölés** — feloldozást nyersz, és újra szabad
+vagy.
 
 ---
 
-➡️ Tovább: [Királyság, raid és háború](11-raid-haboru.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Frakcióterületek](13-teruletek.md) • [Vissza a tartalomhoz](README.md)

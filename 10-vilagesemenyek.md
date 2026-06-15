@@ -1,83 +1,47 @@
-# 8. Szakmák ✅
+# 10. Világesemények ✅
 
-A szakmák a „munkáid" a világban: bányászás, favágás, kovácsolás, főzés és társaik. Minél
-többet csinálod őket, annál magasabb szintre érsz bennük.
+Időnként **különleges dolgok** történnek az egész szerveren. Ezekre figyelj — extra jutalmat
+(vagy extra veszélyt!) hozhatnak.
 
-## A szabályok dióhéjban
+## Mob-szintezés (a világ nehézsége) 🧟
 
-- **Kétféle fő szakmád lehet:** **1 gyűjtögető** (kifelé hozod az alapanyagot) **+ 1 készítő**
-  (tárgyat gyártasz belőle). Ezeket a `/profile` → **Szakma** menüből tanulod meg.
-- **A másodlagos szakmákat (Halász, Szakács) mindenki ismeri** automatikusan — nem foglalnak
-  helyet.
-- **XP-t csak akkor kapsz, ha tényleg „űzöd" a szakmát.** Pl. érc bányászásáért csak akkor jár
-  Bányász-XP, ha a Bányász a tanult gyűjtögető szakmád. (A Halász/Szakács XP mindig jár, mert
-  azokat mindenki ismeri.)
-- **Szintezés:** a következő szint ára `100 + (előző szintek száma × 15)` XP. Tehát:
-  - 1 → 2 szint: **100 XP**
-  - 2 → 3 szint: **115 XP**
-  - 3 → 4 szint: **130 XP** … és így tovább. **Max szint: 50.**
-- **Szakmaváltáskor a szinted megmarad** (külön tárolódik szakmánként), így később vissza is
-  tanulhatod ott, ahol abbahagytad.
+A világ **kifelé egyre veszélyesebb**:
+- A spawntól távolodva a szörnyek **erősödnek**: **minden 1000 blokk = +1 mob-szint** (max 10).
+- A magasabb szintű szörny **több életű és erősebb**, de cserébe **több kaszt-XP-t** és nagyobb
+  eséllyel **lélekkövet (Sötét token)** ad.
+- A **spawner-ből / parancsból** érkező szörnyek **nem** skálázódnak — így a farmok
+  biztonságosak maradnak.
+- A szint-névtábla (`[Lvl X]`) alapból **csak akkor látszik, ha ránézel** a szörnyre — így nem
+  zsúfolja tele a képernyőt falakon át vagy messziről.
 
----
+## Vérhold-éjszaka 🌕
 
-## 🧺 Gyűjtögető szakmák (válassz 1-et)
+Ritkán beköszönt egy **vérhold**:
+- A szörnyek **+pár szintet** kapnak (még erősebbek).
+- A **lélekkő-drop esélye megnő** — kockázatos, de jövedelmező éjszaka.
+- Egy üzenet jelzi mindenkinek, amikor kezdődik.
 
-| Szakma | Mivel kapsz XP-t | Mennyi XP | Példa |
-|---|---|---|---|
-| ⛏ **Bányász** | **Érc kibányászása** (bármilyen `_ore`, és az ősi törmelék) | **5 XP / érc** | 20 érc = 1. szintlépés (100 XP) |
-| 🌿 **Gyógynövényész** | **Virág letörése**, **érett termény** betakarítása (búza, répa, krumpli, cékla, nether wart, édes bogyó, kakaó) | **3 XP / darab** | ~34 termény = 1. szintlépés |
-| 🪓 **Favágó** | **Rönk (fatörzs) kivágása** | **2 XP / rönk** | 50 rönk = 1. szintlépés |
+## Világboss 👹
 
-> **Fontos:** csak az **érett** termény ad XP-t (amikor már teljesen kinőtt). A zöld, fiatal
-> növény letörése nem számít.
+Időnként egy hatalmas **világboss** szörny jelenik meg egy véletlen játékos közelében (ragyog,
+hogy könnyű észrevenni):
+- Aki **leüti**, annak a **frakciója kasszát + liga-pontot** kap.
+- A **legyőző játékos** egy időleges **harci buffot** (Erő + Védelem) kap.
 
-## 🔨 Készítő szakmák (válassz 1-et)
+## Szezonális liga 🏆
 
-| Szakma | Mivel kapsz XP-t | Mennyi XP |
-|---|---|---|
-| ⚒ **Kovács** | **Páncél/pajzs craftolása** (sisak, mellvért, nadrág, csizma, pajzs) | **8 XP / darab** |
-| ⚒ **Kovács** | **Kovácsolóasztalnál (smithing) fejlesztés** (pl. netherit-fejlesztés) | **15 XP / alkalom** |
-| ⚗ **Alkimista** | **Megfőzött bájital kivétele** a főzőállványból (sima/dobható/elnyúló) | **12 XP / bájital** |
-| ✨ **Bűvölő** | **Tárgy elvarázsolása** a bűvölőasztalnál | **10 XP / alkalom** |
+A frakciók **pontot gyűjtenek** a **raid-** és **világboss-győzelmekből**. A szezon végén
+(alapból 60 nap) a **vezető frakció kasszája jutalmat kap**, és a pontok lenullázódnak — kezdődik
+az új szezon. Az aktuális állást a `/events season` mutatja.
 
-## 🎣 Másodlagos szakmák (mindenki ismeri)
+## Bemutató (intro)
 
-| Szakma | Mivel kapsz XP-t | Mennyi XP |
-|---|---|---|
-| 🐟 **Halász** | **Hal kifogása** horgászással | **4 XP / fogás** |
-| 🍲 **Szakács** | **Megsült étel kivétele** a kemencéből | **3 XP / étel** |
+Amikor **először** lépsz be, lejátszódik egy rövid, hangulatos **cím-szekvencia**. Ez csak
+egyszer fut le. (Admin újra le tudja játszani.)
 
-> Tipp: a Halász és a Szakács XP **mindig** jár, bármelyik kasztot/szakmát is választottad —
-> ezért ezekkel mindig tudsz haladni a háttérben.
+> Ezeket az eseményeket a `/events` paranccsal nézheted meg (`/events season`, `/events
+> blood-moon`).
 
 ---
 
-## Szakma-specializációk (25. szinttől)
-
-Amikor egy szakmád eléri a **25. szintet**, **specializálódhat** — ezt a `/profile` →
-**Specializáció** menüből választod ki (szakmánként **2 irány**). Ezek tematikus „mesterfokok":
-
-| Szakma | Specializációk |
-|---|---|
-| Bányász | Aranyásó • Vájármester |
-| Gyógynövényész | Botanikus • Természetbúvár |
-| Favágó | Erdész • Ácsmester |
-| Kovács | Fegyverkovács • Páncélkovács |
-| Alkimista | Főzetmester • Transzmutátor |
-| Bűvölő | Rúnamester • Arkanista |
-| Halász | Horgászmester • Kincsvadász |
-| Szakács | Séf • Hentes |
-
-> Egyszerre **egy** szakma-specializációd lehet. Ha váltanál, a Specializáció menü **Respec**
-> gombjával tudod visszacsinálni (a frakcióvalutádba kerül).
-
-## Talentpontok a szakmákból
-
-Az **összes szakmád szintje** együtt **talentpontot** termel a szakma-talentfádhoz: **minden
-10 szint után 1 pont** (lásd a [Talentek](07-talentek.md) oldalt). Tehát megéri több szakmát is
-szintezni — még a másodlagosakat is!
-
----
-
-➡️ Tovább: [Relikviák és rituálék](09-relikviak.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Királyság, raid és háború](11-raid-haboru.md) • [Vissza a tartalomhoz](README.md)

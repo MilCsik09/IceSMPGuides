@@ -1,57 +1,30 @@
-# 11. Királyság, raid és háború ⚔️
+# 13. Frakcióterületek 🏰
 
-A frakciók nem csak külön élnek — **királyt választhatnak**, **háborúzhatnak**, és van **közös
-kasszájuk**. Itt a nagy, csapatszintű játék.
+A világban vannak **frakcióterületek** és **fővárosok** — ezeket az adminok jelölik ki.
 
-## Királyválasztás 👑
+## Mit veszel észre belőlük?
 
-Minden harcos frakció (Piros / Kék / Sötét — a Semleges kivételével) **királyt választhat**:
-- `/faction king vote <játékos>` — szavazol a saját frakciód egy tagjára.
-- Aki eléri a **minimum szavazatszámot** és vezeti a listát, azt **megkoronázzák** (mindenki
-  látja az üzenetet).
-- A választási ciklus időnként **újraindul** (új választás).
-- `/faction king` — megmutatja a jelenlegi királyt és a szavazatokat.
+- Amikor **átlépsz** egy terület határán, a képernyő alján (action bar) egy felirat jelzi, hol
+  vagy: pl. „✦ Piros főváros ✦", vagy „vadon" ha senkié.
+- Minden frakciónak lehet **1 fővárosa** és több **claimelt** (lefoglalt) területe.
 
-**A király jogai:**
-- Kivehet a **frakciókasszából** (`/faction treasury withdraw <összeg>`).
-- **Beállíthatja a frakció adókulcsát** (`/faction king tax <százalék>`).
-- **Raidet (háborút) hirdethet** egy másik frakció ellen.
+## Építésvédelem (ha be van kapcsolva)
 
-## Frakciókassza 🏦
+A szerver bekapcsolhatja az **építésvédelmet**. Ilyenkor:
+- **Idegen frakció területén nem tudsz építeni vagy bontani.**
+- A saját frakciód területén és a vadonban szabadon építkezhetsz.
+- (Adminoknak van „bypass" joguk, nekik mindenhol szabad.)
 
-- `/faction treasury` — a kassza egyenlege.
-- `/faction donate <összeg>` — adományozol a saját valutádból a kasszába.
-- A kasszát az **adó** és az **adományok** töltik; a **király** és a **raid-zsákmány** költi.
+> Ez megvédi a frakciók fővárosait a rongálástól. Ha valahol nem tudsz blokkot lerakni/törni,
+> valószínűleg egy másik frakció területén állsz.
 
-## Raid (frakcióháború) ⚔️
+## Admin parancsok (csak adminoknak)
 
-- `/faction raid <célfrakció>` — **csak a király** hirdethet. A **nevezési díj** a kasszából megy.
-- A raid alatt (alapból **15 perc**) a **két hadviselő frakció közti ölés NEM bűn**, hanem
-  **pontot ér**.
-- A végén a **több ölést szerző** oldal **hadizsákmányként** elviszi a vesztes kasszájának egy
-  részét, és **liga-pontot** kap a szezonba.
-- A **győztes frakció online tagjai** kapnak egy **győzelmi buffot** (Erő + Regeneráció).
-
-### Ostromágyú 💥
-
-Raidhez bevethetsz egy **craftolható ostromfegyvert**:
-- Recept: **vasblokk-keret + TNT + tűzpor** (TNT-csille alapú).
-- **Csak aktív raid alatt** sül el. Jobb katt = **pusztító, de terep-barát robbanás** a célzott
-  pontra (sebzi az ellenfeleket, de **nem rombolja le a világot**). Raiden kívül nem működik.
-
-## Frakció-reputáció
-
-A frakciók **barátok vagy ellenségek** lehetnek (a szerver állítja, és raid alatt a hadakozók
-automatikusan ellenségek). Ez a **piaci árakat** módosítja: ellenségtől **drágább** (+25%),
-szövetségestől **olcsóbb** (−10%) vásárolni. Lásd: [Valuta és gazdaság](03-valuta-gazdasag.md).
-
-## Nekromanta lélekszilánk (csak Nekromantáknak)
-
-Ha **Nekromanta-specet** játszol, minden megölt ellenség után **lélekszilánkot** kapsz:
-- `/souls` — megnézed, hány szilánkod van.
-- `/souls champion` — a szilánkokból **megerősített Wither-csontváz bajnokot** idézel (erősebb,
-  mint a szokásos szolgák).
+- `/territory setcapital` — főváros kijelölése.
+- `/territory claim` — terület lefoglalása.
+- `/territory remove` — terület törlése.
+- `/territory list` / `/territory info` — területek listája / infó.
 
 ---
 
-➡️ Tovább: [Küldetések](12-kuldetesek.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Parancsok listája](14-parancsok.md) • [Vissza a tartalomhoz](README.md)

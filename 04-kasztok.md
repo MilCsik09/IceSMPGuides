@@ -1,46 +1,58 @@
-# 2. Frakciók ✅
+# 4. Kasztok ✅
 
-A **frakció** az „oldalad" a világban. Négy van, és mindegyiknek saját **pénzneme** és **passzív
-bónusza** (egy állandó képesség, amiért nem kell semmit csinálnod) van.
+A **kaszt** a hős-típusod: ez dönti el, milyen képességeid (varázslataid) lehetnek. Négy kaszt
+közül választhatsz a `/profile` → **Kaszt** menüből.
 
-Belépés: `/faction join <red|blue|neutral|dark>` • Kilépés: `/faction leave`
+| Kaszt | Stílus | Katalizátor tárgy |
+|---|---|---|
+| 🧙 **Varázsló** | Elemi és támogató mágia, távolsági ráolvasások | 📖 Mágikus Kódex |
+| ⚔️ **Harcos** | Közelharci erő, kitartás, buffok | 📯 Harci Kürt |
+| 🏹 **Íjász** | Távolsági harc, mozgékonyság, csapdák | 🎒 Vadásztarsoly |
+| 🗡️ **Orgyilkos** | Lopakodás, gyors kitörések, gyengítés | 🪨 Árnyékamulett |
 
-| Frakció | Passzív bónusz |
-|---|---|
-| 🔴 **Piros** | Immunis a **tűz / láva / forró blokk** sebzésére |
-| 🔵 **Kék** | Immunis a **fagyásra**; **50% eséllyel** nem veszít éhséget |
-| ⚪ **Semleges** | Lopakodás közben **láthatatlan**; a nem-ellenséges mobok nem támadják |
-| ⚫ **Sötét** | Immunis a **wither-sebzésre**; az **élőhalottak (zombi, csontváz) nem támadják** |
+## Elsődleges és másodlagos kaszt
 
-## A Sötét frakció — fontos tudnivalók ⚫
+- **Elsődleges kaszt:** ezt választod először, bármikor. Ez a „fő" hősöd.
+- **Másodlagos kaszt:** csak akkor nyílik meg, ha az **elsődleges eléri a 50. (max) szintet**.
+  Ekkor egy második kasztot is felvehetsz. **A másodlagos kaszt nem specializálódhat.**
 
-A Sötét frakció nem egy „sima választás" — ez a **bűnösök** helye.
+## Szintezés — hogyan erősödsz?
 
-- **Csak az léphet be, akit bűnössé (sinner) bélyegeztek.**
-- Belépéskor megköttetik a **sötét paktum**: ettől kezdve a bűnös jelölést **soha nem lehet
-  levenni** — még akkor sem, ha elhagyod a frakciót. Az **egyetlen** visszaút a **vezeklés
-  küldetéslánc** (lásd [Küldetések](12-kuldetesek.md)).
+A kaszt **szörnyek (mobok) megölésével** kap **XP-t** (tapasztalatot):
 
-## Hogyan leszek bűnös (sinner)?
+- **Alap: 5 XP** minden ellenséges mob megöléséért.
+- **+2 XP minden „mob-szintért".** A spawntól messzebb a szörnyek erősebbek és magasabb
+  szintűek (lásd a [Világesemények / Mob-szintezés] részt) — egy 3-as szintű szörny tehát
+  `5 + 3×2 = 11` XP-t ad.
+- Csak **ellenséges** mobok adnak XP-t (tehén, csirke nem).
+- Ha van **másodlagos kasztod**, az minden ölésből **a felét (50%)** is megkapja.
 
-- Ha **megölsz egy másik játékost**, **+1 bűnt** kapsz.
-- **4 bűnnél** automatikusan **száműznek a Sötét frakcióba** (örök paktummal).
-- **Kivétel:** **raid** (frakcióháború) alatt a hadviselő frakciók közti ölés **nem számít
-  bűnnek** — lásd [Raid és háború](11-raid-haboru.md).
+**Mennyi kell egy szinthez?** A következő szint ára `100 + (előző szintek száma × 20)` XP:
+- 1 → 2 szint: **100 XP** (kb. 20 alap-mob)
+- 2 → 3 szint: **120 XP**
+- 3 → 4 szint: **140 XP** … és így tovább. **Max szint: 50.**
 
-> A bűnösöket egy különleges relikvia, a **Mételytépő** is megjelölheti és megbüntetheti —
-> erről a [Relikviák](09-relikviak.md) oldalon olvashatsz.
+Minél magasabb a szinted, annál több ölés kell a következőhöz — de a magas szintű szörnyek
+egyenként több XP-t is adnak, szóval érdemes a veszélyesebb, távolabbi vidékekre menni.
 
-## Frakció-viszonyok (reputáció)
+## A Képesség Katalizátor (a „varázskönyved")
 
-A frakciók **barátok vagy ellenségek** lehetnek egymással (a szerver állítja be, és raid alatt
-a hadakozók automatikusan ellenségek). Ez a **piaci árakat** is befolyásolja:
+A képességeidet egy **kaszt-tematikus tárggyal** használod (lásd a fenti táblázatot):
 
-- **Ellenséges** frakció tagjától vásárolni **drágább** (+25% felár).
-- **Szövetséges** frakciótól **olcsóbb** (−10%).
+- **Jobb katt** = a kiválasztott képesség elsütése.
+- **Lopakodás (SHIFT) + ütés (bal katt)** = váltás a feloldott képességeid között. A képernyő
+  alján látod, melyik van kiválasztva és mennyibe kerül.
+- **Ha elveszett:** a `/profile` → Kaszt menüből bármikor **újra igényelheted** (egy gombbal).
+- A Katalizátort **nem lehet** craftnál vagy kemencében véletlenül elhasználni — védett tárgy.
 
-Részletek: [Valuta és gazdaság](03-valuta-gazdasag.md).
+## Képesség-fa
+
+A `/profile` → **Képesség-fa** gomb megmutatja a kasztod (és a választott specializációd)
+**összes** képességét, feloldási szint szerint: a már feloldottak ragyognak, a zároltak
+mutatják, hányadik szint kell hozzájuk.
+
+> A teljes képességlistát (mit tud, mennyibe kerül) lásd: [Képességek](05-kepessegek.md).
 
 ---
 
-➡️ Tovább: [Valuta és gazdaság](03-valuta-gazdasag.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Képességek](05-kepessegek.md) • [Specializációk](06-specializaciok.md) • [Vissza](README.md)

@@ -1,40 +1,70 @@
-# 1. Kezdő lépések 🚀
+# 3. Valuta és gazdaság 💰
 
-Most léptél be először? Semmi gond — kövesd ezt a pár lépést, és máris benne vagy a játékban.
+A szerveren **igazi, élő gazdaság** van: a pénz értéke változik, lehet kereskedni, és vannak
+helyek, ahol a pénz „eltűnik" (hogy ne legyen túl sok belőle). Ne aggódj, lépésről lépésre
+elmagyarázzuk.
 
-## Az első 10 perced
+## A pénzed: tokenek és a bank
 
-1. **Válassz frakciót.** Írd be: `/faction join <frakció>` — a frakciók: `red` (Piros),
-   `blue` (Kék), `neutral` (Semleges). Ez dönti el a **pénznemedet** és egy **passzív bónuszt**
-   (pl. a Pirosat nem égeti a tűz). Részletek: [Frakciók](02-frakciok.md).
-   > A `dark` (Sötét) frakcióba **nem lehet csak úgy** belépni — oda csak „bűnös" játékos kerül.
-2. **Nyisd meg a karakterlapod:** `/profile`. Ez a **központi menü**. A fejen látod a fontos
-   adataidat, és gombokról eléred az összes almenüt: **Kaszt, Specializáció, Szakma, Talentek,
-   Képesség-fa**.
-3. **Válassz kasztot** a Kaszt menüből (Varázsló / Harcos / Íjász / Orgyilkos), majd **igényeld
-   a Képesség Katalizátorodat** (egy gomb ugyanott). Ezzel használod a varázslataidat.
-4. **Tanulj szakmát** a Szakma menüből: **1 gyűjtögetőt** (pl. Bányász) és **1 készítőt**
-   (pl. Kovács). A Halász és Szakács alapból a tiéd.
-5. **Kezdj el játszani!**
-   - **Szörnyeket ölve** kapsz **kaszt-XP-t** (így szintezel és nyitsz új képességeket).
-   - **Bányászva / aratva / horgászva / főzve** kapsz **szakma-XP-t**.
-6. **Vedd fel a kaszt-próbádat:** `/quest list`, majd `/quest accept <id>`. Ezzel jutalmat
-   szerezhetsz. Részletek: [Küldetések](12-kuldetesek.md).
+Minden frakciónak saját **token**-je (érméje) van: Piros, Kék, Semleges, Sötét. A pénzed
+**kétféleképp** létezhet:
 
-Első belépéskor egy rövid **bemutató cím-szekvencia** is lejátszódik — ez csak egyszer fut le.
+- **Fizikai itemként** — token a táskádban (papír-szerű tárgy).
+- **Banki egyenlegként** — egy szám, ami nálad „be van fizetve".
 
-## Mit hol találok?
+Parancsok:
+- `/bank balance` — megnézed a banki egyenlegeidet.
+- `/bank deposit` — a nálad lévő tokeneket **bankba teszed**.
+- `/bank withdraw <valuta> <összeg>` — a bankból **kiveszel** tokeneket.
+- `/currency pay <játékos> <összeg> [valuta]` — **utalsz** valakinek.
+- `/currency balance` — gyors egyenleg-nézet.
 
-| Amit szeretnél | Hová menj |
-|---|---|
-| Megnézni az adataimat | `/profile` |
-| Képességet használni | tartsd kézben a Katalizátort → jobb katt |
-| Pénzt nézni / utalni | `/bank balance`, `/currency pay` |
-| Eladni valamit | `/market sell <ár>` |
-| Küldetést felvenni | `/quest list` |
+## Dinamikus árfolyam (miért változik a pénz értéke?)
 
-> A teljes parancslista: [Parancsok](14-parancsok.md).
+Képzeld el, hogy minél több van valamiből, annál kevesebbet ér — pont, mint a valóságban.
+
+- Ha egy frakció **túl sok** pénzt „termel", az a token **leértékelődik** (kevesebbet ér a
+  többihez képest).
+- Ha valamiből **kevés** van, az **felértékelődik**.
+
+Megnézheted és válthatsz:
+- `/currency rates` — megmutatja az aktuális árfolyamokat (mennyi van belőle, mennyit ér, mi a
+  váltási arány).
+- `/currency exchange <összeg> <honnan> <hová>` — átváltod egyik valutát a másikra a mostani
+  árfolyamon (kis díjjal). Aki figyeli a piacot, jól járhat!
+
+A fővárosokban **árfolyamtáblák** (lebegő hologramok) is mutatják az aktuális értékeket. 📊
+
+## Piactér (kereskedés más játékosokkal) 🛒
+
+- `/market sell <ár> [valuta]` — a **kezedben tartott tárgyat** kiteszed eladásra. (Alapból a
+  saját frakciód valutájában; max. 5 tételed lehet egyszerre.)
+- `/market` — megnyitja a **böngészőt**; kattints egy tételre a **megvásárláshoz** (a banki
+  egyenlegedből fizet).
+- `/market cancel` — visszaveszed a saját tételeidet (visszakapod a tárgyat).
+
+**Eladási díj:** minden eladásból kb. **10% eltűnik** a gazdaságból — ez tartja kordában az
+inflációt (a pénz „elértéktelenedését").
+
+**Reputáció-ár:** a vételár attól is függ, milyen viszonyban van a frakciód az eladóéval:
+**ellenségtől drágább (+25%)**, **szövetségestől olcsóbb (−10%)**.
+
+## Hová „tűnik" a pénz? (money sinkek)
+
+Hogy a pénz értékes maradjon, több helyen is „elszívódik":
+
+- **Állampolgári adó:** óránként a frakciótagok a saját token-egyenlegük **2%-át** befizetik a
+  frakciókasszába (a Semlegesek mentesek).
+- **Kereslet-sokk** (időnként): egy véletlen valuta értéke átmenetileg **megugrik** (x1,2–1,6) —
+  ezt egy üzenet jelzi mindenkinek. Jó alkalom kereskedni!
+- **Eladási díj, raid-nevezés, rituálé-alapanyagok** — ezek is mind „elnyelnek" pénzt.
+
+## Lélekkő — a veszélyes vidékek jutalma
+
+A spawntól messze a szörnyek erősebbek. A **magas szintű (3+) szörnyek** eséllyel **Sötét
+tokent** (lélekkövet) ejtenek — így a távoli, veszélyes helyeken kalandozni **gazdaságilag is
+megéri**.
 
 ---
 
-➡️ Tovább: [Frakciók](02-frakciok.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Kasztok](04-kasztok.md) • [Vissza a tartalomhoz](README.md)

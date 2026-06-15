@@ -1,47 +1,57 @@
-# 9. Relikviák és rituálék ✅
+# 11. Királyság, raid és háború ⚔️
 
-A **relikviák** legendás, egyedi tárgyak különleges erővel. Két nagy szabály van rájuk:
+A frakciók nem csak külön élnek — **királyt választhatnak**, **háborúzhatnak**, és van **közös
+kasszájuk**. Itt a nagy, csapatszintű játék.
 
-- **Egy relikviából csak EGY létezhet** a szerveren egyszerre.
-- Ha a tulajdonosa **14 napig nem lép be**, a relikvia **füstként elenyészik**, és újra
-  megszerezhetővé válik (más is megkaphatja).
+## Királyválasztás 👑
 
-## A Mételytépő ⚔️
+Minden harcos frakció (Piros / Kék / Sötét — a Semleges kivételével) **királyt választhat**:
+- `/faction king vote <játékos>` — szavazol a saját frakciód egy tagjára.
+- Aki eléri a **minimum szavazatszámot** és vezeti a listát, azt **megkoronázzák** (mindenki
+  látja az üzenetet).
+- A választási ciklus időnként **újraindul** (új választás).
+- `/faction king` — megmutatja a jelenlegi királyt és a szavazatokat.
 
-Egy különleges **harci fejsze**, ami a **bűnösök (sinnerek) ellen** hat:
-- **Megbélyegzi** és **megbünteti** a bűnös játékosokat (Justice / Honor Eye képességek).
-- **Lefagyasztja** az élőhalottakat (zombi, csontváz).
-- **Fegyver-relikvia:** ha a tulajdonosát **megölik PvP-ben**, a fejsze **a gyilkosé lesz**!
-  (A „passzív" relikviák — pl. a szárnyak — ettől védettek.)
+**A király jogai:**
+- Kivehet a **frakciókasszából** (`/faction treasury withdraw <összeg>`).
+- **Beállíthatja a frakció adókulcsát** (`/faction king tax <százalék>`).
+- **Raidet (háborút) hirdethet** egy másik frakció ellen.
 
-## A négy frakció-szárny (elytra-relikviák) 🪽
+## Frakciókassza 🏦
 
-Mind a négy frakciónak van egy saját **szárnya**. **Csak a tulajdonos ÉS a megfelelő frakció
-tagja** használhatja:
+- `/faction treasury` — a kassza egyenlege.
+- `/faction donate <összeg>` — adományozol a saját valutádból a kasszába.
+- A kasszát az **adó** és az **adományok** töltik; a **király** és a **raid-zsákmány** költi.
 
-| Szárny | Frakció | Mit tud |
-|---|---|---|
-| 🔴 **Főnix-szárny** | Piros | Tűz/láva-immunitás; **zuhanáskor lángvihar** (felgyújtja a közeli ellenfeleket) |
-| 🔵 **Zúzmara-szárny** | Kék | Fagyimmunitás; **felszálláskor megfagyasztja** a környező ellenfeleket |
-| ⚪ **Vándorszél** | Semleges | **Nincs zuhanósebzés**; felszálláskor **széllökés-boost** |
-| ⚫ **Csontszárny** | Sötét | Wither-immunitás; **éjszakai repüléskor árnyformába** vált (láthatatlanság + sebesség) |
+## Raid (frakcióháború) ⚔️
 
-## Rituálé-oltárok 🔮 — így szerzed meg a szárnyakat
+- `/faction raid <célfrakció>` — **csak a király** hirdethet. A **nevezési díj** a kasszából megy.
+- A raid alatt (alapból **15 perc**) a **két hadviselő frakció közti ölés NEM bűn**, hanem
+  **pontot ér**.
+- A végén a **több ölést szerző** oldal **hadizsákmányként** elviszi a vesztes kasszájának egy
+  részét, és **liga-pontot** kap a szezonba.
+- A **győztes frakció online tagjai** kapnak egy **győzelmi buffot** (Erő + Regeneráció).
 
-A négy szárnyat **nem lehet craftolni** — egy **oltáron kell megidézni** őket. Keress (vagy
-építs) egy adott **oltár-blokkot**, gyűjtsd össze a hozzá tartozó **áldozati tárgyakat**, majd
-állj az oltárra és **lopakodás (SHIFT) + jobb katt**:
+### Ostromágyú 💥
 
-| Szárny | Oltár-blokk | Áldozati tárgyak |
-|---|---|---|
-| 🔴 Főnix-szárny | Magmatömb | 8 lángrúd, 16 tűzcsóva, 1 aranytömb |
-| 🔵 Zúzmara-szárny | Kék jég | 16 tömör jég, 8 prizmarin-kristály, 1 gyémánttömb |
-| ⚪ Vándorszél | Ametiszttömb | 32 toll, 8 fantommembrán, 1 smaragdtömb |
-| ⚫ Csontszárny | Lélektalaj (soul soil) | 8 csonttömb, 1 wither-csontvázkoponya, 2 netherit-törmelék |
+Raidhez bevethetsz egy **craftolható ostromfegyvert**:
+- Recept: **vasblokk-keret + TNT + tűzpor** (TNT-csille alapú).
+- **Csak aktív raid alatt** sül el. Jobb katt = **pusztító, de terep-barát robbanás** a célzott
+  pontra (sebzi az ellenfeleket, de **nem rombolja le a világot**). Raiden kívül nem működik.
 
-Ha a szárnynak **már van élő tulajdonosa**, nem idézheted meg újra (az „egy példány" szabály
-miatt). Várnod kell, amíg felszabadul.
+## Frakció-reputáció
+
+A frakciók **barátok vagy ellenségek** lehetnek (a szerver állítja, és raid alatt a hadakozók
+automatikusan ellenségek). Ez a **piaci árakat** módosítja: ellenségtől **drágább** (+25%),
+szövetségestől **olcsóbb** (−10%) vásárolni. Lásd: [Valuta és gazdaság](03-valuta-gazdasag.md).
+
+## Nekromanta lélekszilánk (csak Nekromantáknak)
+
+Ha **Nekromanta-specet** játszol, minden megölt ellenség után **lélekszilánkot** kapsz:
+- `/souls` — megnézed, hány szilánkod van.
+- `/souls champion` — a szilánkokból **megerősített Wither-csontváz bajnokot** idézel (erősebb,
+  mint a szokásos szolgák).
 
 ---
 
-➡️ Tovább: [Világesemények](10-vilagesemenyek.md) • [Vissza a tartalomhoz](README.md)
+➡️ Tovább: [Küldetések](12-kuldetesek.md) • [Vissza a tartalomhoz](README.md)
