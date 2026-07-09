@@ -1,6 +1,6 @@
 # IceSMP — Játékos Kézikönyv 📖
 
-Üdv az ICE SMP földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
+Üdv az IceSMP földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
 hogy bárki megértse — még akkor is, ha most ülsz le először Minecraftozni. Minden rendszernek
 külön oldala van, hogy könnyen megtaláld, amit keresel.
 
@@ -26,17 +26,21 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 1. [Kezdő lépések](01-kezdes.md) — mit csinálj az első 10 percben
 2. [Frakciók](02-frakciok.md) — a négy oldal és a bónuszaik
 3. [Valuta és gazdaság](03-valuta-gazdasag.md) — pénz, bank, piac, árfolyam
-4. [Kasztok](04-kasztok.md) — a négy hős-típus, szintezés, Katalizátor
+4. [Kasztok](04-kasztok.md) — a 13 hős-típus, szintezés, Katalizátor, Erő-csík
 5. [Képességek (varázslatok)](05-kepessegek.md) — **minden** spell: mit tud, mennyibe kerül
 6. [Specializációk](06-specializaciok.md) — a kaszt „kiteljesedése" 25. szinttől
 7. [Talentek (talent-fa)](07-talentek.md) — passzív erősítések pontokból
 8. [Szakmák](08-szakmak.md) — **minden** szakma: mit ad XP-t és mennyit
 9. [Relikviák és rituálék](09-relikviak.md) — legendás tárgyak
-10. [Világesemények](10-vilagesemenyek.md) — vérhold, világboss, szezon, intro
+10. [Világesemények](10-vilagesemenyek.md) — vérhold, világboss, karaván, meteor, kincs, kihívás…
 11. [Királyság, raid és háború](11-raid-haboru.md) — királyok, ostrom, reputáció
 12. [Küldetések](12-kuldetesek.md) — mit hol vegyél fel, mit kapsz
-13. [Frakcióterületek](13-teruletek.md) — fővárosok, claimek, építésvédelem
+13. [Frakcióterületek és saját birtok](13-teruletek.md) — fővárosok, claim, építésvédelem
 14. [Parancsok listája](14-parancsok.md) — minden parancs egy helyen
+15. [Party (csapat)](15-csapat.md) — csapatalakítás, közös XP, party-HUD
+
+> 🧪 **Teszterek:** külön kézikönyv szól nektek — [PLAYTEST.md](PLAYTEST.md): mit és hogyan
+> teszteljetek, teszt-parancsok, hibabejelentő sablon.
 
 ---
 
