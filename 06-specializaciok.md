@@ -8,12 +8,24 @@ Hogyan? `/profile` → **Specializáció** menü → kattints a választott irá
 `/spec list`, `/spec choose <azonosító>`.) A menü mindig csak **a te kasztod** irányait mutatja,
 és kiírja, ha valamihez még nem teljesíted a feltételt.
 
-| Kaszt | Specializációk |
+Összesen **31 specializáció** van. A **spec dönti el a szerepedet** (🗡️ közelharci DPS,
+🏹 távolsági DPS, ✨ caster, 🛡️ tank, ➕ gyógyító) — vagyis milyen stílusban a leghatékonyabb:
+
+| Kaszt | Specializációk (szerep) |
 |---|---|
-| 🧙 Varázsló | 🌊 **Elementalista** (tűz/jég/villám) • 💀 **Nekromanta** (holtak/lélek) |
-| ⚔️ Harcos | 🩸 **Berserker** (támadás/vér) • 🛡️ **Védelmező** (pajzs/gyógyítás) |
-| 🏹 Íjász | 🎯 **Mesterlövész** (pontos lövések) • 🐺 **Vadmester** (állat-társak) |
-| 🗡️ Orgyilkos | ☠️ **Méregkeverő** (mérgek) • 👻 **Fantom** (árnyék/félelem) |
+| 🧙 Varázsló | 🌊 **Elementalista** — tűz/jég/villám (caster) • 💀 **Nekromanta** — holtak/lélek (caster) |
+| ⚔️ Harcos | 🩸 **Berserker** — támadás/vér (DPS) • 🛡️ **Védelmező** — pajzs/buff (tank) |
+| 🏹 Íjász | 🎯 **Mesterlövész** — pontos lövések (táv. DPS) • 🐺 **Vadmester** — állat-társak (táv. DPS) |
+| 🗡️ Orgyilkos | ☠️ **Méregkeverő** — mérgek (DPS) • 👻 **Fantom** — árnyék/félelem (DPS) |
+| 🐻 Druida | 🐾 **Vadőr** (DPS) • 🌙 **Holdjós** (caster) • 🌳 **Védelmező** — kéreg (tank) • 💚 **Helyreállító** (gyógyító) |
+| 🔆 Paplovag | ☀️ **Szentlélek** (gyógyító) • ⚖️ **Megtorló** (DPS) • 🛡️ **Védő** (tank) |
+| 💀 Halállovag | 🩸 **Vérlovag** (tank) • ❄️ **Fagylovag** (DPS) |
+| 🌊 Sámán | ⚡ **Elemi** (caster) • 🔨 **Erősítő** (DPS) • 🌊 **Hullámhívó** (gyógyító) |
+| ☯️ Szerzetes | 💨 **Szélfutó** (DPS) • 🍺 **Sörfőző** (tank) • 🌫️ **Ködszövő** (gyógyító) |
+| ✝️ Pap | 🙏 **Fegyelem** (gyógyító) • 🌑 **Árnyék** (caster) |
+| 😈 Boszorkánymester | 🍂 **Átok** (caster) • 🔥 **Pusztítás** (caster) |
+| 👁️ Démonvadász | 💥 **Tombolás** (DPS) • 🛡️ **Bosszú** (tank) |
+| 🐉 Sárkányidéző | 🔥 **Perzselés** (caster) • 💧 **Megőrzés** (gyógyító) |
 
 ## Feltételek
 
@@ -30,6 +42,36 @@ hogy újra elköltsd őket. Utána új irányt választhatsz.
 
 > A szakmáknak **is** vannak specializációi, ugyanígy működnek (lásd a [Szakmák](08-szakmak.md)
 > oldalt). Egyszerre egy kaszt-spec **és** egy szakma-spec lehet aktív.
+
+## 🐾 Társ befogása (Vadmester és Nekromanta)
+
+A **Vadmester** és a **Nekromanta** szintet lépő **társat** tarthat — és ez **bármilyen
+mob** lehet, nem csak farkas vagy zombi!
+
+1. Írd be: `/pet item` — kapsz egy **befogó eszközt**:
+   - 🐺 **Vadmester → Szelídítő Póráz**: bármely **nem ellenséges** állatra/lényre jobb katt
+     (pl. tehén, róka, ló, papagáj, delfin…).
+   - 💀 **Nekromanta → Lélekkötő Tekercs**: bármely **ellenséges / élőholt** mobra jobb katt
+     (pl. zombi, csontváz, pók, creeper…).
+2. **Jobb katt** a kiszemelt lényen a befogó eszközzel — társaddá fogadod, az eszköz elhasználódik.
+3. `/pet name <név>` — adj nevet neki; `/pet summon` újra előhívja, `/pet dismiss` elküldi.
+
+A társ **típusa, szintje, neve és XP-je** megmarad (a gazdád ölései szintezik), és **követ** téged.
+
+### A társ harcol is — bármilyen lény legyen az
+
+A társad **rendes harci pet**, függetlenül attól, milyen mob: nem a mob saját esze irányítja,
+hanem a játék **maga viszi a célpontra és üti meg** — így egy befogott tehén vagy róka is verekszik!
+
+- **Segít támadni:** ha megütsz egy lényt, a társad ráveti magát.
+- **Megvéd:** ha téged támadnak, a társad a támadóra fordul.
+- **Magától véd:** a közeli ellenséges mobokra magától rátámad.
+- **Parancsok:** **sunyíts (Shift) + jobb katt** a társadon, hogy váltogasd az állását:
+  **Támadás → Passzív → Maradj**. (Passzívan nem harcol, „Maradj" állásban egy helyben vár.)
+- Soha nem támad **téged** vagy a **saját társaidat**.
+
+A társ sebzése és életereje a **szintjével nő**. A nem szelídíthető társakat a játék
+**automatikusan melléd teleportálja**, ha túl messze kerülnek.
 
 ## Melyik képességet mikor kapom meg?
 

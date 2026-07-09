@@ -1,36 +1,51 @@
 # 4. Kasztok ✅
 
-A **kaszt** a hős-típusod: ez dönti el, milyen képességeid (varázslataid) lehetnek. Négy kaszt
-közül választhatsz a `/profile` → **Kaszt** menüből.
+A **kaszt** a hős-típusod: ez dönti el, milyen képességeid (varázslataid) lehetnek. **13 kaszt**
+közül választhatsz a `/profile` → **Kaszt** menüből. Minden kasztnak saját katalizátor-tárgya
+(a „varázskönyved") és saját **erőforrása** (Erő-csík) van.
 
-| Kaszt | Stílus | Katalizátor tárgy |
-|---|---|---|
-| 🧙 **Varázsló** | Elemi és támogató mágia, távolsági ráolvasások | 📖 Mágikus Kódex |
-| ⚔️ **Harcos** | Közelharci erő, kitartás, buffok | 📯 Harci Kürt |
-| 🏹 **Íjász** | Távolsági harc, mozgékonyság, csapdák | 🎒 Vadásztarsoly |
-| 🗡️ **Orgyilkos** | Lopakodás, gyors kitörések, gyengítés | 🪨 Árnyékamulett |
+| Kaszt | Stílus | Katalizátor | Erőforrás |
+|---|---|---|---|
+| 🧙 **Varázsló** | Elemi és kontroll mágia, távolsági ráolvasások | 📖 Mágikus Kódex | Mana |
+| ⚔️ **Harcos** | Közelharci erő, kitartás, buffok | 📯 Harci Kürt | Düh |
+| 🏹 **Íjász** | Távolsági harc, mozgékonyság, csapdák | 🎒 Vadásztarsoly | Fókusz |
+| 🗡️ **Orgyilkos** | Lopakodás, gyors kitörések, gyengítés | 🪨 Árnyékamulett | Energia |
+| 🐻 **Druida** | Alakváltó természet-mágia (harc / kontroll / tank / gyógyítás) | 🌱 Vadon Talizmánja | Természeti Erő |
+| 🔆 **Paplovag** | Szent harc, védelem és gyógyítás | 🔔 Szent Harang | Szent Erő |
+| 💀 **Halállovag** | Rúna-mágia, vér és fagy, közelharci tank/DPS | 💀 Rúnakovácsolt Koponya | Runikus Erő |
+| 🌊 **Sámán** | Elemek, totemek, gyógyítás és erősítés | 🪬 Ősök Totemje | Mana |
+| ☯️ **Szerzetes** | Gyors közelharc, csi-energia, gyógyítás | 🎍 Jáde Bot | Csi |
+| ✝️ **Pap** | Szent és árny mágia, gyógyítás | 🕯️ Szent Gyertya | Mana |
+| 😈 **Boszorkánymester** | Átkok, démonok és pusztító tűz | 🏮 Lélek Lámpás | Lélekerő |
+| 👁️ **Démonvadász** | Mozgékony démoni harc és bosszú | 👁️ Démonszem | Fúria |
+| 🐉 **Sárkányidéző** | Sárkány-eszencia: perzselő mágia és gyógyítás | 🐲 Sárkány Esszencia | Eszencia |
 
-## Elsődleges és másodlagos kaszt
+> Az **Erő-csík** a HUD oldalsávban van; a **legtöbb** képesség ezt fogyasztja (idővel
+> visszatöltődik, üres csíknál a spell nem sül el). **Hibrid:** a vér-mágia életet, a nagy
+> rituálék XP-t, a nehéz fizikai képességek éhséget kérnek. Részletek a
+> [fő tájékoztatóban](../../PLAYER_GUIDE.md).
 
-- **Elsődleges kaszt:** ezt választod először, bármikor. Ez a „fő" hősöd.
-- **Másodlagos kaszt:** csak akkor nyílik meg, ha az **elsődleges eléri a 50. (max) szintet**.
-  Ekkor egy második kasztot is felvehetsz. **A másodlagos kaszt nem specializálódhat.**
+## Egy kaszt, végleges választás
+
+- **Egy kasztod lehet** — ezt választod ki a menüből, és ez a hősöd. Ez adja a képességeidet
+  és (25. szinttől) a specializációdat.
+- **A választás végleges:** ha új kasztot szeretnél, egy adminnak kell reszetelnie
+  (`/class admin resetclass <játékos>` — ez törli a kasztot, a specet és a feloldott spelleket).
 
 ## Szintezés — hogyan erősödsz?
 
 A kaszt **szörnyek (mobok) megölésével** kap **XP-t** (tapasztalatot):
 
-- **Alap: 5 XP** minden ellenséges mob megöléséért.
-- **+2 XP minden „mob-szintért".** A spawntól messzebb a szörnyek erősebbek és magasabb
+- **Alap: 10 XP** minden ellenséges mob megöléséért.
+- **+3 XP minden „mob-szintért".** A spawntól messzebb a szörnyek erősebbek és magasabb
   szintűek (lásd a [Világesemények / Mob-szintezés] részt) — egy 3-as szintű szörny tehát
-  `5 + 3×2 = 11` XP-t ad.
+  `10 + 3×3 = 19` XP-t ad.
 - Csak **ellenséges** mobok adnak XP-t (tehén, csirke nem).
-- Ha van **másodlagos kasztod**, az minden ölésből **a felét (50%)** is megkapja.
 
-**Mennyi kell egy szinthez?** A következő szint ára `100 + (előző szintek száma × 20)` XP:
-- 1 → 2 szint: **100 XP** (kb. 20 alap-mob)
-- 2 → 3 szint: **120 XP**
-- 3 → 4 szint: **140 XP** … és így tovább. **Max szint: 50.**
+**Mennyi kell egy szinthez?** A következő szint ára `60 + (előző szintek száma × 10)` XP:
+- 1 → 2 szint: **60 XP** (kb. 6 alap-mob)
+- 2 → 3 szint: **70 XP**
+- 3 → 4 szint: **80 XP** … és így tovább. **Max szint: 50.**
 
 Minél magasabb a szinted, annál több ölés kell a következőhöz — de a magas szintű szörnyek
 egyenként több XP-t is adnak, szóval érdemes a veszélyesebb, távolabbi vidékekre menni.

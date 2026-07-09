@@ -25,14 +25,31 @@ Ritkán beköszönt egy **vérhold**:
 
 Időnként egy hatalmas **világboss** szörny jelenik meg egy véletlen játékos közelében (ragyog,
 hogy könnyű észrevenni):
-- Aki **leüti**, annak a **frakciója kasszát + liga-pontot** kap.
-- A **legyőző játékos** egy időleges **harci buffot** (Erő + Védelem) kap.
+- Spawnkor **véletlen archetípus** kerül kiválasztásra — saját névvel, stat-szorzókkal és
+  **szignatúra-aurával** (a boss közelében a túlélők témába illő debuffot kapnak). Pl.
+  A Gyűrűk Őre, Lávakohó Behemót, Fagyott Trón Királya, Csontkirály, Mélységi Rém…
+- A boss **~8 másodpercenként telegrafált különleges képességet** süt el (becsapódás / mérgező
+  zóna / add-idézés) — a jelzett helyről lépj el!
+- **50% HP alatt feldühödik** (2. fázis): erősebb, gyorsabb csapások.
+- Aki **leüti**, annak a **frakciója kasszát + liga-pontot** kap; a **legyőző játékos** egy
+  időleges **harci buffot** (Erő + Védelem) kap.
+
+## Invázió ⚔️
+Időnként egy **szörnyhorda** tör be egy játékos köré — ragyogó, **megerősített (skálázott)**
+szörnyek hulláma. A horda-összetétel **véletlen** (pl. Élőhalott Áradat, Csontlégió, Pókfészek,
+Káosz-horda), és minden hullámot egy **megnevezett bajnok (mini-boss)** vezet, amely szintén
+telegrafált földcsapással támad. Veszélyes, de a legyőzésük **több kaszt-XP-t** és nagyobb
+**lélekkő-esélyt** ad, mint a hétköznapi szörnyek. (Admin: `/events invasion`.)
 
 ## Szezonális liga 🏆
 
 A frakciók **pontot gyűjtenek** a **raid-** és **világboss-győzelmekből**. A szezon végén
-(alapból 60 nap) a **vezető frakció kasszája jutalmat kap**, és a pontok lenullázódnak — kezdődik
-az új szezon. Az aktuális állást a `/events season` mutatja.
+(alapból 60 nap) a **vezető frakció** győz:
+- a **frakciókassza** nagy jutalmat kap;
+- a győztes frakció **online tagjai** győzelmi **buffot** (Erő + Regeneráció + Falu Hőse) és
+  **tárgy-jutalmat** (alapból gyémánt + aranyalma) kapnak, egy ünneplő **tűzijátékkal**;
+
+majd a pontok lenullázódnak — kezdődik az új szezon. Az aktuális állást a `/events season` mutatja.
 
 ## Bemutató (intro)
 
