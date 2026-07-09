@@ -175,7 +175,7 @@ tesztelhető:
 ### 4.1 Frakciók és passzívok ✅
 - [ ] `/faction join <red|blue|neutral|dark>` és `/faction leave` működik; a Sötétbe csak bűnös léphet.
 - [ ] **Piros:** állj tűzbe / lávába / magma-blokkra → **nincs sebzés**.
-- [ ] **Kék:** powder snow-ban / fagyos bistromban → **nincs fagy-sebzés**; merülj víz alá hosszan →
+- [ ] **Kék:** powder snow-ban / fagyos biómban → **nincs fagy-sebzés**; merülj víz alá hosszan →
       **nem fulladsz** (fulladás-immunitás); éhség kb. fele olyan gyorsan fogy.
 - [ ] **Semleges:** ess le magasról → **nincs zuhanás-sebzés**; a semleges mobok és **endermanök**
       nem támadnak (ránézésre sem aggrózik az enderman); **nem fizet állampolgári adót**.
