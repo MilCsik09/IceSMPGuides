@@ -39,6 +39,9 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 14. [Parancsok listája](14-parancsok.md) — minden parancs egy helyen
 15. [Party (csapat)](15-csapat.md) — csapatalakítás, közös XP, party-HUD
 
+> 🧪 **Teszterek:** külön kézikönyv szól nektek — [PLAYTEST.md](PLAYTEST.md): mit és hogyan
+> teszteljetek, teszt-parancsok, hibabejelentő sablon.
+
 ---
 
 *Jó kalandozást! ❄️ Ha valamit nem értesz, kérdezz egy admintól vagy egy tapasztaltabb játékostól.*
