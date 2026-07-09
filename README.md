@@ -1,6 +1,6 @@
 # IceSMP — Játékos Kézikönyv 📖
 
-Üdv a fagyott királyságok földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
+Üdv az IceSMP földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
 hogy bárki megértse — még akkor is, ha most ülsz le először Minecraftozni. Minden rendszernek
 külön oldala van, hogy könnyen megtaláld, amit keresel.
 
