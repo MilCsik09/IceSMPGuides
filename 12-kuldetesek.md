@@ -107,7 +107,7 @@ Más játékos nem látja a te jelzéseidet, te sem az övéit.
 
 | Lánc | Kaszt | NPC | Pálya |
 |---|---|---|---|
-| A Harcos Mestere → Mester-próbája | Harcos | `harcos_mester` | `harcos_proba` |
+| A Harcos Mestere → Mester-próbája | Harcos | harcos mester | `harcos_proba` |
 | Az Íjász Mestere → Mester-próbája | Íjász | íjász mester | `ijasz_proba` |
 | A Varázsló Mestere → Mester-próbája | Varázsló | varázsló mester | `varazslo_proba` |
 | Az Orgyilkos Mestere → Mester-próbája | Orgyilkos | orgyilkos mester | `orgyilkos_proba` |

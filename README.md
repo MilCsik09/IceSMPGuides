@@ -1,6 +1,6 @@
 # IceSMP — Játékos Kézikönyv 📖
 
-Üdv az IceSMP földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
+Üdv a fagyott királyságok földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
 hogy bárki megértse — még akkor is, ha most ülsz le először Minecraftozni. Minden rendszernek
 külön oldala van, hogy könnyen megtaláld, amit keresel.
 
@@ -38,9 +38,6 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 13. [Frakcióterületek és saját birtok](13-teruletek.md) — fővárosok, claim, építésvédelem
 14. [Parancsok listája](14-parancsok.md) — minden parancs egy helyen
 15. [Party (csapat)](15-csapat.md) — csapatalakítás, közös XP, party-HUD
-
-> 🧪 **Teszterek:** külön kézikönyv szól nektek — [PLAYTEST.md](PLAYTEST.md): mit és hogyan
-> teszteljetek, teszt-parancsok, hibabejelentő sablon.
 
 ---
 

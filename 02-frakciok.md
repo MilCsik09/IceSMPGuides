@@ -5,6 +5,13 @@ bónusza** (egy állandó képesség, amiért nem kell semmit csinálnod) van.
 
 Belépés: `/faction join <red|blue|neutral|dark>` • Kilépés: `/faction leave`
 
+Az **első csatlakozásod** teljesen **ingyenes és időzítetlen**, és mindenki **Semlegesként
+kezd**. A **Semlegesből bárhová ingyen** válthatsz, és a **Sötétbe lépés is mindig ingyenes**
+(annak a bűnös-feltétel + az örök paktum az ára). Minden más frakcióváltás (Piros↔Kék,
+illetve vissza a Semlegesbe) a **jelenlegi frakciód valutájában** kerül **alapból 500-ba**,
+és utána **72 óráig** nem válthatsz megint (`factions.switch.cost` /
+`factions.switch.cooldown-hours` a configban) — ez a frakció-hopping ellen véd.
+
 A passzívok **egy szintre vannak hangolva** — mindegyik kb. egyformán hasznos, csak más
 helyzetben erős, így a választás ízlés (playstyle) kérdése, nem „melyik a legjobb":
 

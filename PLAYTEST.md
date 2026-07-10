@@ -124,8 +124,7 @@ mob-scaling:
 
 ## 2. Mi VAN a pluginban (rendszer-leltár) ✅
 
-A teljes leírás a [játékos kézikönyvben](README.md) (oldalankénti bontásban); röviden, ami
-tesztelhető:
+A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami tesztelhető:
 
 - **Frakciók** (4): Piros/Kék/Semleges/Sötét, passzív bónuszokkal és valutával.
 - **Kasztok** (13) + **specializációk** (31), egy kaszt/játékos (végleges, admin-reset van), 50-es max szint.
@@ -175,7 +174,7 @@ tesztelhető:
 ### 4.1 Frakciók és passzívok ✅
 - [ ] `/faction join <red|blue|neutral|dark>` és `/faction leave` működik; a Sötétbe csak bűnös léphet.
 - [ ] **Piros:** állj tűzbe / lávába / magma-blokkra → **nincs sebzés**.
-- [ ] **Kék:** powder snow-ban / fagyos biómban → **nincs fagy-sebzés**; merülj víz alá hosszan →
+- [ ] **Kék:** powder snow-ban / fagyos bistromban → **nincs fagy-sebzés**; merülj víz alá hosszan →
       **nem fulladsz** (fulladás-immunitás); éhség kb. fele olyan gyorsan fogy.
 - [ ] **Semleges:** ess le magasról → **nincs zuhanás-sebzés**; a semleges mobok és **endermanök**
       nem támadnak (ránézésre sem aggrózik az enderman); **nem fizet állampolgári adót**.
@@ -264,6 +263,15 @@ tesztelhető:
 - [ ] ⚠️ **Folia:** vásárolj olyan eladótól, aki **másik régióban/máshol van** → az eladó értesítése
       hibamentes (cross-entity).
 - [ ] **Árfolyamtábla:** `/exchangeboard place` hologram lerak; magától frissül; `/exchangeboard remove`.
+- [ ] **Adomány-láda:** `/adomany add` a kézben tartott tárgyat (teljes stack) a közös ládába teszi
+      — a tárgy csak SIKERES adományozás UTÁN tűnik el a kezedből (üres kézzel / kapacitás
+      betelt / saját-limit elérve esetén hibaüzenet, a tárgy marad nálad). `/adomany` megnyitja a
+      lapozható böngészőt (45 tétel/oldal); kattintás egy tárgyra **azonnal elviszi** (nincs ár).
+      Már elvitt tételre kattintva "már elvitte valaki más" hibaüzenet, nincs dupe. Az
+      "Adományozás" csempe a GUI-ban ugyanazt csinálja, mint `/adomany add` (a kezedben lévő
+      tárgyat adományozza). A Főmenü gomb visszaviszi a `/menu`-be.
+- [ ] ⚠️ **Adomány-láda dupe-teszt:** két játékos (vagy gyors dupla katt) egyszerre próbálja
+      elvinni ugyanazt a tételt → csak az egyik kapja meg a tárgyat, a másik hibaüzenetet kap.
 
 ### 4.8.1 Frakcióterületek ✅
 - [ ] `/territory setcapital|claim|list|info|remove` admin parancsok működnek.

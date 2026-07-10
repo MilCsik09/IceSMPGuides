@@ -5,10 +5,12 @@ jelenti, hogy **elhagyható**.
 
 > ## 🖱️ A legegyszerűbb út: `/menu`
 > Nem kell parancsokat gépelned! Írd be: **`/menu`** (vagy `/hub`), és egy **kattintós
-> főmenü** nyílik meg, ahonnan minden rendszer egy gombnyomásra elérhető: Karakterlap,
-> Frakció, Bank & Pénz, Piac, Küldetések, Események, Relikviák, Lélekszilánk (és adminoknak
-> egy admin panel). Minden almenüben gombokkal intézhetsz mindent — a háttérben ugyanazokat a
-> parancsokat futtatja, amiket lent látsz.
+> főmenü** nyílik meg, ahonnan minden rendszer egy gombnyomásra elérhető, tematikus sorokba
+> rendezve: **Karakter** (Karakterlap, Varázskönyv, Társ, Küldetésnapló, Napi küldetés,
+> Elérések, Ranglisták) • **Közösség & világ** (Frakció, Csapat, Birtok, Események,
+> Körözési lista, Relikviák, Lélekszilánk) • **Gazdaság** (Bank & Pénz, Piac — és
+> adminoknak egy admin panel). Minden almenüben gombokkal intézhetsz mindent —
+> a háttérben ugyanazokat a parancsokat futtatja, amiket lent látsz.
 
 ## Mindennapi parancsok (mindenkinek)
 
@@ -37,6 +39,8 @@ jelenti, hogy **elhagyható**.
 | `/market auction <kikiáltási ár> [óra] [valuta] [buyout:<ár>]` | | Aukció indítása a kézben tartott tárgyra (a `buyout:` opcionális azonnali-vétel ár) |
 | `/market claim` | | Megnyert / visszajáró aukciós tárgyak átvétele |
 | `/market cancel` | | Saját eladásaid visszavonása (élő licites aukció nem) |
+| `/adomany` | `donate`, `adomanylada` | Közösségi adomány-láda böngésző (ingyenes elvétel) |
+| `/adomany add` | | A kézben tartott tárgy (teljes stack) adományozása a közös ládába |
 | `/spec list` / `/spec choose <id>` | `specialization`, `specializacio` | Specializációk |
 | `/spec respec <class\|profession>` | | Specializáció visszaváltása |
 | `/talent` / `/talent spend <class\|profession> <talent>` | `talents`, `talentfa` | Talentek |
@@ -50,10 +54,13 @@ jelenti, hogy **elhagyható**.
 | `/spellbook` | `varazskonyv`, `konyv`, `sb` | **Varázskönyv**: spellek böngészése (leírás, költség, sebzés, CD) és kiválasztása kattintással. *Sunyíts + jobb katt a katalizátoron* is megnyitja. |
 | `/events season` / `/events blood-moon` / `/events caravan` | `event`, `esemeny` | Világesemények állása (szezon, vérhold, kereskedő-karaván) |
 | `/party invite\|accept\|decline\|leave\|list` | `p`, `parti` | **Party (csapat)**: meghívás, csatlakozás, kilépés, taglista (max 5 fő) |
-| `/party kick <név>` / `/party promote <név>` / `/party disband` | | Csapatvezetői műveletek: kirúgás, vezetés átadása, feloszlatás |
+| `/party kick\|promote <név>` | | Csapatvezetői műveletek: kirúgás, vezetés átadása |
+| `/party disband` | | Csapat feloszlatása (csak vezető) |
 | `/p <üzenet>` | | **Csapat-chat** — csak a párttagok látják |
-| `/claim` | `birtok` | Az aktuális chunk lefoglalása (**saját birtok** — első 3 ingyen) |
+| `/claim` | `birtok` | 16×16 blokk gyorsfoglalása körülötted (**saját birtok**, ±20 blokk magasan) |
 | `/claim unclaim\|info\|list\|show` | | Claim felszabadítása / infó / lista / határ-kirajzolás |
+| `/claim pos1\|pos2\|area` | | Blokk-pontos terület kijelölése és foglalása |
+| `/claim extend up\|down` | | Claim magasítása / mélyítése (+5 blokk, pénzért) |
 | `/claim trust\|untrust <név>` | | Megbízott hozzáadása / elvétele (teljes hozzáférés a claimjeidhez) |
 
 ## Király-parancsok (csak a frakció királyának)
