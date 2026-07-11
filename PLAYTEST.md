@@ -63,8 +63,10 @@ A legegyszerűbb, ha a tesztelő admin **OP** (minden node megvan). Ha pontosabb
 | `icesmp.faction.admin` | frakció-kényszerítés, király/kassza admin-műveletek |
 | `icesmp.admin.quest` | küldetés force-complete + a `/quest admin` szerkesztő |
 | `icesmp.relic.admin` | relikvia adása |
-| `icesmp.admin.territory` / `icesmp.admin.territory.bypass` | területkezelés / építésvédelem megkerülése |
+| `icesmp.admin.territory` / `icesmp.admin.territory.bypass` | területkezelés / zóna-védelem teljes megkerülése (build+interakció+PvP) |
+| `icesmp.territory.builder` | építő-jog: védett zónában is építhet/interaktálhat (PvP-tiltás rá is áll) |
 | `icesmp.admin.parkour` / `icesmp.admin.exchangeboard` / `icesmp.admin.profession` / `icesmp.admin.spec` | parkour / tábla / szakma / spec admin |
+| `icesmp.admin.npc` | `/npcbind` — NPC kötése küldetéshez/bolthoz/bankárhoz/valutaváltóhoz |
 
 ---
 
@@ -130,6 +132,11 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 - **Kasztok** (13) + **specializációk** (31), egy kaszt/játékos (végleges, admin-reset van), 50-es max szint.
 - **Képességek** (390+): katalizátor-tárgy, **hibrid költségrendszer** (Erő-csík + HP/XP/éhség),
   cooldown, kombók, spell-mesterség.
+- [ ] **Közelharci katalizátor**: melee kaszttal (pl. Harcos) a kézben tartott kard/balta is
+      katalizátor — jobb katt cast, SHIFT+jobb katt varázskönyv, SHIFT+ütés spell-váltás; a balta
+      jobb-katt fahántása NEM fut le; nem-melee kaszttal (pl. Varázsló) a kard NEM katalizátor.
+- [ ] **Dinamikus spell-skálázás**: magasabb kaszt-szinten mérhetően nagyobb spell-sebzés
+      (+0,5%/szint), az Arkán Hatalom talent rangonként +2%-ot ad; a bónusz +50%-nál tetőzik.
 - **Erő-csík** (osztály-erőforrás): HUD-sáv, regenerálódó költség-pool.
 - **Talentek**: kaszt- és szakma-ponttár, általános + kötött talentek.
 - **Szakmák** (gyűjtögető/készítő/másodlagos) + szakma-specializációk + craft-korlátok.
@@ -233,10 +240,35 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 - [ ] A megfelelő tevékenység ad XP-t (bányászat/aratás/horgászat/sütés/craft).
 - [ ] 25. szinten szakma-spec választható.
 - [ ] **Craft-korlát:** netherite felszerelést csak 25+ Kovács craftol (különben nem jön létre + üzenet).
+- [ ] **Recept-könyv** (`/profession recipes` vagy `/menu` → Recept-könyv): a szakmáid receptjei
+      tanult (zöld) / zárolt (szürke) állapottal, hozzávaló megvan/hiányzik jelzéssel, lapozva;
+      kattintásra craft (hozzávalók fogynak), `affix-tier`-es recept egyedi rolled tárgyat ad.
+- [ ] **Tervrajz:** blueprint-recept zárolva marad, míg meg nem szerzed a tervrajzot (mob-drop
+      ritkán / `/profession blueprint <j> <id>` admin). Jobb katt a tervrajzon → megtanulod
+      (már ismert tervrajz nem fogy el); utána a recept-könyvből craftolható (szint is kell).
+- [ ] **Rolled-affix mestermunka:** mestermunkát craftolva a tárgy VÉLETLEN minőséget ([Közönséges]…
+      [Legendás]) + random attribútum-affixeket kap (a leírásban); két craft nem ugyanaz. Shift-click
+      bulk-craft alap-statú marad.
+- [ ] **WoW-mob loot (loot-tábla):** sima szörnyek `loot.mob-drop.chance` eséllyel dobnak egy
+      táblasort: rolled `drop`-tier felszerelést (random névvel, akár Ócska/negatív affix), sokféle
+      nyersanyagot/értéket, vagy **csak-mobból-eső egyedi alapanyagot** (Vad Esszencia / Szörny Mag
+      / Árnyékpor). Boss/event-mob garantáltan `boss`-tier tárgyat + boss-only Ősi Ereklyeszilánkot.
+      Szakma-craftolt nevesített tárgy SOHA nem esik mobból.
+- [ ] **Mob-only alapanyag receptekben:** a mob-only egyedi alapanyagokat igénylő receptek
+      (pl. Vadbőr Vért, Ereklyepenge) csak akkor craftolhatók, ha begyűjtötted a mobból-eső anyagot;
+      a recept-könyv kékkel jelzi a hiányt.
+- [ ] **Egyedi alapanyag védelem:** az egyedi szakma-alapanyagok (pl. Vasesszencia = IRON_NUGGET,
+      Gyógy-kivonat = ehető GLOW_BERRIES) NEM használhatók normál módon: nem craftolhatók be,
+      nem kovácsolhatók, nem tüzelők, nem ehetők, nem rakhatók le — csak a recept-könyvben. Van
+      saját CustomModelData-juk (6000–6013) és frappáns lore-juk.
 
 ### 4.8 Gazdaság ✅
 - [ ] `/bank deposit|withdraw|balance`, `/currency balance|pay|exchange|rates`, `/currency set` (admin).
 - [ ] **Dinamikus árfolyam:** több valuta a szerveren → kevesebbet ér (`/currency rates`).
+- [ ] **Valutaváltó GUI** (`/menu` → Bank & Pénz → Valutaváltó): forrás-választó fent, cél-választó
+      lent (a forrással azonos valuta szürke, nem választható), középen élő árfolyam + 64-es előnézet;
+      a 16/32/64/mind gombok a `/currency exchange` parancsot futtatják, és a váltás után a kiválasztott
+      pár megmarad; fővároson kívül a váltás elutasítva (capital-only).
 - [ ] **Piac:** `/market sell <ár>` a kézben tartott tárgyra (max 5 tétel); `/market` vétel a bankból;
       `/market cancel` visszavon. Eladásnál ~10% „elég" (money sink).
 - [ ] **Frakció-bolt NPC:** rakj ki egy FancyNpcs NPC-t `altalanos_bolt` néven → jobb-katt megnyitja
@@ -273,12 +305,41 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 - [ ] ⚠️ **Adomány-láda dupe-teszt:** két játékos (vagy gyors dupla katt) egyszerre próbálja
       elvinni ugyanazt a tételt → csak az egyik kapja meg a tárgyat, a másik hibaüzenetet kap.
 
-### 4.8.1 Frakcióterületek ✅
-- [ ] `/territory setcapital|claim|list|info|remove` admin parancsok működnek.
-- [ ] Területhatár átlépésekor action bar üzenet jön.
-- [ ] Alap config mellett (`territory.protection.enabled: false`) az építés/bontás nincs blokkolva.
-- [ ] Ha tesztre bekapcsolod az építésvédelmet, idegen frakció területén a build/break tiltott,
-      `icesmp.admin.territory.bypass` joggal pedig engedett.
+### 4.8.1 Frakcióterületek (zónák) ✅
+- [ ] `/territory circle|setcapital|remove|list|info` admin parancsok működnek.
+- [ ] **Poligon-zóna:** `/territory pos` több ponton (pl. egy fal mentén), `/territory points`
+      listáz, `/territory undo` visszavon, `/territory show` kirajzolja, `/territory create
+      protected-city <frakció> <id>` lezárja (≥3 pont kell). Belül vagy-e a poligonon: `/territory info`.
+- [ ] Területhatár átlépésekor típusfüggő action bar üzenet jön (főváros / védett város / védett
+      frakcióterület / frakcióterület).
+- [ ] **Védett zóna** (capital / protected-city / protected-faction) — alapból teljes védelem:
+  - [ ] **build**: senki nem tör/rak blokkot, nem használ vödröt, nem szed le képkeretet/armor standot.
+  - [ ] **interact**: konténer/ajtó/gomb/kar/műhely jobbklikk tiltott.
+  - [ ] **pvp**: játékos↔játékos sebzés (közelharc ÉS nyíl/lövedék) blokkolva, a támadó action-bar üzenetet kap.
+  - [ ] **explosions**: creeper/TNT nem tör blokkot a zónában.
+  - [ ] **fire**: tűzcsiholó nem gyújt, a tűz nem terjed/nem éget a zónában.
+- [ ] **Frakcióterület** (`faction`): `build` csak a NEM-tagot tiltja (tag épít), `interact/pvp/
+      explosions/fire` alapból szabad — a `rules.faction.*` kapcsolókkal külön állítható.
+- [ ] **Bypass:** `icesmp.admin.territory.bypass` mindent megkerül (PvP is);
+      `icesmp.territory.builder` védett zónában is építhet/interaktálhat, de PvP-zni NEM.
+- [ ] **Kill-switch:** `protect-zones: false` → a védett zónák minden szabálya kikapcsol.
+- [ ] **Grief-rések (védett zóna):** enderman nem visz el blokkot; kívülről víz/láva nem folyik be;
+      dugattyú nem tol be blokkot; TNT nem pusztít képkeretet/armor standot.
+- [ ] **PvP-rések (biztonságos zóna):** nyíl/lövedék, farkas (háziállat), TNT-sebzés és ártó
+      splash/lingering bájital sem hat a játékosra; a támadó action-bar üzenetet kap.
+- [ ] **`/territory tp <id>`** a zóna középpontjához teleportál (a legfelső blokkra; Y-korlátnál a sávba).
+- [ ] **`/territory show <id>`** tetszőleges (nem alattad lévő) zóna határát is kirajzolja.
+- [ ] **messages/territory.yml** felülírja az alapszövegeket (pl. `territory-pvp-denied`).
+- [ ] **Claim tiltás:** védett zónában a `/claim` és `/claim area` elutasítva
+      (`claim-in-protected-zone`); **normál frakcióterületen viszont ENGEDETT** (alapból
+      `claims.block-in-territory: false`). Kis poligon-zóna szélén is véd (sarok+közép próbák).
+- [ ] **Zóna-módosítás:** `/territory rename|resize|settype|sety <id> ...` a meglévő zónát módosítja
+      (a `resize` poligonra elutasít); `settype ... capital` a régi fővárost lefokozza.
+- [ ] **Magassági sáv:** `/territory sety <id> 60 ~` után a zóna csak Y=60 felett véd; az `info`
+      a „Magasság" mezőben mutatja; a `~`/`*` = korlátlan.
+- [ ] **Poligon-validáció:** önmetsző határvonalnál (a fal átvágja saját magát) a `create` elutasít.
+- [ ] **Teljesítmény:** sok zónával is gyors a mozgás/építés (chunk-index; a lookup nem lassít).
+- [ ] Régi `territories.yml` (csak `capital: true/false`) betöltése: capital→CAPITAL, egyébként FACTION.
 
 ### 4.9 Relikviák + rituálé-oltárok ✅
 - [ ] `/relic give <j> <id>` → a relikvia megjelenik; `/relic list` az id-khez.
@@ -287,6 +348,14 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
       PvP-ben **nem** cserélnek gazdát.
 - [ ] **Rituálé-oltár:** a megfelelő oltár-blokk + áldozati tárgyak + **SHIFT+jobb katt** → megidézi a szárnyat.
 - [ ] **Egy-példány szabály:** ha él a tulajdonos, nem idézhető/adható újra.
+- [ ] **Multi-block szentélyek (5×5):** hiányos szerkezettel (csak a mag-blokk áll) az oltár hibát
+      ír és nem aktiválódik; a teljes szentély (5×5 alapzat + 4 két-magas saroktorony) megépítve működik.
+- [ ] **Típusos oltárok** (config `type`): **Feloldozás** (Lélek-lámpás) leveszi a bűnös-jelet és
+      nullázza a bűnöket — de sötét paktumossal elutasítja; **Hazatérés-kő** (Lodestone) a frakció
+      fővárosába teleportál (főváros híján hibaüzenet). Sikertelen kimenetnél az áldozat NEM fogy;
+      cooldown alatt ismétléskor hiba.
+- [ ] **Kaszt-szentélyek (13):** mindegyik `*_szentely` csak a saját kasztjának aktiválódik
+      (`requires-class`), más kaszt hibaüzenetet kap; a buff a táblázat szerint felkerül.
 - [ ] ⚠️ **Folia:** a Mételytépő ölés-büntetése a gyilkost **másik régióból** is hibamentesen jelöli.
 
 ### 4.10 Pet / minion ✅
@@ -425,6 +494,15 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 ### 4.14 GUI-k és HUD ✅
 - [ ] `/menu`, `/profile`, `/spellbook`, `/market`, `/leaderboard`, `/achievements`, `/daily` megnyílik,
       a gombok működnek, a kattintások nem visznek ki tárgyat a menüből.
+- [ ] **Quest builder** (`/quest admin builder <id>`, admin): új id-vel a típus-választó nyílik →
+      darabszám + név a chatben → szerkesztő; létező custom questtel rögtön a szerkesztő. Mező-csempe
+      kattintás után a chatbe írt érték mentődik ('mégse' megszakít), a kapcsolók (ismételhető,
+      szezonális, bűn-tisztítás, objektíva-mód) helyben váltanak; törléshez két kattintás kell;
+      a chatbe írt érték NEM jelenik meg a publikus chatben.
+- [ ] **Admin panel** (`/menu` → Admin, csak admin-joggal): minden világesemény indítható gombbal
+      (vérhold start/stop, világboss, invázió, karaván érkezés/távozás, Vad Hajsza, meteor, kincs,
+      gyűjtögető buff, bőség, kihívás, kíséret, hangulat-esemény); a kezelősor (admin unclaim,
+      NPC-kötések, quest admin lista) csak a megfelelő jogosultsággal látszik.
 - [ ] HUD oldalsáv: frakció, kasztok+szintek, szakmák, talentpontok, egyenleg, **Erő-csík**.
 - [ ] Bossbar (világboss/raid) megjelenik — és **nem** ütközik az Erő-csíkkal (az a sidebar-on van).
 
