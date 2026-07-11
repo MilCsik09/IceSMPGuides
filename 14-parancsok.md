@@ -45,6 +45,7 @@ jelenti, hogy **elhagyható**.
 | `/spec respec <class\|profession>` | | Specializáció visszaváltása |
 | `/talent` / `/talent spend <class\|profession> <talent>` | `talents`, `talentfa` | Talentek |
 | `/profession join <szakma>` / `/profession info` | `prof`, `szakma` | Szakmák |
+| `/profession recipes` | `prof`, `szakma` | **Recept-könyv** — tanult/zárolt receptek, 1 kattintásos craft |
 | `/class givecatalyst` | `kaszt`, `job` | Elveszett Képesség Katalizátor pótlása |
 | `/quest list` / `/quest accept <id>` / `/quest info` | `quests`, `kuldetes` | Küldetések |
 | `/quest log` | `gui`, `naplo` | **Küldetésnapló GUI** — Aktív / Felvehető / Teljesített fülek, lapozható |
@@ -87,6 +88,7 @@ A raidhez **mindenki** (nem csak a király) így kapcsolódik:
 | `/class givecatalyst\|unlockspell <játékos> [spell]` | Katalizátor adása / spell feloldása |
 | `/class admin <resetcd\|unlockallskills\|resetskills\|resetclass> <játékos>` | Cooldown-/spell-/**teljes kaszt-reset** egy játékosnak |
 | `/profession set\|clear\|addxp` | Szakma-adatok kezelése |
+| `/profession blueprint <játékos> <recept-id>` | Tervrajz (recept-feloldó) átadása egy játékosnak |
 | `/spec reset <játékos>` | Specializációk törlése |
 | `/sinner <játékos> set\|clear\|add` | Bűnös állapot kezelése |
 | `/quest complete <játékos> <id>` | Küldetés azonnali teljesítése |
@@ -95,10 +97,13 @@ A raidhez **mindenki** (nem csak a király) így kapcsolódik:
 | `/quest admin set <id> objectives-mode ALL\|SEQUENCE` | Több-objektívás mód: párhuzamos vagy sorban |
 | `/quest admin set <id> <mező> <érték...>` | Küldetés-mező beállítása (feltétel, jutalom, giver-npc, dialogue.choices, rotation-group, seasonal...) |
 | `/quest admin delete/info/list` | Admin-küldetés törlése / megtekintése / listája |
+| `/quest admin builder <id>` | **Kattintós küldetés-szerkesztő** — új id-vel létrehozó varázsló (objektíva-választó + chat-bevitel), létező custom questtel mező-szerkesztő GUI |
 | `/currency set <játékos> <összeg> [valuta]` | Valuta-egyenleg beállítása |
 | `/faction set <játékos> <frakció>` | Játékos frakcióba sorolása |
 | `/relic give <játékos> <relic_id>` | Relikvia adása |
-| `/territory setcapital\|claim\|remove` | Területek kezelése |
+| `/territory circle\|create <típus> ...` | Kör- vagy poligon-zóna kijelölése (típus: faction, protected-faction, protected-city, capital) |
+| `/territory pos\|undo\|clearpoints\|points\|show` | Poligon-határpontok bejárása és előnézete (pl. városfal mentén) |
+| `/territory setcapital\|remove\|list\|info` | Főváros gyorskijelölés / zóna törlése / listája / infó |
 | `/exchangeboard place\|remove` | Árfolyamtábla lerakása/törlése |
 | `/events blood-moon start\|stop` | Vérhold kézi indítása / leállítása |
 | `/events worldboss` | Világboss azonnali megidézése |
@@ -115,6 +120,8 @@ A raidhez **mindenki** (nem csak a király) így kapcsolódik:
 | `/events intro [játékos]` | Bemutató újrajátszása |
 | `/claim admin unclaim` | Idegen claim törlése admin-jogon |
 | `/parkour setstart\|setfinish\|remove <id>` | Parkour-pálya beállítása |
+| `/npcbind <npc> quest\|shop\|bank\|exchange\|clear` (`npckotes`) | NPC explicit kötése küldetéshez/bolthoz/bankárhoz/valutaváltóhoz (a bank/exchange a meglévő bank menüt nyitja) |
+| `/npcbind list` | Minden NPC-kötés kiírása |
 
 ---
 
