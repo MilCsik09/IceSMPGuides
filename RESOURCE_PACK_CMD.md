@@ -40,6 +40,10 @@ modellt kötni.
 | 6011 | ECHO_SHARD | Mob-only alapanyag | Szörny Mag | `config/profession-materials.yml` |
 | 6012 | SCULK_VEIN | Mob-only alapanyag | Árnyékpor | `config/profession-materials.yml` |
 | 6013 | NETHER_STAR | Mob-only alapanyag (boss) | Ősi Ereklyeszilánk | `config/profession-materials.yml` |
+| 6101 | RED_MUSHROOM | Vadgomba-bomba (druida spell) | — | `spells/WildMushroomSpell.java` |
+| 6102 | STONE | Rúnakő (halállovag spell) | — | `spells/RuneStrikeSpell.java` |
+| 6103 | SUGAR | Démoni Só (boszorkánymester spell) | — | `spells/DemonicCircleSpell.java` |
+| 6104 | STICK | Kiűzés Botja (szerzetes spell) | Kiűzés Botja | `spells/ExpelHarmSpell.java` |
 
 Összesen **31 hozzárendelés, mind egyedi** (a Mételytépő korábban az 1001-en
 osztozott a Piros Tokennel; 4101-re számoztuk át, ami a relics.yml-ben dokumentált érték).
