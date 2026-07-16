@@ -76,9 +76,9 @@ A **claim** a te személyes, védett földed — frakciótól függetlenül bár
 
 **Mennyibe kerül?**
 - Az ár **oszloponként** (1×1 blokk alapterület) számolódik: az első **768 oszlop ingyenes** (~3 chunknyi terület).
-- Utána minden további oszlop a **saját frakció-valutádba** kerül (alapból 0,5/oszlop)
-  (alapból az első fizetős 100, utána mindegyik másfélszeres). Az ár **ELÉG** (money sink) —
-  az `/claim unclaim`-nél sem jár vissza!
+- Utána minden további oszlop a **saját frakció-valutádba** kerül, **fix 0,5/oszlop** áron
+  (nem drágul oszloponként — csak a megvett oszlopok számával nő a végösszeg). Az ár **ELÉG**
+  (money sink) — az `/claim unclaim`-nél sem jár vissza!
 - Játékosonként alapból legfeljebb **8192 oszlopnyi** (~32 chunknyi) birtokod lehet.
 
 ### Mit véd a claim?
@@ -101,6 +101,8 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 - `/claim trust <név>` — a megbízott **teljes hozzáférést** kap **minden** claimedhez
   (építhet, nyithat ládát).
 - `/claim untrust <név>` — megbízás visszavonása.
+- **GUI-ból is megy:** `/menu` → Birtok → **„Megbízottak kezelése"** — felül a megbízottaid
+  (kattintás = visszavonás), alul a közeledben álló játékosok (kattintás = megbízás).
 
 ### Hasznos claim-parancsok
 
