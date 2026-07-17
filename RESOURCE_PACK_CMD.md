@@ -44,8 +44,10 @@ modellt kötni.
 | 6102 | STONE | Rúnakő (halállovag spell) | — | `spells/RuneStrikeSpell.java` |
 | 6103 | SUGAR | Démoni Só (boszorkánymester spell) | — | `spells/DemonicCircleSpell.java` |
 | 6104 | STICK | Kiűzés Botja (szerzetes spell) | Kiűzés Botja | `spells/ExpelHarmSpell.java` |
+| 6201 | TRIPWIRE_HOOK | Köznapi Kulcs (crate) | Köznapi Kulcs | `config/crates.yml` |
+| 6202 | TRIPWIRE_HOOK | Ritka Kulcs (crate) | Ritka Kulcs | `config/crates.yml` |
 
-Összesen **31 hozzárendelés, mind egyedi** (a Mételytépő korábban az 1001-en
+Összesen **33 hozzárendelés, mind egyedi** (a Mételytépő korábban az 1001-en
 osztozott a Piros Tokennel; 4101-re számoztuk át, ami a relics.yml-ben dokumentált érték).
 
 ## Tartományok
