@@ -112,7 +112,7 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 | `/claim unclaim` | A claim felszabadítása, amiben állsz (az ár NEM jár vissza) |
 | `/claim info` | Kié ez a terület? (+ határ-kirajzolás) |
 | `/claim list` | Saját claimjeid listája |
-| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig (zöld = sajátod, láng = másé, komposzt = a gyorsfoglalás előnézete) |
+| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig — részecske-perem + **izzó fényfal** (zöld = sajátod, piros = másé), amit csak te látsz; komposzt = a gyorsfoglalás előnézete |
 | `/claim pos1` / `/claim pos2` | Blokk-pontos kijelölés két sarka (a blokk, amin állsz) |
 | `/claim area` | A két sarok közti pontos téglalap lefoglalása (az ár előre kiírva, egyben ég el) |
 | `/claim extend up\|down` | A claim magasítása / mélyítése +5 blokkonként, pénzért (a menüből is) |
