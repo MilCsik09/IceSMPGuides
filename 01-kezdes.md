@@ -21,7 +21,12 @@ Most léptél be először? Semmi gond — kövesd ezt a pár lépést, és már
    (pl. Kovács). A Halász és Szakács alapból a tiéd.
 5. **Kezdj el játszani!**
    - **Szörnyeket ölve** kapsz **kaszt-XP-t** (így szintezel és nyitsz új képességeket).
+   - Harcban minden találatod fölött **lebegő sebzés-szám** jelzi, mennyit ütöttél; ha meghalsz,
+     a chatben **halál-összegző** mutatja, mi vitt el (utolsó 10 mp találatai + összesített sebzés).
    - **Bányászva / aratva / horgászva / főzve** kapsz **szakma-XP-t**.
+   *(Az első belépésedkor automatikusan elindul egy rövid **kezdő küldetés-lánc** — „Beszélj a
+   hírnökkel" → „Első csata" → „Első gyűjtögetés" —, ami végigvezet a kezdésen, és minden
+   állomásért jutalmat ad. Lásd: [Küldetések](12-kuldetesek.md).)*
 6. **Vedd fel a kaszt-próbádat:** `/quest list`, majd `/quest accept <id>`. Ezzel jutalmat
    szerezhetsz. Részletek: [Küldetések](12-kuldetesek.md).
 
@@ -41,6 +46,21 @@ Első belépéskor egy rövid **bemutató cím-szekvencia** is lejátszódik —
 | Megvédeni a házam (saját birtok) | állj a chunkba és `/claim` — lásd [Területek](13-teruletek.md) |
 
 > A teljes parancslista: [Parancsok](14-parancsok.md).
+
+## 🔜 Képernyő-újdonságok *(hamarosan, még nem él)*
+
+A következő frissítéssel a szerver **saját, natív** felületet kap (nem kell hozzá külső plugin) —
+ezek **még nem élnek**, de jó előre tudni róluk:
+
+- **Dinamikus HUD (oldalsáv):** harc közben a HUD **a harchoz fontos sorokra** vált (erőforrás,
+  csapat), és egy **forgó infósor** váltogatja a kevésbé sürgős adatokat — így a korlátozott hely
+  mindig a leghasznosabbat mutatja. Célzáskor egy **célpont-sor** is megjelenhet az ellenfél
+  életével.
+- **Natív tablista:** saját **fejléc/lábléc** (animációkkal), a nevek a rangod szerint rendezve,
+  és **relációs háború-színek** — raid alatt az ellenséges frakció neve **pirosan** villan a
+  tablistádban és a fejük fölött. A **ping** is színkódolt.
+- **Lebegő sebzés-számok:** ütéskor a sebzés száma felugrik a célpont felett (alapból **csak te
+  látod, amit te okozol** — configból állítható/kikapcsolható).
 
 ---
 
