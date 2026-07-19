@@ -18,19 +18,19 @@ modellt kötni.
 | 4202 | ELYTRA | Szárny-relikvia (Kék) | Zúzmara-szárny | `managers/RelicManager.java:110` |
 | 4203 | ELYTRA | Szárny-relikvia (Semleges) | Vándorszél | `managers/RelicManager.java:118` |
 | 4204 | ELYTRA | Szárny-relikvia (Sötét) | Csontszárny | `managers/RelicManager.java:126` |
-| 5201 | ENCHANTED_BOOK | Katalizátor — Varázsló | Mágikus Kódex | `items/CatalystItemFactory.java:52` |
-| 5202 | GOAT_HORN | Katalizátor — Harcos | Harci Kürt | `items/CatalystItemFactory.java:56` |
-| 5203 | RABBIT_HIDE | Katalizátor — Íjász | Vadásztarsoly | `items/CatalystItemFactory.java:59` |
-| 5204 | FLINT | Katalizátor — Orgyilkos | Árnyékamulett | `items/CatalystItemFactory.java:62` |
-| 5205 | OAK_SAPLING | Katalizátor — Druida | Vadon Talizmánja | `items/CatalystItemFactory.java:65` |
-| 5206 | BELL | Katalizátor — Paladin | Szent Harang | `items/CatalystItemFactory.java:68` |
-| 5207 | WITHER_SKELETON_SKULL | Katalizátor — Halállovag | Rúnakovácsolt Koponya | `items/CatalystItemFactory.java:71` |
-| 5208 | TOTEM_OF_UNDYING | Katalizátor — Sámán | Ősök Totemje | `items/CatalystItemFactory.java:74` |
-| 5209 | BAMBOO | Katalizátor — Szerzetes | Jáde Bot | `items/CatalystItemFactory.java:77` |
-| 5210 | WHITE_CANDLE | Katalizátor — Pap | Szent Gyertya | `items/CatalystItemFactory.java:80` |
-| 5211 | SOUL_LANTERN | Katalizátor — Boszorkánymester | Lélek Lámpás | `items/CatalystItemFactory.java:83` |
-| 5212 | ENDER_EYE | Katalizátor — Démonvadász | Démonszem | `items/CatalystItemFactory.java:86` |
-| 5213 | DRAGON_BREATH | Katalizátor — Idéző | Sárkány Esszencia | `items/CatalystItemFactory.java:89` |
+| 5201 | ENCHANTED_BOOK | Katalizátor — Varázsló | Caldesterai Rúnakódex | `items/CatalystItemFactory.java:52` |
+| 5202 | GOAT_HORN | Katalizátor — Harcos | Sárkánykirály Kürtje | `items/CatalystItemFactory.java:56` |
+| 5203 | RABBIT_HIDE | Katalizátor — Íjász | Soleil Vadásztarsolya | `items/CatalystItemFactory.java:59` |
+| 5204 | FLINT | Katalizátor — Orgyilkos | Homály-szilánk | `items/CatalystItemFactory.java:62` |
+| 5205 | OAK_SAPLING | Katalizátor — Druida | Aetrinita Sarja | `items/CatalystItemFactory.java:65` |
+| 5206 | BELL | Katalizátor — Paladin | Hajnaltűz Harangja | `items/CatalystItemFactory.java:68` |
+| 5207 | WITHER_SKELETON_SKULL | Katalizátor — Halállovag | Néma Rúnakoponya | `items/CatalystItemFactory.java:71` |
+| 5208 | TOTEM_OF_UNDYING | Katalizátor — Sámán | Ősvihar Totemje | `items/CatalystItemFactory.java:74` |
+| 5209 | BAMBOO | Katalizátor — Szerzetes | Élet Ága | `items/CatalystItemFactory.java:77` |
+| 5210 | WHITE_CANDLE | Katalizátor — Pap | Asterlayna Gyertyája | `items/CatalystItemFactory.java:80` |
+| 5211 | SOUL_LANTERN | Katalizátor — Boszorkánymester | Kárhozat Lámpása | `items/CatalystItemFactory.java:83` |
+| 5212 | ENDER_EYE | Katalizátor — Démonvadász | Hasadék Szeme | `items/CatalystItemFactory.java:86` |
+| 5213 | DRAGON_BREATH | Katalizátor — Idéző | Sárkányvér-fiola | `items/CatalystItemFactory.java:89` |
 | 6000 | IRON_NUGGET | Egyedi szakma-alapanyag | Tiszta Vasesszencia | `config/profession-materials.yml` |
 | 6001 | GLOW_BERRIES | Egyedi szakma-alapanyag | Gyógy-kivonat | `config/profession-materials.yml` |
 | 6002 | COPPER_INGOT | Egyedi szakma-alapanyag | Rezgő Rézötvözet | `config/profession-materials.yml` |
