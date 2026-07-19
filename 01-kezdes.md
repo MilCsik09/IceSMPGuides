@@ -47,6 +47,21 @@ Első belépéskor egy rövid **bemutató cím-szekvencia** is lejátszódik —
 
 > A teljes parancslista: [Parancsok](14-parancsok.md).
 
+## 🔜 Képernyő-újdonságok *(hamarosan, még nem él)*
+
+A következő frissítéssel a szerver **saját, natív** felületet kap (nem kell hozzá külső plugin) —
+ezek **még nem élnek**, de jó előre tudni róluk:
+
+- **Dinamikus HUD (oldalsáv):** harc közben a HUD **a harchoz fontos sorokra** vált (erőforrás,
+  csapat), és egy **forgó infósor** váltogatja a kevésbé sürgős adatokat — így a korlátozott hely
+  mindig a leghasznosabbat mutatja. Célzáskor egy **célpont-sor** is megjelenhet az ellenfél
+  életével.
+- **Natív tablista:** saját **fejléc/lábléc** (animációkkal), a nevek a rangod szerint rendezve,
+  és **relációs háború-színek** — raid alatt az ellenséges frakció neve **pirosan** villan a
+  tablistádban és a fejük fölött. A **ping** is színkódolt.
+- **Lebegő sebzés-számok:** ütéskor a sebzés száma felugrik a célpont felett (alapból **csak te
+  látod, amit te okozol** — configból állítható/kikapcsolható).
+
 ---
 
 ➡️ Tovább: [Frakciók](02-frakciok.md) • [Vissza a tartalomhoz](README.md)

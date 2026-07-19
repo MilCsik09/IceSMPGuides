@@ -23,6 +23,7 @@ jelenti, hogy **elhagyható**.
 | `/hud <szekció>` | — | HUD-oldalsáv szekciók ki-be kapcsolása (frakcio/kaszt/eroforras/esemeny/valuta/csapat/mind) |
 | `/sit` | — | Leülés, ahol állsz (újra `/sit` vagy sneak = felállás); lépcsőre/fél-lapra üres kézzel jobb-katt is leültet |
 | `/sit fekves` | — | Fekvő póz (LibsDisguises szükséges hozzá); újra kiadva vagy mozgásra felállsz |
+| 🔜 `/afk` | — | **(hamarosan)** Kézi AFK-jelölés be/ki — lásd lentebb az **AFK-rendszer** szakaszt |
 | `/crate buy <id> [db]` / `/crate info [id]` | `ladak`, `crates` | Láda-kulcs vásárlása frakció-valutáért / jutalom-esélyek megtekintése (kulccsal a ládára jobb-katt = nyitás). 🔜 *Hamarosan:* a nyereményt egy pörgő **3D-ikon** tárja fel a láda fölött |
 | `/report <név> <ok>` | `bejelent` | Játékos bejelentése a moderátoroknak (percenként egyszer) |
 | `/daily` | `napi` | A napi küldetés és haladásod |
@@ -70,6 +71,18 @@ jelenti, hogy **elhagyható**.
 | `/claim pos1\|pos2\|area` | | Blokk-pontos terület kijelölése és foglalása |
 | `/claim extend up\|down` | | Claim magasítása / mélyítése (+5 blokk, pénzért) |
 | `/claim trust\|untrust <név>` | | Megbízott hozzáadása / elvétele (teljes hozzáférés a claimjeidhez) |
+
+### 🔜 AFK-rendszer *(hamarosan, még nem él)*
+
+Natív AFK-kezelés (nem kell hozzá plugin):
+
+- **Automatikus AFK:** ha **~3 percig** nem mozogsz/nézel körbe/írsz/interaktálsz, a rendszer
+  AFK-nak jelöl (bárhol a szerveren). **`/afk`** paranccsal kézzel is be/ki kapcsolhatod.
+- **Anti-farm:** amíg AFK vagy, **nem termelsz kaszt-XP-t, szakma-XP-t és lélekkő-dropot** — így
+  az „ott hagyom a karakterem ölni" trükk nem működik.
+- **AFK-zóna jutalom:** kijelölt **pihenő-zónákban** állva (akár mozogva a zónán belül) időnként
+  (alapból ~10 percenként) apró **valuta-jutalom** jár — ez egy **szándékosan kicsi** gazdasági
+  „csap", nem grind-forrás. Egy **bossbar** mutatja a következő jutalomig hátralévő időt.
 
 ## Király-parancsok (csak a frakció királyának)
 

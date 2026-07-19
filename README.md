@@ -60,6 +60,11 @@ jön a következő plugin-frissítéssel. (Ami itt nincs felsorolva, az a **jele
 **Szakmák / craft**
 - 🔜 **Craft-korlátok bővítése** — 5 új szakma-kapu (bányász, favágó, alkimista, enchanter, séf) → [Szakmák](08-szakmak.md)
 
+**Felület / kényelem**
+- 🔜 **AFK-rendszer** — `/afk`, AFK-zóna jutalom + anti-farm → [Parancsok](14-parancsok.md)
+- 🔜 **Dinamikus HUD + natív tablista** — harc-fókusz, forgó infósor, célpont-sor, relációs háború-színek → [Kezdés](01-kezdes.md)
+- 🔜 **Lebegő sebzés-számok** (alapból csak a saját sebzésed) → [Kezdés](01-kezdes.md)
+
 > A fenti listán túl a kézikönyv több apró pontosítást is tartalmaz. Kétség esetén: **ami a jelenleg
 > élő szerveren nem így működik, az 🔜 (hamarosan).**
 
