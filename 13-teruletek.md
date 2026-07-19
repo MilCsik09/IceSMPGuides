@@ -76,9 +76,9 @@ A **claim** a te személyes, védett földed — frakciótól függetlenül bár
 
 **Mennyibe kerül?**
 - Az ár **oszloponként** (1×1 blokk alapterület) számolódik: az első **768 oszlop ingyenes** (~3 chunknyi terület).
-- Utána minden további oszlop a **saját frakció-valutádba** kerül, **fix 0,5/oszlop** áron
-  (nem drágul oszloponként — csak a megvett oszlopok számával nő a végösszeg). Az ár **ELÉG**
-  (money sink) — az `/claim unclaim`-nél sem jár vissza!
+- Utána minden további oszlop a **saját frakció-valutádba** kerül (alapból 0,5/oszlop)
+  (alapból az első fizetős 100, utána mindegyik másfélszeres). Az ár **ELÉG** (money sink) —
+  az `/claim unclaim`-nél sem jár vissza!
 - Játékosonként alapból legfeljebb **8192 oszlopnyi** (~32 chunknyi) birtokod lehet.
 
 ### Mit véd a claim?
@@ -88,10 +88,7 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 - nem nyithatnak **konténert** (láda, hordó, kemence…);
 - nem üríthetnek vödröt, nem szedhetik le a kép-/festménykereteket;
 - a **robbanás sem bontja** a claimelt blokkokat, és a blokk-evő mobok (pl. enderman) sem
-  vihetnek el semmit;
-- a **tűz** nem gyullad meg, nem terjed és nem éget claimelt blokkot;
-- kívülről **folyadék** (víz/láva) nem folyhat be, és idegen **dugattyú** sem tolhat be /
-  húzhat ki blokkot (a claimen belüli saját gépek működnek).
+  vihetnek el semmit.
 
 > ⚔️ **Fontos:** a claim a **PvP-t NEM tiltja** — ez háborús szerver! A claim csak az
 > **építést és a lopást** védi, harcolni a birtokodon is lehet.
@@ -101,8 +98,6 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 - `/claim trust <név>` — a megbízott **teljes hozzáférést** kap **minden** claimedhez
   (építhet, nyithat ládát).
 - `/claim untrust <név>` — megbízás visszavonása.
-- **GUI-ból is megy:** `/menu` → Birtok → **„Megbízottak kezelése"** — felül a megbízottaid
-  (kattintás = visszavonás), alul a közeledben álló játékosok (kattintás = megbízás).
 
 ### Hasznos claim-parancsok
 
@@ -112,7 +107,7 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 | `/claim unclaim` | A claim felszabadítása, amiben állsz (az ár NEM jár vissza) |
 | `/claim info` | Kié ez a terület? (+ határ-kirajzolás) |
 | `/claim list` | Saját claimjeid listája |
-| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig — részecske-perem + **izzó fényfal** (zöld = sajátod, piros = másé), amit csak te látsz; komposzt = a gyorsfoglalás előnézete |
+| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig (zöld = sajátod, láng = másé, komposzt = a gyorsfoglalás előnézete) |
 | `/claim pos1` / `/claim pos2` | Blokk-pontos kijelölés két sarka (a blokk, amin állsz) |
 | `/claim area` | A két sarok közti pontos téglalap lefoglalása (az ár előre kiírva, egyben ég el) |
 | `/claim extend up\|down` | A claim magasítása / mélyítése +5 blokkonként, pénzért (a menüből is) |
