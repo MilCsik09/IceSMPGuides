@@ -41,4 +41,34 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 
 ---
 
+## 📜 Világ és történet (Lore)
+
+A szerver kanonikus háttértörténete — a Teremtéstől a Káoszkorig, a négy frakció eredete, a
+fővárosok, és a hozzájuk illő egyedi tárgyak katalógusa.
+
+- [**Az Élet Fája és a Káosz Kora**](lore/LORE.md) — a teljes világ-történet + frakció-lore
+
+## 💡 Fejlesztési ötletek (brainstorm)
+
+> **Figyelem:** ez **nem** játékos-tartalom, hanem a fejlesztés ötlettára — *nincs elköteleződés*,
+> nem minden valósul meg. Ideiglenesen került ide, betekintésre.
+
+- [**Ötlettár — index**](ideas/README.md) — 356 kidolgozott ötlet, 11 kategóriában
+
+| Kategória | Miről szól |
+|---|---|
+| [A) Polish](ideas/A-polish.md) | GUI/HUD/spell-QoL, kényelmi funkciók, effektek |
+| [B) Új mechanika](ideas/B-mechanika.md) | Progresszió, céhek, dungeonök, claim/territórium |
+| [C) Admin / infra](ideas/C-infra.md) | Balansz-adat, moderáció, üzemeltetés |
+| [D) Világ, hangulat](ideas/D-vilag.md) | Immerzió, fővárosi élet, közösségi események |
+| [E) Kaszt és spec](ideas/E-kaszt.md) | Kaszt-identitás, spec-szinergia, signature-pillanatok |
+| [F) Gazdaság](ideas/F-gazdasag.md) | Árfolyam, adó, szerződések, luxus-sinkek |
+| [G) PvP, háború](ideas/G-pvp.md) | Raid-variánsok, rivalizálás, taktikai réteg |
+| [H) PvE, végjáték](ideas/H-pve.md) | Esemény-típusok, boss-mélyítés, ko-op |
+| [I) Szakmák](ideas/I-szakmak.md) | Mestermű, érc-események, recept-láncok |
+| [J) Questek, story](ideas/J-quest.md) | Objektíva-típusok, döntés-flagek, NPC-emlékezet |
+| [K) Lore-integráció](ideas/K-lore.md) | A lore beépítése: itemek, Nether-zóna, Suttogók, feketepiac |
+
+---
+
 *Jó kalandozást! ❄️ Ha valamit nem értesz, kérdezz egy admintól vagy egy tapasztaltabb játékostól.*
