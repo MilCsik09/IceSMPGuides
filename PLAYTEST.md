@@ -278,6 +278,16 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 
 ### 4.8 Gazdaság ✅
 - [ ] `/bank deposit|withdraw|balance`, `/currency balance|pay|exchange|rates`, `/currency set` (admin).
+- [ ] **Adó: fejadó + hátralék (ÚJ):** üresre ürített számlával is jár a beszedésenkénti minimum
+      (`factions.tax.minimum-amount`, default 2) — 0 egyenlegnél a teljes összeg **hátralékként**
+      gyűlik (üzenet jelzi), plafonig (`max-arrears`, default 50); pénz érkezése után a következő
+      beszedés a hátralékot is levonja. Restart után a hátralék megmarad (treasury.yml: tax-arrears).
+      A Semlegesek továbbra is mentesek.
+- [ ] **Adócsalás (ÚJ):** ha a hátralék a plafonon ragad és a beszedés semmit sem tud levonni,
+      strike jár (`factions.tax.evasion-strikes`, default 3); a küszöbnél a Számvevők feljelentik
+      az adócsalót → **+1 bűn** (üzenettel, online beszedéskor) — a bűn-küszöb elérése a meglévő
+      száműzetést indítja (Kitaszítottak). A strike törlődik, amint a tartozás a plafon alá esik;
+      restart-álló (treasury.yml: tax-evasion-strikes). 0 = kikapcsolva.
 - [ ] **Dinamikus árfolyam:** több valuta a szerveren → kevesebbet ér (`/currency rates`).
 - [ ] **Valutaváltó GUI** (`/menu` → Bank & Pénz → Valutaváltó): forrás-választó fent, cél-választó
       lent (a forrással azonos valuta szürke, nem választható), középen élő árfolyam + 64-es előnézet;
@@ -470,6 +480,20 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
       telegrafált képesség; **50% HP alatt feldühödik**; legyőzve kassza+pont+buff.
       ⚠️ A SUMMON-special által idézett add-ok egy idő után **eltűnnek** (nem maradnak ott örökre).
 - [ ] **Invázió** (`/events invasion`): horda + megnevezett bajnok (telegrafált földcsapás); extra XP/lélekkő.
+- [ ] **Esemény-spawn szabályok (ÚJ):** világboss / invázió / Vad Hajsza **NEM spawnol** claimelt
+      frakció-territóriumba, játékos-claimbe, WG-régióba (városok), sem víz tetejére — állj be egy
+      városba és `/events worldboss|invasion|wild-hunt`: nem jelenik meg semmi (a következő
+      intervallumban máshol próbálkozik). Config: `world-events.spawn-rules` esemény×védelem
+      mátrix (world-boss/invasion/wild-hunt/treasure/meteor × territory/claim/region/water,
+      minden cella külön kapcsolható) + `world-events.avoid-territory` mester-kapcsoló; a
+      kulcsok élőben olvasódnak → `/icesmp reload` után restart nélkül él. ⚠️ A régi
+      `meteor.avoid-territory` kulcs megszűnt (a mátrix meteor-sora váltja).
+- [ ] **Esemény-mob keményítés (ÚJ):** a Pokoli Hadúr boss / Alvilági Roham piglinjei / Pokoli Behemót
+      az overworldben **NEM zombisodnak át** (várj mellettük ~15 mp-et); az invázió csontváz/zombi
+      mobjai és a boss SUMMON-addjai **nappal nem gyulladnak meg**. ⚠️ Zombisodás esetén korábban a
+      kill tévesen bűnnek számított (új entity, elveszett tracking) — ennek is tesztje ez.
+- [ ] ⚠️ **Folia — invázió-bajnok földcsapás régióhatáron:** a bajnok slamje másik régióban álló
+      játékost is hibamentesen sebez/lök (scheduler-hop, nincs IllegalStateException a konzolban).
 - [ ] **Hangulat-események** (`/events ambient`): broadcast + kozmetikai effekt; az északi fény rövid
       éjjellátást ad, az állat-vándorlás passzív csordát idéz a közeledbe (balanszot nem érint).
 - [ ] **Gyűjtögető buff** (`/events gathering`): broadcast a kezdetről; bányász-láznál érctöréskor
