@@ -9,10 +9,10 @@ modellt kötni.
 
 | CMD | Alapanyag | Item | Megjelenített név | Forrás |
 |-----|-----------|------|-------------------|--------|
-| 1001 | PAPER | Piros valuta | Piros Token | `data/CurrencyType.java:6` |
-| 1002 | PAPER | Kék valuta | Kék Token | `data/CurrencyType.java:7` |
-| 1003 | PAPER | Semleges valuta | Semleges Token | `data/CurrencyType.java:8` |
-| 1004 | PAPER | Sötét valuta | Sötét Token | `data/CurrencyType.java:9` |
+| 1001 | PAPER | Piros valuta | Parázsló Parals | `data/CurrencyType.java:6` |
+| 1002 | PAPER | Kék valuta | Hópihér-veret | `data/CurrencyType.java:7` |
+| 1003 | PAPER | Semleges valuta | Creutzér | `data/CurrencyType.java:8` |
+| 1004 | PAPER | Sötét valuta | Csontveret | `data/CurrencyType.java:9` |
 | 4101 | GOLDEN_AXE | Mételytépő relikvia | Mételytépő | `managers/RelicManager.java` |
 | 4201 | ELYTRA | Szárny-relikvia (Piros) | Főnix-szárny | `managers/RelicManager.java:102` |
 | 4202 | ELYTRA | Szárny-relikvia (Kék) | Zúzmara-szárny | `managers/RelicManager.java:110` |
@@ -48,7 +48,7 @@ modellt kötni.
 | 6202 | TRIPWIRE_HOOK | Kincses Kulcs (crate) | Kincses Kulcs | `config/crates.yml` |
 
 Összesen **33 hozzárendelés, mind egyedi** (a Mételytépő korábban az 1001-en
-osztozott a Piros Tokennel; 4101-re számoztuk át, ami a relics.yml-ben dokumentált érték).
+osztozott a Parázsló Paralsnel; 4101-re számoztuk át, ami a relics.yml-ben dokumentált érték).
 
 ## Tartományok
 

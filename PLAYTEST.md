@@ -128,7 +128,7 @@ mob-scaling:
 
 A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami tesztelhető:
 
-- **Frakciók** (4): Piros/Kék/Semleges/Sötét, passzív bónuszokkal és valutával.
+- **Frakciók** (4): Láng/Fagy/Menedék/Kitaszított (red/blue/neutral/dark), passzív bónuszokkal és valutával.
 - **Kasztok** (13) + **specializációk** (31), egy kaszt/játékos (végleges, admin-reset van), 50-es max szint.
 - **Képességek** (390+): Lélekkapocs-tárgy, **hibrid költségrendszer** (Erő-csík + HP/XP/éhség),
   cooldown, kombók, spell-mesterség.
@@ -179,6 +179,10 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 ## 4. Tesztelési checklista rendszerenként
 
 ### 4.1 Frakciók és passzívok ✅
+
+- [ ] **K1 kánon-nevek:** a HUD/tab a rövid frakciónevet mutatja (Láng/Fagy/Menedék/Kitaszított),
+      a /menu és a Profil a hosszút (pl. Láng (Perinfernicitas)); a valuta-itemek neve Parázsló
+      Parals / Hópihér-veret / Creutzér / Csontveret; a `/faction join piros` (legacy név) is működik.
 - [ ] `/faction join <red|blue|neutral|dark>` és `/faction leave` működik; a Sötétbe csak bűnös léphet.
 - [ ] **Piros:** állj tűzbe / lávába / magma-blokkra → **nincs sebzés**.
 - [ ] **Kék:** powder snow-ban / fagyos bistromban → **nincs fagy-sebzés**; merülj víz alá hosszan →
@@ -215,7 +219,7 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
 
 ### 4.4 Specializációk ✅
 - [ ] 25. szinten `/spec choose <id>` (vagy a Specializáció menü) elérhető; a menü mutatja a feltételt.
-- [ ] **Nekromanta** csak Sötét frakcióval + bűnösként + a Sötét Beavatás után választható.
+- [ ] **Nekromanta** csak Kitaszítottként (Sötét frakció) + bűnösként + a Sötét Beavatás után választható.
 - [ ] A spec feloldja a 25–45. szintű spelleket; a szerep illik (tank/heal/dps/caster/ranged).
 - [ ] `/spec respec` visszavált valutáért; a spec-kötött talentpontok visszatérülnek.
 - [ ] Hibrid kasztok: pl. Holy paplovag gyógyít, Retribution sebez (eltérő spell-pool).
