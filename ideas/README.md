@@ -1,10 +1,12 @@
 # Ötlettár (IDEAS) — index
 
 Fejlesztési ötletek gyűjtője — **nincs elköteleződés**, ez a brainstorm-réteg. Ami innen
-zöld utat kap, az a fejlesztői ROADMAP-be kerül tervezett tételként; a technikai adósság
-külön dokumentumban él. *(Ezek a fejlesztői dokumentumok a fő repóban vannak, nem itt.)*
+zöld utat kap, az a [ROADMAP.md](../ROADMAP.md)-be kerül tervezett tételként; a technikai
+adósság külön él a [REFACTOR_CANDIDATES.md](REFACTOR_CANDIDATES.md)-ben.
 
-A tár **356 kidolgozott ötletet** tartalmaz 11 kategória-fájlban (ebben a mappában).
+A tár **356 kidolgozott ötletet** tartalmaz 12 kategória-fájlban (`docs/ideas/`); ebből **14
+erősen lore-illeszkedő tétel** a kódex ([LORE.md](LORE.md)) alapján az **L-válogatásba** került
+át (a forrás-fájlban mutató maradt a helyükön).
 Minden tétel azonos sablonnal készült: **Mi ez / Hogyan működne / Miért jó /
 Építőkövek / Buktatók** — konkrét parancsokkal, config-kulcsokkal, a meglévő
 managerekre/mintákra hivatkozva, Folia-megjegyzésekkel ahol kell.
@@ -18,17 +20,18 @@ Jelölés minden tételnél: **Munka** (🟢 kicsi / 🟡 közepes / 🔴 nagy) 
 
 | Kategória | Fájl | Tételek | Miről szól |
 |---|---|---|---|
-| **A) Polish / meglévő átdolgozás** | [ideas/A-polish.md](A-polish.md) | A1–A72 | GUI/HUD/spell-QoL, kényelmi funkciók, hozzáférhetőség. **A1–A16 + A43–A62 + A69–A72 ✅ implementálva** (teszt: PLAYTEST.md); A17 = HP-rendszer átdolgozás (tulaj kérése, külön kör) |
-| **B) Új mechanika** | [ideas/B-mechanika.md](B-mechanika.md) | B1–B62 | Progresszió-rendszerek, item-mechanikák, céhek, dungeonök, claim/territórium-mélyítés, kockázat/jutalom |
-| **C) Admin / infra** | [ideas/C-infra.md](C-infra.md) | C1–C29 | Balansz-adat, moderáció, teljesítmény-riportok, üzemeltetés, fejlesztői eszközök |
-| **D) Világ, hangulat, közösség** | [ideas/D-vilag.md](D-vilag.md) | D1–D26 | Immerzió, fővárosi élet, közösségi események, világ-narratíva, játékos-nyomhagyás |
-| **E) Kaszt és specializáció** | [ideas/E-kaszt.md](E-kaszt.md) | E1–E32 | Mind a 13 kaszt ≥2 saját ötlettel: erőforrás-identitás, spec-szinergia, signature-pillanatok |
-| **F) Gazdaság és kereskedelem** | [ideas/F-gazdasag.md](F-gazdasag.md) | F1–F26 | Árfolyam-mélyítés, adó/vám, szerződések, biztosítás, luxus-sinkek — mind a „nincs addolt pénz" elvre igazítva |
-| **G) PvP, frakció-háború** | [ideas/G-pvp.md](G-pvp.md) | G1–G25 | Raid-variánsok, skirmish, rivalizálás, morál/felzárkóztatás, taktikai réteg — a bűn-rendszer viszonyával |
-| **H) PvE, világesemények, végjáték** | [ideas/H-pve.md](H-pve.md) | H1–H25 | Új esemény-típusok, boss-mélyítés, mob-öko, ko-op tartalom, végjáték-hurok |
-| **I) Szakmák, gyűjtögetés, készítés** | [ideas/I-szakmak.md](I-szakmak.md) | I1–I25 | Mestermű, érc-ér események, műhelyek, recept-láncok, szakma-presztízs |
-| **J) Questek, story, progresszió** | [ideas/J-quest.md](J-quest.md) | J1–J24 | Új objektíva-típusok, story-eszközök (döntés-flagek, fejezetek), NPC-emlékezet, quest-admin |
-| **K) Lore-integráció / világ-tartalom** | [ideas/K-lore.md](K-lore.md) | K1–K10 | A [LORE.md](../lore/LORE.md) beépítése: frakció/valuta-reskin, lore-hű unique-itemek a kész motorra, Nether-portál zóna, Emlékszilánkok, Suttogók-szekta, Caldestera feketepiac |
+| **A) Polish / meglévő átdolgozás** | [ideas/A-polish.md](ideas/A-polish.md) | A1–A72 | GUI/HUD/spell-QoL, kényelmi funkciók, hozzáférhetőség. **A1–A16 + A43–A62 + A69–A72 ✅ implementálva** (teszt: PLAYTEST.md); A17 = HP-rendszer átdolgozás (tulaj kérése, külön kör) |
+| **B) Új mechanika** | [ideas/B-mechanika.md](ideas/B-mechanika.md) | B1–B62 | Progresszió-rendszerek, item-mechanikák, céhek, dungeonök, claim/territórium-mélyítés, kockázat/jutalom |
+| **C) Admin / infra** | [ideas/C-infra.md](ideas/C-infra.md) | C1–C29 | Balansz-adat, moderáció, teljesítmény-riportok, üzemeltetés, fejlesztői eszközök |
+| **D) Világ, hangulat, közösség** | [ideas/D-vilag.md](ideas/D-vilag.md) | D1–D26 | Immerzió, fővárosi élet, közösségi események, világ-narratíva, játékos-nyomhagyás |
+| **E) Kaszt és specializáció** | [ideas/E-kaszt.md](ideas/E-kaszt.md) | E1–E32 | Mind a 13 kaszt ≥2 saját ötlettel: erőforrás-identitás, spec-szinergia, signature-pillanatok |
+| **F) Gazdaság és kereskedelem** | [ideas/F-gazdasag.md](ideas/F-gazdasag.md) | F1–F26 | Árfolyam-mélyítés, adó/vám, szerződések, biztosítás, luxus-sinkek — mind a „nincs addolt pénz" elvre igazítva |
+| **G) PvP, frakció-háború** | [ideas/G-pvp.md](ideas/G-pvp.md) | G1–G25 | Raid-variánsok, skirmish, rivalizálás, morál/felzárkóztatás, taktikai réteg — a bűn-rendszer viszonyával |
+| **H) PvE, világesemények, végjáték** | [ideas/H-pve.md](ideas/H-pve.md) | H1–H25 | Új esemény-típusok, boss-mélyítés, mob-öko, ko-op tartalom, végjáték-hurok |
+| **I) Szakmák, gyűjtögetés, készítés** | [ideas/I-szakmak.md](ideas/I-szakmak.md) | I1–I25 | Mestermű, érc-ér események, műhelyek, recept-láncok, szakma-presztízs |
+| **J) Questek, story, progresszió** | [ideas/J-quest.md](ideas/J-quest.md) | J1–J24 | Új objektíva-típusok, story-eszközök (döntés-flagek, fejezetek), NPC-emlékezet, quest-admin |
+| **K) Lore-integráció / világ-tartalom** | [ideas/K-lore.md](ideas/K-lore.md) | K1–K10 | A [LORE.md](LORE.md) beépítése: frakció/valuta-reskin, lore-hű unique-itemek a kész motorra, Nether-portál zóna, Emlékszilánkok, Suttogók-szekta, Caldestera feketepiac |
+| **L) Lore-kiemelt válogatás** | [ideas/L-lore-kiemelt.md](ideas/L-lore-kiemelt.md) | 14 tétel (B/D/H/J-ből) | A kódexhez legerősebben illeszkedő ötletek tier-bontásban (S: H2, B42, B3, B15, D18 • A: B33, J9, D17, D19, D9, D15, B26, B35, B54), lore-horgonnyal |
 
 ---
 
