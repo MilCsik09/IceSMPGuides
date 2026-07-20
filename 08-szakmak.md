@@ -111,17 +111,14 @@ feltétel). Néhány mestermű (alapból **15. szinttől**):
 Néhány **erős vanilla tárgy** is szakmához kötött — ez teszi értékessé a szakmákat és a köztük
 lévő cserekereskedelmet. Ha nincs meg a szint, a craft eredménye nem jön létre, és üzenetet kapsz:
 
-| Tárgy | Kell hozzá | Állapot |
-|---|---|---|
-| Netherite felszerelés | **Páncélkovács 25** | ✅ él |
-| Netherite-rúd (finomítás) | **Bányász 20** | 🔜 hamarosan |
-| Számszeríj, pajzs | **Favágó 8** | 🔜 hamarosan |
-| Főzőállvány | **Alkimista 5** | 🔜 hamarosan |
-| Bűvölő-asztal | **Enchanter 5** | 🔜 hamarosan |
-| Torta, sütőtökös pite, nyúlpörkölt | **Séf 6** | 🔜 hamarosan |
-
-> 🔜 Jelenleg **csak a netherite-kapu (Páncélkovács 25) él**; a többi 5 kapu a következő
-> frissítéssel lép életbe.
+| Tárgy | Kell hozzá |
+|---|---|
+| Netherite felszerelés | **Páncélkovács 25** |
+| Netherite-rúd (finomítás) | **Bányász 20** |
+| Számszeríj, pajzs | **Favágó 8** |
+| Főzőállvány | **Alkimista 5** |
+| Bűvölő-asztal | **Enchanter 5** |
+| Torta, sütőtökös pite, nyúlpörkölt | **Séf 6** |
 
 A korai alapok (íj, kőszerszám, sült húsok, fapáncél) bárkinek szabadok — a kapuk a csúcs-
 kimenetet és a szakma-„állomásokat" védik.
@@ -147,6 +144,13 @@ Az affixek attribútumok: **Szívósság** (+élet), **Vértezet**, **Keménysé
 (páncélon), illetve **Élesség** (+sebzés) és **Gyorsaság** (fegyveren/szerszámon). A tárgy neve
 elé a raritás kerül a hozzá illő jelzővel (pl. `[Legendás] Isteni Penge` vagy `[Ócska] Rozsdás Vért`),
 a bónuszok a leírásban látszanak (negatív affix pirossal).
+
+> ☠ **Átkozott tárgyak:** a boss-zsákmány ritkán az **Első Csend érintését** hordozza
+> (sötétvörös lore-sor). Az átkozott darab **erőt ad** (darabonként +10% sebzés, legfeljebb
+> +40%), de **felvéve nem ereszt** — a páncél nem vehető le szabadon! Felvételkor a játék
+> kétszer is megkérdez (első kattintás figyelmeztet, a gyors második erősít meg). Az átkot
+> csak az **Átok-törés oltára** oldja (síró obszidián mag, obszidián talapzat; áldozat:
+> ametiszt + ghast-könny) — a tárgy megmarad, csak az átok (és a bónusz) tűnik el.
 
 **Balansz — a forrás dönti el, MELY raritások eshetnek:**
 - 🧑‍🏭 **Szakma-craft:** nincs Ócska, kiegyensúlyozott (Közönséges→Legendás), **megtervezett névvel**.
