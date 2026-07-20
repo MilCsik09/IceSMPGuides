@@ -1,6 +1,6 @@
 # C) Admin / infra ötletek
 
-[← Ötlettár-index](README.md)
+[← Ötlettár-index](../IDEAS.md)
 
 Jelölés: **Munka** (🟢 kicsi / 🟡 közepes / 🔴 nagy) • **Érték** (⭐–⭐⭐⭐) • `[TOP]` = ajánlott következő kör.
 
