@@ -23,8 +23,7 @@ jelenti, hogy **elhagyható**.
 | `/hud <szekció>` | — | HUD-oldalsáv szekciók ki-be kapcsolása (frakcio/kaszt/eroforras/esemeny/valuta/csapat/mind) |
 | `/sit` | — | Leülés, ahol állsz (újra `/sit` vagy sneak = felállás); lépcsőre/fél-lapra üres kézzel jobb-katt is leültet |
 | `/sit fekves` | — | Fekvő póz (LibsDisguises szükséges hozzá); újra kiadva vagy mozgásra felállsz |
-| 🔜 `/afk` | — | **(hamarosan)** Kézi AFK-jelölés be/ki — lásd lentebb az **AFK-rendszer** szakaszt |
-| `/crate buy <id> [db]` / `/crate info [id]` | `ladak`, `crates` | Láda-kulcs vásárlása frakció-valutáért / jutalom-esélyek megtekintése (kulccsal a ládára jobb-katt = nyitás). 🔜 *Hamarosan:* a nyereményt egy pörgő **3D-ikon** tárja fel a láda fölött |
+| `/crate buy <id> [db]` / `/crate info [id]` | `ladak`, `crates` | Láda-kulcs vásárlása frakció-valutáért / jutalom-esélyek megtekintése (kulccsal a ládára jobb-katt = nyitás; a nyereményt egy 3D-ikon tárja fel a láda fölött) |
 | `/report <név> <ok>` | `bejelent` | Játékos bejelentése a moderátoroknak (percenként egyszer) |
 | `/daily` | `napi` | A napi küldetés és haladásod |
 | `/pet item\|summon\|dismiss\|name` | `tars`, `companion` | Társ: befogó eszköz, idézés, név, szint (Vadmester / Nekromanta) |
@@ -61,7 +60,14 @@ jelenti, hogy **elhagyható**.
 | `/quest list` / `/quest accept <id>` / `/quest info` | `quests`, `kuldetes` | Küldetések |
 | `/quest log` | `gui`, `naplo` | **Küldetésnapló GUI** — Aktív / Felvehető / Teljesített fülek, lapozható |
 | `/souls` / `/souls champion` | `soul`, `lelek` | Lélekszilánk (csak Nekromanta) |
+| `/soulforge` / `/soulforge fejleszt <ág>` | `lelekkovacs` | **Lélek-kovács** (csak Nekromanta): minion-fejlesztési ágak szilánkért |
 | `/bounty` | `fejvadasz`, `korozes` | Körözési lista: ki körözött és mennyit ér a feje |
+| `/ceh` / `/ceh alapit\|meghiv\|elfogad\|elhagy\|kirug\|befizet` | `guild`, `gild` | **Céh**: frakción belüli kisközösség (közös XP, céh-szint) |
+| `/bestiarium` | `bestiary`, `lajstrom` | **Bestiárium GUI**: elejtett fajok, receptek, territóriumok, bossok — mérföldkő-jutalmakkal |
+| `/szakmacel` | `weeklygoal` | A szakmád heti közös célja: állás + a saját hozzájárulásod |
+| `/parbaj kihiv <név>` / `/parbaj elfogad\|elutasit` | `duel` | **Becsület-párbaj**: bűnösként elégtétel — győzelemért −1 bűnpont |
+| `/kem <célfrakció>` | `spy` | **Kém-álca**: rövid álruha felderítéshez (egy ütés lebuktat) |
+| `/market ereklye` | | A piac **ereklye-börze** szűrője (szilánkok, unique anyagok) |
 | `/spell` / `/spell upgrade <id>` | `mastery`, `mesterseg` | Spell-mesterség: valutáért rövidebb cooldown ÉS erősebb hatás (sebzés, gyógyítás, effekt-időtartam) |
 | `/spellbook` | `varazskonyv`, `konyv`, `sb` | **Varázskönyv**: spellek böngészése (leírás, költség, sebzés, CD) és kiválasztása kattintással. *Sunyíts + jobb katt a Lélekkapcson* is megnyitja. |
 | `/events status` | `event`, `esemeny` | „Mi történik most?" — minden aktív világesemény + szezon-állás egyben |
@@ -76,18 +82,6 @@ jelenti, hogy **elhagyható**.
 | `/claim extend up\|down` | | Claim magasítása / mélyítése (+5 blokk, pénzért) |
 | `/claim trust\|untrust <név>` | | Megbízott hozzáadása / elvétele (teljes hozzáférés a claimjeidhez) |
 
-### 🔜 AFK-rendszer *(hamarosan, még nem él)*
-
-Natív AFK-kezelés (nem kell hozzá plugin):
-
-- **Automatikus AFK:** ha **~3 percig** nem mozogsz/nézel körbe/írsz/interaktálsz, a rendszer
-  AFK-nak jelöl (bárhol a szerveren). **`/afk`** paranccsal kézzel is be/ki kapcsolhatod.
-- **Anti-farm:** amíg AFK vagy, **nem termelsz kaszt-XP-t, szakma-XP-t és lélekkő-dropot** — így
-  az „ott hagyom a karakterem ölni" trükk nem működik.
-- **AFK-zóna jutalom:** kijelölt **pihenő-zónákban** állva (akár mozogva a zónán belül) időnként
-  (alapból ~10 percenként) apró **valuta-jutalom** jár — ez egy **szándékosan kicsi** gazdasági
-  „csap", nem grind-forrás. Egy **bossbar** mutatja a következő jutalomig hátralévő időt.
-
 ## Király-parancsok (csak a frakció királyának)
 
 | Parancs | Mit csinál |
@@ -95,6 +89,7 @@ Natív AFK-kezelés (nem kell hozzá plugin):
 | `/faction treasury withdraw <összeg>` | Kivétel a frakciókasszából |
 | `/faction king tax <százalék>` | Frakció adókulcs beállítása |
 | `/faction raid <célfrakció> [terület]` | Háború (raid) hirdetése — alapból a védő fővárosáért |
+| `/faction caravan send <összeg>` | **Játékos-karaván**: rakomány indítása a kasszából — sikeres kíséretnél +25% érkezik vissza |
 
 A raidhez **mindenki** (nem csak a király) így kapcsolódik:
 
@@ -147,7 +142,12 @@ A raidhez **mindenki** (nem csak a király) így kapcsolódik:
 | `/events challenge` | Kollektív szerver-kihívás indítása |
 | `/events escort` | Karaván-kíséret (konvoj) indítása |
 | `/events meteor` | Meteor-becsapódás kiváltása |
+| `/events stranger` | A Rejtélyes Idegen megidézése |
+| `/events corruption` | Rontás-góc azonnali nyitása a közeledben |
+| `/events archeology` | Régészeti lelőhely azonnali felbukkanása |
 | `/events intro [játékos]` | Bemutató újrajátszása |
+| `/iceitem <unique\|recept\|relikvia\|tervrajz\|erszeny> <id> [db] [játékos]` | Bármely plugin-item admin-adása |
+| `/icesmp config menu` | Kattintható élő-config szerkesztő (kategóriákra bontva) |
 | `/claim admin unclaim` | Idegen claim törlése admin-jogon |
 | `/parkour setstart\|setfinish\|remove <id>` | Parkour-pálya beállítása |
 | `/npcbind <npc> quest\|shop\|bank\|exchange\|clear` (`npckotes`) | NPC explicit kötése küldetéshez/bolthoz/bankárhoz/valutaváltóhoz (a bank/exchange a meglévő bank menüt nyitja) |
