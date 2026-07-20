@@ -34,9 +34,9 @@ hogy könnyű észrevenni):
   **szignatúra-aurával** (a boss közelében a túlélők témába illő debuffot kapnak). Pl.
   A Gyűrűk Őre, Lávakohó Behemót, Fagyott Trón Királya, Csontkirály, Mélységi Rém…
 - A boss **~8 másodpercenként telegrafált különleges képességet** süt el (becsapódás / mérgező
-  zóna / add-idézés) — a veszélyzónát **részecske-gyűrű** (🔜 hamarosan egy **növekvő, piros izzó
-  padló-lap** is, a lap a becsapódásig tölti ki a zónát) rajzolja ki, külön **hangjelzés**
-  (Warden-morajlás, idézésnél Evoker-kántálás) kíséri: lépj el a jelzett helyről!
+  zóna / add-idézés) — a veszélyzónát **részecske-gyűrű** ÉS egy **növekvő, piros izzó padló-lap**
+  rajzolja ki (a lap a becsapódásig tölti ki a zónát), külön **hangjelzés**
+  (Warden-morajlás, idézésnél Evoker-kántálás) kíséri: amíg a lap nő, van időd ellépni a jelzett helyről!
 - **50% HP alatt feldühödik** (2. fázis): erősebb, gyorsabb csapások.
 - Aki **leüti**, annak a **frakciója kasszát + liga-pontot** kap; a **legyőző játékos** egy
   időleges **harci buffot** (Erő + Védelem) kap.
@@ -115,7 +115,7 @@ kibányászol, a tiéd. A meteor **sosem csapódik claimelt területre vagy frak
 ## Hangulat-események ✦
 
 Időnként apró, **légköri események** teszik élőbbé a világot (nem befolyásolják a balanszot):
-**északi fény** (rövid éjjellátás + csillámló égbolt; 🔜 hamarosan magasan lebegő, sodródó fény-fátyol is), **hulló csillag** (üzenet a becsapódás
+**északi fény** (rövid éjjellátás + magasan lebegő, sodródó fény-fátyol az égen), **hulló csillag** (üzenet a becsapódás
 irányával), **köd**, **bolyongó szellemek**, **szentjánosbogarak**, valamint **állat-vándorlás**
 (egy passzív állatcsorda vándorol a közeledbe — élelemforrás).
 
@@ -132,6 +132,21 @@ A frakciók **pontot gyűjtenek** a **raid-** és **világboss-győzelmekből**.
   **tárgy-jutalmat** (alapból gyémánt + aranyalma) kapnak, egy ünneplő **tűzijátékkal**;
 
 majd a pontok lenullázódnak — kezdődik az új szezon. Az aktuális állást a `/events season` mutatja.
+
+### Végítélet-hét — a szezon zárása 📖
+
+A szezon **utolsó hetében** a Korszakok Könyvének lapja fordulni kezd, és a világ napról napra
+vadabb lesz:
+
+- **sűrűbb vérhold, gyakoribb világboss és invázió** — az esélyek naponta nőnek;
+- az inváziós hordák **erősebbek** (napi mob-szint bónusz);
+- **minden liga-pont többet ér** — a szorzó naponta nő, az utolsó napon **dupla pont** jár;
+- az **utolsó napon** megjelenik a **Szezonboss** (alapból *A Lapforduló Őre*) a semleges
+  főváros **falai előtt** — emelt élettel, és a legyőzése **egyedi zsákmányt** (ritka anyagok,
+  emlékszilánk) + **extra liga-pontot** ad a leütő frakciójának.
+
+A napváltásokat és a boss érkezését a krónikás-hangú kihirdetések jelzik — az utolsó napokban
+érdemes együtt mozogni a frakcióddal: itt dőlhet el a bajnoki cím.
 
 ## Bemutató (intro)
 
