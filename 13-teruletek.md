@@ -49,6 +49,13 @@ legveszélyesebb zónája. Itt minden másképp működik:
 játékosok **saját birtokot (`/claim`) is foglalhatnak** — így a claim rendszer és a
 territórium rendszer együtt működik.
 
+### ⛩ Az egyetlen kapu — nether-portál szabály
+
+Ezen a világon **új nether-portált nem lehet gyújtani** — sehol. A világ **egyetlen élő
+kapuja a Kárhozat Kapuja**: aki a Netherbe akar jutni, annak a **senkiföldjén át** vezet
+az útja, ahol a PvP legális és az ölés nem bűn. A kapu használata tehát mindig kockázat —
+pontosan úgy, ahogy a régiek mesélik.
+
 ## Mi tiltható zónánként?
 
 Az adminok **zónatípusonként külön-külön** állíthatják, mi szabad az adott zónában
@@ -134,7 +141,7 @@ A birtokodon (a claim dobozán belül) **idegenek**:
 | `/claim unclaim` | A claim felszabadítása, amiben állsz (az ár NEM jár vissza) |
 | `/claim info` | Kié ez a terület? (+ határ-kirajzolás) |
 | `/claim list` | Saját claimjeid listája |
-| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig részecske-peremmel (zöld = sajátod, láng = másé, komposzt = a gyorsfoglalás előnézete). 🔜 *Hamarosan:* izzó, csak neked látszó **fényfal** is (saját = zöld, idegen = piros). |
+| `/claim show` | A környező claimek PEREMÉNEK kirajzolása pár másodpercig (zöld = sajátod, láng = másé, komposzt = a gyorsfoglalás előnézete) |
 | `/claim pos1` / `/claim pos2` | Blokk-pontos kijelölés két sarka (a blokk, amin állsz) |
 | `/claim wand` | **Birtokmérő pálca** — sarok-kijelölés kattintással, SNEAK+jobb = foglalás |
 | `/claim area` | A két sarok közti pontos téglalap lefoglalása (az ár előre kiírva, egyben ég el) |
