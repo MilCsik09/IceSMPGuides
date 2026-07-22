@@ -16,13 +16,9 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 > 🖱️ **Tipp:** írd be a **`/menu`** parancsot, és egy kattintós főmenü nyílik meg, ahonnan
 > minden rendszer egy gombnyomásra elérhető — nem kell parancsokat gépelned!
 
-> **Jelölések:** ✅ = kész és kipróbálható • 🚧 = részben kész • ⏳ = még nincs kész •
-> 🔜 = **új, még NEM él** (a következő plugin-frissítéssel jön).
+> **Jelölések:** ✅ = kész és kipróbálható • 🚧 = részben kész • ⏳ = még nincs kész.
 > A számok (szintek, %-ok, idők) a szerver beállításától függhetnek — itt az alapértékek vannak.
 
-> 🧪 **Tesztelőknek:** ez a kézikönyv már a **készülő frissítést** is leírja, hogy előre lásd, mi
-> jön. A **🔜 jelölésű** részek a szerveren **MÉG NEM aktívak** — minden más a **jelenlegi
-> működés**. A készülő újdonságok összefoglalója: [🔜 Mi új a következő frissítésben](#-mi-új-a-következő-frissítésben-még-nem-él).
 
 ---
 
@@ -46,28 +42,6 @@ külön oldala van, hogy könnyen megtaláld, amit keresel.
 16. [Kazamaták](16-kazamatak.md) — kulcs-kapus dungeonök, futam-passz, heti pecsét
 
 ---
-
-## 🔜 Mi új a következő frissítésben (még nem él)
-
-Ezek **dokumentálva vannak**, de a szerveren **MÉG NEM aktívak** — a tesztelők előre láthatják, mi
-jön a következő plugin-frissítéssel. (Ami itt nincs felsorolva, az a **jelenlegi működés**.)
-
-**Látvány / effektek**
-- 🔜 **Spell-VFX** — formázott spell-effektek (sugár/gyűrű/hélix/kúp) + spec-témájú színek → [Képességek](05-kepessegek.md)
-- 🔜 **Claim-fényfal** a `/claim show`-nál (izzó, per-nézős határfal) → [Területek](13-teruletek.md)
-- 🔜 **3D crate-feltárás** a láda fölött (pörgő nyeremény-ikon) → [Parancsok](14-parancsok.md)
-- 🔜 **Aurora fény-fátyol** + **boss-AoE padló-telegraph** → [Világesemények](10-vilagesemenyek.md)
-
-**Szakmák / craft**
-- 🔜 **Craft-korlátok bővítése** — 5 új szakma-kapu (bányász, favágó, alkimista, enchanter, séf) → [Szakmák](08-szakmak.md)
-
-**Felület / kényelem**
-- 🔜 **AFK-rendszer** — `/afk`, AFK-zóna jutalom + anti-farm → [Parancsok](14-parancsok.md)
-- 🔜 **Dinamikus HUD + natív tablista** — harc-fókusz, forgó infósor, célpont-sor, relációs háború-színek → [Kezdés](01-kezdes.md)
-- 🔜 **Lebegő sebzés-számok** (alapból csak a saját sebzésed) → [Kezdés](01-kezdes.md)
-
-> A fenti listán túl a kézikönyv több apró pontosítást is tartalmaz. Kétség esetén: **ami a jelenleg
-> élő szerveren nem így működik, az 🔜 (hamarosan).**
 
 ## 📜 Világ és történet (Lore)
 

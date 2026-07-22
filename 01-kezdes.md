@@ -52,10 +52,9 @@ Első belépéskor egy rövid **bemutató cím-szekvencia** is lejátszódik —
 
 > A teljes parancslista: [Parancsok](14-parancsok.md).
 
-## 🔜 Képernyő-újdonságok *(hamarosan, még nem él)*
+## 🖥️ Képernyő: HUD, tablista, sebzés-számok
 
-A következő frissítéssel a szerver **saját, natív** felületet kap (nem kell hozzá külső plugin) —
-ezek **még nem élnek**, de jó előre tudni róluk:
+A szerver **saját, natív** felületet ad (nem kell hozzá külső mod vagy resource-trükk):
 
 - **Dinamikus HUD (oldalsáv):** harc közben a HUD **a harchoz fontos sorokra** vált (erőforrás,
   csapat), és egy **forgó infósor** váltogatja a kevésbé sürgős adatokat — így a korlátozott hely
