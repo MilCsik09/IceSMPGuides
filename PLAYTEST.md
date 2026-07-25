@@ -860,6 +860,11 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
       után a megfelelő rövid buff (pl. Sör→Regeneráció+Felszívódás, Pálinka→Tűzállóság+Erő,
       Pogácsa→táplálék+Sietség, Fogás→Vízlégzés). **ITEM_MODEL**: pack nélkül alap-item
       textúrát mutat, a `icesmp:<id>` modellt a külső pack adja. A buff-idők a receptből (config).
+- [ ] **Kupa-hurok (USE_REMAINDER, ÚJ):** craftolj **Üres Kupát** (Szakács 5, `GLASS:2` → 4 db),
+      abból bármelyik kocsma-italt (mind a 12 kér 1 kupát) → **megivás után az Üres Kupa a
+      kezedben marad** (nem sima üvegpalack, hanem a bélyegzett kupa!), és azonnal újra
+      felhasználható italhoz. Ellenőrizd, hogy tele hotbarnál sem vész el (a vanília a földre
+      dobja), és hogy a kupa a recept-könyvben hozzávalóként elfogy.
 - [ ] **P7 USE_COOLDOWN — katalizátor cooldown-bleed javítás (ÚJ):** tarts a hotbarban egy
       pálca-katalizátort ÉS a vele AZONOS Materialú vanília itemet (pl. Homály-szilánk=FLINT →
       sima kovakő; Sárkánykirály Kürtje=GOAT_HORN → sima kürt). Castolás után CSAK a katalizátor
@@ -949,7 +954,24 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
           ranglista-pontot, bestiárium-bejegyzést vagy közösségi cél-számlálót** (ez utóbbi négy
           korábban pumpálható volt).
         Mind a négy szűrő kikapcsolható: `/icesmp config menu` → „Kill-jutalom szűrők".
-  - [ ] **Célpont-sor:** harc-fókuszban az oldalsáv tetején „🎯 <célpont>" (játékosnál élet-sávval),
+  - [ ] **A korona átka (ÚJ, `factions.kings.crown-curse`):** ültess trónra egy királyt, majd
+      állítsd `hours-per-level: 0`-ra… nem lehet (min. 1) — teszthez vedd `hours-per-level: 1`-re
+      és `/icesmp reload`. Egy óra trónon = 1 szint. Ellenőrizd:
+      - a szint-lépés EGYSZER szól („A korona hidegebb lett", szint/max),
+      - minden szinten lich-türkiz derengés a korona (fej) körül,
+      - `whisper-percent` szerint a Királynő suttog: **szintenként SAJÁT 8-soros készlet**
+        (össz. 40 sor), és a szintek fokozatosan tárnak fel többet a történetből —
+        1: puszta nyugtalanság → 2: a Káoszkor és a 698-as év → 3: az Elveszett Uralkodók
+        NEVEI (Zhoris, Miinus, Benedictus, Lineata) → 4: Eleftheria mibenléte (a Fa negyedik
+        gyermeke, az első suttogás, a Könny) → 5: nyílt ítélet (a lajstrom, a harmadik mondat).
+        Ellenőrizd, hogy magasabb szinten NEM jönnek vissza az alacsonyabb szint sorai,
+      - `stakes-from-level` (alap 3) ALATT semmi tét — csak hangulat,
+      - fölötte: HUNGER (leáll a természetes regeneráció) + a közeli CÉLTALAN élőhalottak a
+        királyt kezdik célozni (aktív célpontot NEM vesz el tőlük),
+      - trónfosztás/újraválasztás után az átok **nullázódik** (nincs külön állapota: a
+        trónon töltött időből számol),
+      - a nem-király játékosokra semmi nem hat, és `enabled: false` mindent kikapcsol.
+- [ ] **Célpont-sor:** harc-fókuszban az oldalsáv tetején „🎯 <célpont>" (játékosnál élet-sávval),
         az utolsó találat után ~10 mp-cel eltűnik.
   - [ ] **Crate-rulett:** kulcs-nyitáskor pörgő GUI (~3,5 mp, lassul), a végén a tényleges
         nyeremény áll meg; a GUI IDŐ ELŐTTI bezárása esetén is jár a nyeremény; kapcsoló:
@@ -1088,6 +1110,18 @@ A teljes leírás a [PLAYER_GUIDE.md](PLAYER_GUIDE.md)-ban; röviden, ami teszte
       ülők „X mesél a tűznél…" action bart látnak); elsétálva megszakad, nincs jutalom;
       cooldown 60 perc (PDC `cd_campfire_story` — csak SIKERES mesélés indítja). Kulcsok:
       `campfire-story.*` (general.yml), saját sztori-lista a `stories` kulccsal.
+      **Sztori-átadás (bővítve):** a készlet **62 sor**, és végigmeséli a kódexet — Teremtés
+      (Asterlayna, Aetrinita, a négy gyermek), Hasadás (Hu. 1.), a három birodalom alapítása
+      (14 / 117 / 547), a Hetedik Vérháború és a 698-as Káoszkor, a Felsők megérkezése (978).
+      Cél: a játékosnak NE kelljen kódexet olvasnia. Ülj le sokszor (cooldownt vedd 0-ra
+      teszthez) és ellenőrizd, hogy tényleg váltakoznak, nem 5-6 sor forog.
+- [ ] **Sztori-csatornák összesítve (ÚJ):** a világ történetét négy ingame felület tanítja,
+      összesen **~170 sorban** — ellenőrizd, hogy mind él:
+      - **tábortűz** (62 sor, ismételhető, ingyen — a fő csatorna),
+      - **a Rejtélyes Idegen** (45 talányos sor, `/events stranger`),
+      - **a bárd heti krónika-versszaka** (20 fejezet: MINDEN héten más szelet az idővonalból,
+        a hősök dicsérete ELŐTT hangzik el — `/events`-független, az `enekmondo` NPC-nél),
+      - **a korona átka** (40 suttogás, szintenként más — csak királynak).
 - [ ] **A38 Spawn-élmény (ÚJ — Tier A):** állíts be `world-events.intro.first-join-spawn`-t
       ("world,x,y,z[,yaw,pitch]") → az ELSŐ belépő oda teleportál, és csak utána indul az
       intro; visszatérő belépésnél rövid, halk üdvözlő title + csengő hang
