@@ -33,7 +33,7 @@ feltételes kontingencia volt).
 - **A30** Cast-hiba üzenetek egységesítése — közös ikonos formátum minden cast-elutasításnál. 🟢⭐
 - **A31** Frakció-infó oldal passzívákkal — `/faction info` kiírja a tényleges passzíva-értékeket configból. 🟢⭐
 - **A32** Színvak-barát HUD-mód — `/hud colorblind`, szimbólum-alapú sávok. 🟢⭐
-- **A33** Katalizátor-skinek (CMD) — kasztonkénti egyedi CustomModelData a katalizátoron. 🟢⭐
+- **A33** Katalizátor-skinek — kasztonkénti egyedi ITEM_MODEL a katalizátoron. ✅
 - **A35** Katalizátor akció-bar sáv finomítás — erő-csík dinamikus szín (zöld→sárga→piros). 🟢⭐⭐
 - **A36** Spellbook keresőmező — anvil/chat-input szöveges spell-keresés. 🟢⭐
 - **A37** Menü-breadcrumb és „vissza" konzisztencia — egységes útvonal-jelzés + vissza-gomb minden almenüben. 🟢⭐
@@ -355,11 +355,13 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
 
 ## O — refaktor / technikai adósság
 
-- **O1** 🟡 StatsManager láthatósági race — `Stat`-mezők nem volatile/atomic, ranglista pontatlanság-kockázat.
+- **O1** 🟡 RÉSZBEN KÉSZ — StatsManager láthatósági race: a számlálók (`kills`/`deaths`/`mobKills`/
+  `spellCasts`/`questsCompleted`) már `AtomicInteger`-ek; NYITVA a `level` és a `raidKills` (sima `int`).
 - **O2** 🟡 Világesemény-managerek force-vs-tick race — admin force-parancs és periodikus tick ütközhet, orphan entitás.
 - **O3** 🟢 SunDanceSpell recept-cache dupla felépítés — check-then-act, felesleges duplikált munka.
-- **O4** 🟡 `prefixAt` helper 17 fájlban duplikálva — tab-complete segédfüggvény közös helperbe emelendő.
-- **O5** 🟡 Spell-célzás duplikált mintái — ray-trace célpont és körzeti szűrés ismétlődik több spellben.
+- **O4** 🟡 `prefixAt` helper **20** fájlban duplikálva (2026-07-25: 17-ről nőtt) — tab-complete
+  segédfüggvény közös helperbe emelendő.
+- **O5** ✅ KÉSZ — spell-célzás közös helperbe emelve (`SpellTargetingUtil`, 31 hívó fájl).
 - **O6** 🟡 Világesemény-közös minták (`WorldEventUtil`) — horgony-választás/idő-konverzió/entitás-eltávolítás közös helperbe.
 - **O7** 🟢 `QuestManager.handleTerritoryEnter` O(összes quest) — auto-start index-építés a lineáris keresés helyett.
 - **O8** 🟢 `RelicItemFactory` reflexiós metódus-scan cache — Method-referenciák lazy-init cache-elése.
@@ -374,7 +376,8 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
 - **O18** 🟡 DisplayFx — nincs `max-per-player` entitás-plafon a claim-fal-scannél.
 - **O19** 🟢 `DisplayFxUtil.showOnlyTo` — `hideEntity` kereszt-száli hívása, szigorú Folia-szabály szerint hop kellene.
 - **O20** 🟢 Per-nézős fx-entitások skálázódása — aurora/claim-fal entitásszám a létszámmal nő, mérés indokolt.
-- **O21** 🟡 `AbilityCatalystListener` felelősség-szétbontás — 774 sor, 9 map egy osztályban, bontás javasolt.
+- **O21** 🟡 `AbilityCatalystListener` felelősség-szétbontás — **852** sor (2026-07-25: 774-ről nőtt),
+  9 map egy osztályban, bontás javasolt.
 - **O22** 🟢 `MobLootListener.rollTable` duplikált gear-fallback — privát metódusba emelhető.
 - **O23** 🟢 `CrateManager.persist()` szinkron teljes-YAML írás — debounce-javítás a #9-cel együtt.
 - **O24** 🟡 `MobKillUtil.eligibleKill` közös kill-jutalom előszűrő — 19 listener eltérő AFK/minion-szűrése egységesítendő.
@@ -382,7 +385,12 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
 - **O26** 🟡 `ErrorMessages.resolve` közös hibakulcs→default tábla — 11+ osztályban ismétlődő switch.
 - **O27** 🟡 `PeriodicChanceEvent` világesemény-ütemező váz — 5 manager azonos váza közös helperbe (O2/O6-tal együtt).
 - **O28** 🟡 Elérés-küszöbök configba (AchievementManager) — hardcode-olt tábla + vagyon-elérés kölcsön-tőke kijátszhatóság.
-O-refaktor összefoglaló: #9 (DonationChestManager debounce) KÉSZ (2026-07-20 auditkör); a többi nyitott technikai adósság.
+O-refaktor összefoglaló (2026-07-25-i kódellenőrzés): **KÉSZ** = O9 (DonationChestManager debounce)
++ O5 (SpellTargetingUtil); **RÉSZBEN** = O1. A maradék **25 tétel nyitott** — kódban visszaellenőrizve,
+hogy egyik sem oldódott meg magától. A legnagyobb hozamú csomagok: a 6 közös-helper tétel
+(O4 `prefixAt` 20 fájl, O6 `WorldEventUtil`, O24 `MobKillUtil.eligibleKill`, O25 `DailyBudget`,
+O26 `ErrorMessages`, O27 `PeriodicChanceEvent`) — mind ugyanaz a minta: 5-20 helyen kézzel ismételt
+kód egy `utils/` osztályba. A `utils/` csomag MÁR LÉTEZIK (12 fájl), tehát nincs architektúra-akadály.
 
 ## P — kormányzás, gazdaság-hurok és rework-jelöltek (2026-07-22, tulaj-kérés)
 
@@ -531,7 +539,7 @@ tételek a védőháló + a kihasználatlan potenciál.
   fővárosokba; jukebox-song az Énekmondó balladájának/frakció-himnuszoknak;
   mob-variánsok (pl. csont-farkas a DARK-földre) — mind RP-textúra/audio-függő,
   a meglévő resource-pack pipeline-ra ül. 🟡⭐⭐
-- ✅ **P4g Upgrade-checklist tétel** (CLAUDE.md Build&verify) — verzió-bumpnál a bootstrap az első törési pont
+- ✅ **P4g Upgrade-checklist tétel** (`AGENTS.md` Build & verify) — verzió-bumpnál a bootstrap az első törési pont
   (unstable API): a PLAYTEST/upgrade-folyamatba explicit "bootstrap fordul + registry
   bejegyzések élnek" ellenőrzés. 🟢⭐
 
@@ -557,7 +565,7 @@ a game event registry fogyasztó nélkül halott regisztráció lenne.
   template_pool-ból, `/place`-szel telepíthető, processor-listával variálható —
   a világépítő munka egy része verziókezelt adattá válik. 🟡⭐⭐⭐
 - **P5d Vault-blokk a dungeon-kulcsokhoz** — a vanília vault natívan PER-PLAYER lootot
-  ad kulcs-itemért: a meglévő kulcs-sáv (CMD 6201+) + datapack loot-tábla — a
+  ad kulcs-itemért: a meglévő kulcs item-modellek + datapack loot-tábla — a
   DungeonLootService láda-cooldown rétege mellé natív, csalásbiztos út. 🟡⭐⭐⭐
 - **P5e Trial spawner próbatermek** — kultista hullám-szobák saját spawner-konfiggal és
   loot-táblával; ominous-változat a világesemény-réteghez kötve. 🟡⭐⭐
@@ -648,7 +656,9 @@ A valódi folia-api (1.21.11) + szerver-jar bájtkód-átvizsgálásából. Amit
 pedig kézzelfogható nyereség lenne. (A data-component API @Experimental → SuppressWarnings,
 de éles-stabil; alkalmazás: `itemStack.setData(DataComponentTypes.X, builder)`.)
 
-**[TOP] Data-component API (1.20.5+) — MA egyáltalán nem használjuk (PDC/ItemMeta helyett):**
+**[TOP] Data-component API (1.20.5+) — 2026-07-25: MÁR 6 komponens él** (`ATTRIBUTE_MODIFIERS`,
+`CONSUMABLE`, `FOOD`, `ITEM_MODEL`, `TOOLTIP_DISPLAY`, `USE_COOLDOWN` — mind az `ItemDataFactory`-n
+át). A lista alábbi tételei a MÉG NEM használt komponensek (kódban ellenőrizve: 0 hivatkozás):
 - **P7a EQUIPPABLE** — BÁRMELY item viselhető (kozmetikai kalap/korona, saját páncél-modell,
   kamera-overlay). A frakció-kozmetikák és relikvia-viseletek aranybányája. 🟡⭐⭐⭐
 - 🔄 **P7b CONSUMABLE + FOOD (FOLYAMATBAN)** — `ItemDataFactory` alap KÉSZ (általános
@@ -670,7 +680,7 @@ de éles-stabil; alkalmazás: `itemStack.setData(DataComponentTypes.X, builder)`
   elrejtve az affix-rollos felszerelésen (ItemDataFactory.hideAttributeTooltip); a stat a saját
   affix-lore-sorban látszik, infó-veszteség nélkül. 🟢⭐⭐
 - **P7i CUSTOM_MODEL_DATA (új, több-értékű: float/flag/szín/string)** — gazdagabb RP-horog
-  az integer-CMD helyett (a pack booleanből vezérelhet override-ot/animációt). 🟢⭐⭐
+  az item-model mellett (a pack booleanből vezérelhet override-ot/animációt). 🟢⭐⭐
 - **P7j PROFILE** — saját fej-skin (NPC-fejek, kozmetikák) — ma nem használjuk. 🟢⭐
 - P7k ENCHANTMENT_GLINT_OVERRIDE (glint kényszerítés), CONTAINER/CONTAINER_LOOT (tároló-item),
   JUKEBOX_PLAYABLE/INSTRUMENT/TRIM (RP-kötött) — kisebb nyeremények. 🟢⭐
@@ -697,11 +707,11 @@ de éles-stabil; alkalmazás: `itemStack.setData(DataComponentTypes.X, builder)`
 ### P8 — További modern felületek (2026-07-23, valódi build-felderítés, 2. kör)
 
 - 🔄 **P8a ITEM_MODEL komponens (HASZNÁLATBAN új itemekhez)** — ItemDataFactory.applyItemModel
-  + result.item-model a receptben; az ÚJ Szakács-fogyaszthatók már ITEM_MODEL-t kapnak (nem CMD).
-  A pack-készítő spec: RESOURCE_PACK_CMD.md „ITEM_MODEL tárgyak” szekció. NYITVA: a régi CMD-itemek
+  + result.item-model a receptben; az ÚJ Szakács-fogyaszthatók már ITEM_MODEL-t kapnak.
+  A pack-készítő spec: RESOURCE_PACK_CMD.md manifest. KÉSZ: a régi item-megjelenések
   teljes migrációja (egyeztetve a külső pack-készítővel). 🟢⭐⭐
 - **P8b Resource-pack PUSH (`sendResourcePacks`/ResourcePackRequest)** — a pluginhez VAN pack,
-  de soha nem toljuk ki → a CMD/textúrák csak kézi telepítéssel élnek. Kötelező/prompt-os
+  de soha nem toljuk ki → a textúrák csak kézi telepítéssel élnek. Kötelező/prompt-os
   push (UUID + hash + üzenet). Tényleges hiányosság, ha a pack éles. 🟡⭐⭐
 - **P8c Egyedi fontok + negatív-térköz + `Component.font()` + `shadowColor` (1.21.4)** —
   pixel-pontos GUI/HUD-grafika a packből (bossbar-keret, GUI-háttér az inventory-cím fontján,
