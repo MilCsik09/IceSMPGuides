@@ -364,7 +364,14 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
   `Locale.ROOT` NÉLKÜL kisbetűsített — tr_TR szerver-locale-on az „I" prefix-szűrése csendben
   elromlott volna; a közös helper ezt is lezárja.
 - **O5** ✅ KÉSZ — spell-célzás közös helperbe emelve (`SpellTargetingUtil`, 31 hívó fájl).
-- **O6** 🟡 Világesemény-közös minták (`WorldEventUtil`) — horgony-választás/idő-konverzió/entitás-eltávolítás közös helperbe.
+- **O6** ✅ RÉSZBEN KÉSZ — `utils/TransientEntities` (`removeById` Folia-hoppal, `removeAllOnShutdown`,
+  `removeOnShutdown`, `isAlive` fail-open szemantikával); 9 hely átvezetve 6 managerben
+  (Corruption/Cultist/Invasion/Escort/WildHunt/WorldBoss), −123/+14 sor. Lelet: az
+  `EscortManager` hulla-prune-ja kivétel-védelem NÉLKÜL kérdezte az entitást (régió-hiba
+  esetén a wave-kezelés dobott volna) — a közös `isAlive` fail-open ága ezt lezárja.
+  NYITVA: a horgony-választás (`lastAnchorId`-rotáció) csak 2 managerben azonos
+  (WorldBoss/Escort), a perc→millis „duplikáció" pedig 25 helyen egyetlen `* 60_000L`
+  művelet — annak helper NEM javítana az olvashatóságon, ezért nem csináljuk.
 - **O7** 🟢 `QuestManager.handleTerritoryEnter` O(összes quest) — auto-start index-építés a lineáris keresés helyett.
 - **O8** 🟢 `RelicItemFactory` reflexiós metódus-scan cache — Method-referenciák lazy-init cache-elése.
 - **O10** 🟢 `FactionPassiveListener` korai kilépés sorrendje — damage-cause szűrés a faction-lookup elé.
@@ -401,13 +408,29 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
   SZÁNDÉKOSAN kimaradt: `HonorDuelManager` + `ProfessionWeeklyGoalManager` (HETI bucket, más
   periódus), `FactionTreasurySubcommand` (frakció-szintű közös számláló + DOUBLE pénz-pontosság —
   a helper long-alapú, kerekítés-veszteség lenne).
-- **O26** 🟡 `ErrorMessages.resolve` közös hibakulcs→default tábla — 11+ osztályban ismétlődő switch.
+- **O26** ✅ LEZÁRVA (a tétel premisszája hibás volt) — a „11+ osztályban ismétlődő switch" méréssel
+  nem áll: **177 hibakulcs ~20 osztályban, de csak EGY duplikált tábla** volt (a DonationChest 5
+  bejegyzése bájtra azonosan a parancsban ÉS a GUI-listenerben — ez átkerült a
+  `DonationChestManager.defaultErrorFor`-ba, a kulcsok keletkezési helyére). A többi tábla
+  domain-diszjunkt: a „duplikációnak" látszó kulcsok (accept/list/info/kick/leave…) **alparancs-
+  nevek**, nem hibakulcsok. Egy globális `ErrorMessages` tábla 177 magyar szöveget szakítana el a
+  használati helyétől, miközben az override-réteget a `messages.yml` már megadja — ezért NEM
+  csináljuk meg. (A `ClaimManager` switch-e sem tábla-duplikátum: az kulcs→ÜZENETKULCS leképezés.)
 - **O27** 🟡 `PeriodicChanceEvent` világesemény-ütemező váz — 5 manager azonos váza közös helperbe (O2/O6-tal együtt).
 - **O28** 🟡 Elérés-küszöbök configba (AchievementManager) — hardcode-olt tábla + vagyon-elérés kölcsön-tőke kijátszhatóság.
 O-refaktor összefoglaló (2026-07-25-i kódellenőrzés + helper-kör): **KÉSZ** = O9
 (DonationChestManager debounce), O5 (SpellTargetingUtil), **O24** (MobKillUtil),
-**O4** (TabCompleteUtil), **O25** (DailyBudget); **RÉSZBEN** = O1. A közös-helper csomagból hátra van:
-O6 `WorldEventUtil`, O26 `ErrorMessages`, O27 `PeriodicChanceEvent`.
+**O4** (TabCompleteUtil), **O25** (DailyBudget), **O26** (mérés alapján elvetve, 1 valódi duplikátum
+javítva), **O6** (TransientEntities — a horgony-rotáció maradt nyitva); **RÉSZBEN** = O1.
+A közös-helper csomagból hátra van: O27 `PeriodicChanceEvent` (5 manager azonos
+ütemező-váza — ez a legnagyobb és legkényesebb, mert a tick-ütemezésbe nyúl).
+
+**Mérleg (2026-07-25 helper-kör):** 4 új `utils/` osztály (MobKillUtil, TabCompleteUtil,
+DailyBudget, TransientEntities), ~35 hívási hely átvezetve, és 6 latens hiba lezárva, amit a
+duplikáció rejtett: AFK/spawner/minion-szűrők hiánya a jutalom-ágakon, a SoulShard AFK-fékének
+config-kapu nélküli állapota, a `RelicCommand` `Locale.ROOT` nélküli kisbetűsítése, a
+váltási keret újraindítással nullázhatósága, az „előbb könyvel, aztán ellenőriz" keret-hiba,
+és az `EscortManager` kivétel-védelem nélküli entitás-prune-ja.
 
 ## P — kormányzás, gazdaság-hurok és rework-jelöltek (2026-07-22, tulaj-kérés)
 
