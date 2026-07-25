@@ -359,8 +359,10 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
   `spellCasts`/`questsCompleted`) már `AtomicInteger`-ek; NYITVA a `level` és a `raidKills` (sima `int`).
 - **O2** 🟡 Világesemény-managerek force-vs-tick race — admin force-parancs és periodikus tick ütközhet, orphan entitás.
 - **O3** 🟢 SunDanceSpell recept-cache dupla felépítés — check-then-act, felesleges duplikált munka.
-- **O4** 🟡 `prefixAt` helper **20** fájlban duplikálva (2026-07-25: 17-ről nőtt) — tab-complete
-  segédfüggvény közös helperbe emelendő.
+- **O4** ✅ KÉSZ — `utils/TabCompleteUtil.prefixAt` (static importtal, a `GuiUtil` mintájára);
+  mind a 20 privát példány törölve, 68 hívási hely változatlan. A `RelicCommand` példánya
+  `Locale.ROOT` NÉLKÜL kisbetűsített — tr_TR szerver-locale-on az „I" prefix-szűrése csendben
+  elromlott volna; a közös helper ezt is lezárja.
 - **O5** ✅ KÉSZ — spell-célzás közös helperbe emelve (`SpellTargetingUtil`, 31 hívó fájl).
 - **O6** 🟡 Világesemény-közös minták (`WorldEventUtil`) — horgony-választás/idő-konverzió/entitás-eltávolítás közös helperbe.
 - **O7** 🟢 `QuestManager.handleTerritoryEnter` O(összes quest) — auto-start index-építés a lineáris keresés helyett.
@@ -380,17 +382,32 @@ N-review összefoglaló: N16, N17, N18, N24, N25, N25b, N27 KÉSZ; N26 tulaj-dö
   9 map egy osztályban, bontás javasolt.
 - **O22** 🟢 `MobLootListener.rollTable` duplikált gear-fallback — privát metódusba emelhető.
 - **O23** 🟢 `CrateManager.persist()` szinkron teljes-YAML írás — debounce-javítás a #9-cel együtt.
-- **O24** 🟡 `MobKillUtil.eligibleKill` közös kill-jutalom előszűrő — 19 listener eltérő AFK/minion-szűrése egységesítendő.
-- **O25** 🟡 `DailyBudget` PDC-util — napi keret-minta 5+ helyen kézzel írva, közös `spend()` util kellene.
+- **O24** ✅ KÉSZ — `utils/MobKillUtil` közös kill-jutalom előszűrő 3 tierrel (FAUCET/PROGRESSION/
+  TRACKING); 12 listener átvezetve, a szűrők `kill-rewards.*` alatt globálisan kapcsolhatók
+  (ConfigMenuGUI: „Kill-jutalom szűrők"). Lezárt konzisztencia-hibák: az AFK-fék eddig csak 3
+  listenerben élt (a pénz-erszény és a mob-loot AFK-farmolható volt), a spawner-kizárás csak a
+  pénz-dropban, a minion-kizárás 3 helyen (a quest/ranglista/bestiárium/közösségi cél számlálói
+  saját idézett hordával pumpálhatók voltak), és a `SoulShardListener` AFK-féke egyáltalán nem
+  volt config-kapuzva (az `afk.block-rewards: false` sem kapcsolta ki).
+- **O25** ✅ KÉSZ — `utils/DailyBudget`: nap-index, számláló-léptetés, plafon-vizsgálat és söprés egy
+  helyen. **Két tároló, mert a Folia rákényszerít:** `InMemory<K>` a kereszt-entitás eventekhez
+  (mob-halál a MOB szálán fut, a gyilkos PDC-jébe onnan nem írhatunk), PDC-s ág a játékos saját
+  szálán futó helyekhez (újraindítás-biztos). 7 hely átvezetve: lélekkő, mob-pénz, parkour
+  (memóriás); horgász-szerencse, kém-pont, Felvásárló, valuta-váltás (PDC-s). Két lelet:
+  (1) a régi implementációk fele ELŐBB könyvelt, majd ellenőrzött — egyetlen túllépés után a nap
+  hátralévő részében a beleférő kisebb összegeket is elutasította; a közös helper
+  ellenőriz-majd-könyvel. (2) A valuta-váltás keretje memóriában élt, tehát **újraindítással
+  nullázható volt** — pedig épp árfolyam-manipuláció ellen való; most PDC-ben él.
+  SZÁNDÉKOSAN kimaradt: `HonorDuelManager` + `ProfessionWeeklyGoalManager` (HETI bucket, más
+  periódus), `FactionTreasurySubcommand` (frakció-szintű közös számláló + DOUBLE pénz-pontosság —
+  a helper long-alapú, kerekítés-veszteség lenne).
 - **O26** 🟡 `ErrorMessages.resolve` közös hibakulcs→default tábla — 11+ osztályban ismétlődő switch.
 - **O27** 🟡 `PeriodicChanceEvent` világesemény-ütemező váz — 5 manager azonos váza közös helperbe (O2/O6-tal együtt).
 - **O28** 🟡 Elérés-küszöbök configba (AchievementManager) — hardcode-olt tábla + vagyon-elérés kölcsön-tőke kijátszhatóság.
-O-refaktor összefoglaló (2026-07-25-i kódellenőrzés): **KÉSZ** = O9 (DonationChestManager debounce)
-+ O5 (SpellTargetingUtil); **RÉSZBEN** = O1. A maradék **25 tétel nyitott** — kódban visszaellenőrizve,
-hogy egyik sem oldódott meg magától. A legnagyobb hozamú csomagok: a 6 közös-helper tétel
-(O4 `prefixAt` 20 fájl, O6 `WorldEventUtil`, O24 `MobKillUtil.eligibleKill`, O25 `DailyBudget`,
-O26 `ErrorMessages`, O27 `PeriodicChanceEvent`) — mind ugyanaz a minta: 5-20 helyen kézzel ismételt
-kód egy `utils/` osztályba. A `utils/` csomag MÁR LÉTEZIK (12 fájl), tehát nincs architektúra-akadály.
+O-refaktor összefoglaló (2026-07-25-i kódellenőrzés + helper-kör): **KÉSZ** = O9
+(DonationChestManager debounce), O5 (SpellTargetingUtil), **O24** (MobKillUtil),
+**O4** (TabCompleteUtil), **O25** (DailyBudget); **RÉSZBEN** = O1. A közös-helper csomagból hátra van:
+O6 `WorldEventUtil`, O26 `ErrorMessages`, O27 `PeriodicChanceEvent`.
 
 ## P — kormányzás, gazdaság-hurok és rework-jelöltek (2026-07-22, tulaj-kérés)
 
