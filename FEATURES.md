@@ -1,8 +1,10 @@
 # IceSMP — Teljes funkció-leltár (belső bemutató)
 
 > Minden rendszer és mechanika egy helyen, belső "mutogatásra". Technikai mélységű,
-> de teljes. Állapot: 2026-07-22 — kód-oldalon launch-kész, élő playtest előtt.
-> Alap: Folia (régió-szálas Paper), MC 1.21.11, Java 21, ~300 Java-fájl / 60+ manager.
+> de teljes. **Állapot: funkcionálisan teljes, de NEM launch-kész** — a legutóbbi audit nyitott
+> kiadásblokkolókat talált (perzisztencia-atomicitás, gazdasági tranzakció, Folia entitás-
+> életciklus). A nyitott tételek és sorrendjük a `ROADMAP.md`-ben élnek.
+> Alap: Folia (régió-szálas Paper), MC 1.21.11, Java 21, 545 Java-fájl / 90 manager.
 
 ## ⚔ Kasztok és képességek
 
@@ -67,8 +69,8 @@
 
 ## 💰 Gazdaság
 
-- **4 frakció-valuta** (Vörös Talentum, Kék Talentum, Creutzér, Csontveret) — CMD-s
-  fizikai veretek több címletben.
+- **4 frakció-valuta** (Parázsló Parals, Hópihér-veret, Creutzér, Csontveret) —
+  ITEM_MODEL-es fizikai veretek több címletben.
 - **SZENT SZABÁLY: a bank-számlára csak fizikai veret-befizetéssel kerülhet pénz** —
   minden jutalom fizikai tokenben érkezik (payOutTokens), a rendszer sosem "nyomtat"
   számlára. Gépi audittal igazoltan sértetlen.
@@ -76,7 +78,7 @@
   3% váltási díj, árfolyam-tábla NPC (exchange board), gazdasági események
   (konjunktúra/dekonjunktúra ablakok, tanácsi Vásár-hét).
 - **Pénz-források napi plafonnal**: mob-drop erszények (300/nap), horgász-lelet
-  (150/nap), felvásárló NPC (250/nap), lélekkő-drop (DARK-út); questek, AFK-jutalom.
+  (150/nap), felvásárló NPC (250/nap), lélekkő-drop (DARK-út) és questek.
 - **Nyelők**: boltok (általános/kellék/feketepiac/karaván), láda-kulcsok, komp-díj,
   piac/aukció-díj (10%, boom alatt 5%), váltási díj, frakció-váltás, spec-respec,
   claim-vétel, céh-alapítás, adó.
@@ -97,7 +99,8 @@
 - **Zóna-szabály mátrix**: build/interact/pvp/explosions/fire zónatípusonként
   configból; admin- és builder-bypass node-ok; PvP-tiltás kiterjed potion/TNT/pet
   forrásokra is.
-- **Claim-rendszer** (/claim): chunk-alapú birtok, trust-lista, konténer-védelem,
+- **Claim-rendszer** (/claim): **blokk-pontos** birtok (`/claim pos1|pos2|area`, Y-sávval; a
+  `/claim` gyorsfoglalás 16×16-os oszlopot ad), trust-lista, konténer-védelem,
   piston/tűz/folyadék/robbanás-védelem, raid-fosztogatás kapu (csak konténer,
   csak regisztrált támadónak), belépés-jelzés action-baron.
 - **Fővárosi törvény**: fegyver-tilalom a semleges fővárosban (Sétapálca rejtett
@@ -146,7 +149,9 @@
   indulási késleltetéssel (robbanás/ostrom/szabad bontás külön kulcs); blokkonként
   anyag-hű lerakás-hang + porfelhő; támasz-tudatos sorrend (gravitációs blokk csak
   alapra, fáklya csak falra — grace után kényszer); élőlényre SOSEM épül rá
-  (befalazás-védelem); restart-biztos perzisztens várólista (block-regen.yml).
+  (befalazás-védelem); crash-biztos várólista **write-ahead naplóval** (block-regen.yml
+  checkpoint + block-regen.wal napló): a láda NBT-pillanatképe már a kiürítés ELŐTT lemezre
+  kerül, és a rekord csak a sikeres visszaépítés véglegesítése után tűnik el.
 - **Tile-entity-k**: alapból "óvó rúnák" effekttel sérthetetlenek; kapcsolható
   teljes NBT-út (struktúra-pillanatkép): láda/shulker-tartalom, tábla-szöveg,
   fej-textúra, zászló-minta, spawner — robbanáskor semmi nem szóródik ki, minden
@@ -170,11 +175,13 @@
   (sculk-terjedés, irtó-részesedés), régészet (brush-lelőhelyek), játékos-karaván
   (szállítmány-kockázat), kalmár-karaván, bőség-ablak, gyűjtő-buff, szerver-kihívás
   (per-player skálázott), rejtett helyek (D8), ambient-események (kültéri jutalom),
-  Idegen NPC (28 kóbor mondat), tábortűz-mesék (37 lore-történet).
+  Idegen NPC (45 kóbor mondat), tábortűz-mesék (62 közös + 4×22 frakció-hangú sor).
 - **Broadcast-diéta**: a nagy események globális hírek, a személyes léptékűek csak
   a helyszín környékén hallatszanak (LocalAnnounce, Folia-biztos).
 - **EventSpawnGuard**: minden esemény-spawn közös kapun — territory/claim/WG mátrix
-  eseményenként, felszín-biztonság, mob-előkészítés (zombisodás/égés ellen).
+  eseményenként, felszín-biztonság, mob-előkészítés (zombisodás/égés ellen). A kapu a
+  jelölt spawn-pontokat vizsgálja (a karaván-útvonalat mintavételesen), nem blokkonként
+  garantált korlát; a WorldGuard-híd WG nélkül vagy hiba után fail-open.
 - **Mob-skálázás**: távolság-alapú szint + **zóna-rámpa** (a legközelebbi biztonságos
   zóna szélétől 250 blokk/szint — a 13k-ra lévő fővárosok környéke is kezdőbarát);
   DARK-földön +2 szint és az élőhalott nappal sem ég; Thanaopolis élőhalott-populáció
@@ -226,21 +233,24 @@
   loot-források; passzív relikvia halálnál "elveszett" státuszba kerül (reclaim-
   rituáléval visszaidézhető), fegyver-relikvia PvP-ben gazdát cserél; inaktivitás-
   lejárat; relikvia-aukció.
-- **Láda-rendszer (natív crate)**: fizikai láda-pontok + kulcs-itemek (köznapi/
-  ritka), /crate buy (valuta-sink), pörgős reveal-animáció, súlyozott loot-táblák
-  (sosem pénz); kulcs quest-jutalomból is.
+- **Láda-rendszer (natív crate)**: tartós fizikai crate-helyek, PDC-kulcsok és `/crate buy`;
+  read-only browser/preview, permission- és world-policy, required key, cooldown, statisztika,
+  bounded mass-open, pörgős reveal és súlyozott reward batch. A code-review-zott settlement
+  single-claim lifecycle-t, durable currency mutationt, ellenőrzött command dispatch-et és
+  restart recovery/manual-review határt használ. A CrazyCrates csak valódi Folia/fault-injection
+  átvételi teszt után távolítható el.
 - **Pénz-itemek**: erszények (mob-drop, súlyozott), Opálos Emlékszilánk (talent/
   respec-valuta), lélekkövek (soulforge-fejlesztés).
 
 ## 🐾 Kísérők és extra rendszerek
 
-- **Pet-rendszer**: befogó-eszközök (CMD 5301-02) a Vadmesternek/Nekromantának;
+- **Pet-rendszer**: ITEM_MODEL-es befogó-eszközök a Vadmesternek/Nekromantának;
   rituálé-idézett állandó társ (Szentségtelen ghúl / Boszorkánymester démon —
-  kellék-drop CMD 5303-04, éjszakai rituálé, forma-fejlődés szinttel, +5 szint
+  egyedi kellék-dropok, éjszakai rituálé, forma-fejlődés szinttel, +5 szint
   idézett-prémium); pet-szint és plugin-vezérelt harc-asszisztencia; **Társ-GUI**
   (/pet): idézés/elbocsátás/átnevezés/állásmód-gombok; állásmódok (Támadás/Passzív/
   Maradj — parancs, GUI vagy sneak+jobb katt); halál után újraidézési cooldown;
-  **Társvért** (CMD 5305, ritka drop): +páncél/+életerő a társnak, újraidézve is
+  **Társvért** (ritka drop): +páncél/+életerő a társnak, újraidézve is
   megmarad; a gazda max-HP talentjeinek fele a társra száll; **Soulforge**
   (/soulforge): nekromanta minion-fejlesztés lélekkövekből.
 - **Party** (/party): meghívás, XP-megosztás, party-HP a HUD-on, personal-loot
@@ -250,9 +260,11 @@
 - **Parkour** (/parkour): pályák, idő-mérés, jutalom (limit-kérdés backlogon) —
   opcionális szabadidős tartalom, nem kötelező kaszt-út.
 - **Kazamaták**: kulcs-kapus DUNGEON zónák (melyseg/csontkripta kulcs-receptek,
-  CMD 6203-04), futam-passz, heti pecsét, +5 mob-szint; belső tartalom kézi építés.
+  ITEM_MODEL-es kulcsok), futam-passz, heti pecsét, +5 mob-szint; belső tartalom kézi építés.
 - **Krónika**: heti szerver-összefoglaló broadcast + /kronika visszaolvasás.
-- **AFK-rendszer**: AFK-jelölés, (kis) AFK-jutalom nappal, esemény-kizárások.
+- **Globális AFK-rendszer**: automatikus tétlenségészlelés, valódi ki/be kapcsoló `/afk`,
+  tablistajelzés és rangon belüli hátrasorolás, valamint közös exploitvédelmi jutalomkapu.
+  Jutalmazó AFK-zóna, bossbar és időzített AFK-kifizetés nincs.
 - **Moderáció**: /report rendszer (30 napos retenció), mute, spam-szűrő, chat-log.
 - **Frakció-ételek (honvágy)**: hazai étel-kötelezettség puha debuff-fal, signature
   ételek buffokkal (pisztráng, rántotta, hamukenyér, ünnepi fogások).
@@ -270,10 +282,11 @@
   rang-rendezés, háború-színek, színkódolt ping); **lebegő sebzés-számok**;
   **halál-összegző** (utolsó 10 mp találatai); intro-címszekvencia új játékosnak;
   quest-toast értesítések; boss-bárok.
-- **Natív haladás-fül (advancementek)**: saját IceSMP fül a vanília Haladás-képernyőn
-  (loadAdvancement, RP nélkül) — mérföldkövek (első kaszt/spec/frakció/szakma) és
-  rejtett teljesítmények (rontás-tisztítás, hidden-spot); kódból granted, kikapcsolható
-  (`advancements.enabled`).
+- **Natív haladás-fül (advancementek)**: saját IceSMP fül a vanília Haladás-képernyőn — a fát a
+  jar SAJÁT datapackje szállítja (`DatapackRegistrar`, RP és külső mod nélkül), tehát a kóddal
+  együtt verziózódik. 22 csomópont négy ágon: mérföldkövek (első kaszt/spec/frakció/szakma) és
+  rejtett teljesítmények (rontás-tisztítás, hidden-spot, Suttogó-rítus, száműzetés, vezeklés);
+  kódból granted, csendben (se toast, se chat), kikapcsolható (`advancements.enabled`).
 - **Natív párbeszéd-ablakok (Dialog API)**: szerver-oldali dialógusok RP nélkül
   (`DialogService`: értesítő + megerősítő minta, szerver-oldali válasz-kezeléssel).
   Első felhasználás: natív üdvözlő-ablak új játékosnak az első belépéskor
@@ -300,11 +313,10 @@
   async autosave, hibatűrő load/save (egy sérült fájl nem dönt kaszkádot),
   player-adatok PDC-ben; session-takarítás (nincs UUID-szivárgás).
 - **Gépi drift-ellenőrző** (scripts/check_consistency.py): YAML-épség, quest-
-  hivatkozások, CMD-regiszter lefedettség, jog-node regisztráció, /menu célok,
+  hivatkozások, ITEM_MODEL visszaesés-védelem, jog-node regisztráció, /menu célok,
   duplikált metódusok, tükör-repo drift — push előtt kötelező.
-- **Resource pack**: a CMD-regiszter (docs/RESOURCE_PACK_CMD.md, sávozott CMD-lista) a
-  KÜLSŐ pack-készítő specifikációja; magát a packet külön forrásban állítják elő (a
-  repóban nincs pack-artefaktum/generátor).
+- **Resource pack**: a `docs/RESOURCE_PACK_CMD.md` modern ITEM_MODEL manifest és
+  textúra-generálási specifikáció; magát a packet külön forrásban állítják elő.
 - **Integrációk** (mind opcionális, reflexiós híd): PlaceholderAPI (%icesmp_%
   placeholderek), LibsDisguises (druida-forma, kém, fekvés), FancyNpcs (quest-NPC-k),
   WorldGuard (spawn-guard), LuckPerms (chat-prefix, tablist-rang).
