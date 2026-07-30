@@ -39,3 +39,37 @@ Kiegészítő belső források:
 Az aktív dokumentáció minden fenti Markdown-oldala szó szerint tükröződik
 az `IceSMPGuides` repóba, azonos könyvtárszerkezettel. Régi auditnaplók és
 párhuzamos redirect-oldalak nem részei az aktív dokumentációs készletnek.
+
+## Jelenleg futó baseline
+
+Az auditált szerver-JAR az `IceSMP-1.0-TESTING.jar`, SHA-256:
+`da039f0e2bdf0e67b216ce82d7d3fe3b6da0af6e18f6fa175762c37493795a05`.
+A resource- és bytecode-összevetés alapján a legvalószínűbb forrásállapot
+`775d9e247be675db1c7c9beaaecf4a90349bfcd3` (2026. július 12.).
+Ez `HIGH_CONFIDENCE`, nem exact mapping, mert a JAR nem tartalmaz Git SHA-t
+vagy valódi build-időt. A részletes bizonyíték a
+[legújabb változásokban](docs/LATEST_CHANGES.md#bizonyíték-és-ismert-határok)
+olvasható.
+
+## Build és ellenőrzés
+
+Követelmény: Java 21 és elérhető Gradle-dependency repositoryk.
+
+```bash
+./gradlew clean build --no-daemon --stacktrace
+python3 scripts/check_consistency.py
+python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+python3 scripts/generate_repository_inventory.py \
+  --root . --output build/repository-inventory --mode strict
+python3 scripts/check_documentation_coverage.py \
+  --root . \
+  --inventory build/repository-inventory/repository-inventory.json \
+  --output build/repository-inventory \
+  --mode strict
+python3 scripts/check_markdown_links.py --root .
+git diff --check
+```
+
+A zöld build kód- és regressziós bizonyíték. Production rollout előtt az
+[admin kézikönyv acceptance checklistjét](docs/ADMIN_GUIDE.md#release-acceptance-checklist)
+is végig kell futtatni staging/Folia környezetben.
