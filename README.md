@@ -1,76 +1,69 @@
-# IceSMP — Játékos Kézikönyv 📖
+# IceSMP
 
-Üdv a fagyott királyságok földjén! Ez a kézikönyv **mindent** elmagyaráz a szerverről, úgy,
-hogy bárki megértse — még akkor is, ha most ülsz le először Minecraftozni. Minden rendszernek
-külön oldala van, hogy könnyen megtaláld, amit keresel.
+Az **IceSMP** egy Folia-alapú Minecraft 1.21.11 plugin Java 21-hez. Egy
+fantasy SMP szerver játékmenet-rendszereit fogja össze: frakciók, kasztok,
+specializációk, képességek, szakmák, gazdaság, küldetések, események,
+területek, relikviák, társak és adminisztráció.
 
-> **Pár szó, amit jó tudni előre (ne ijedj meg tőlük):**
-> - **XP / tapasztalat:** a zöld csík a képernyő alján, meg a melletti szám (a szinted). Sok
->   varázslat ebből „fizet".
-> - **Éhség:** a sonkacomb 🍗 ikonok. Néhány varázslat ebből „fizet". 1 sonkacomb = 2 éhségpont.
-> - **Cooldown / várakozási idő:** miután használtál egy képességet, várnod kell egy kicsit,
->   mire újra tudod használni.
-> - **Mob:** szörny vagy állat (zombi, csontváz, tehén...).
-> - **Blokk:** egy kocka a világban (1 blokk ≈ 1 méter).
+## Dokumentáció
 
-> 🖱️ **Tipp:** írd be a **`/menu`** parancsot, és egy kattintós főmenü nyílik meg, ahonnan
-> minden rendszer egy gombnyomásra elérhető — nem kell parancsokat gépelned!
+Az embernek szánt, mérvadó dokumentáció öt kézikönyvből áll:
 
-> **Jelölések:** ✅ = kész és kipróbálható • 🚧 = részben kész • ⏳ = még nincs kész.
-> A számok (szintek, %-ok, idők) a szerver beállításától függhetnek — itt az alapértékek vannak.
-
-
----
-
-## 📚 Tartalom
-
-1. [Kezdő lépések](01-kezdes.md) — mit csinálj az első 10 percben
-2. [Frakciók](02-frakciok.md) — a négy oldal és a bónuszaik
-3. [Valuta és gazdaság](03-valuta-gazdasag.md) — pénz, bank, piac, árfolyam
-4. [Kasztok](04-kasztok.md) — a 13 hős-típus, szintezés, Lélekkapocs, Erő-csík
-5. [Képességek (varázslatok)](05-kepessegek.md) — **minden** spell: mit tud, mennyibe kerül
-6. [Specializációk](06-specializaciok.md) — a kaszt „kiteljesedése" 25. szinttől
-7. [Talentek (talent-fa)](07-talentek.md) — passzív erősítések pontokból
-8. [Szakmák](08-szakmak.md) — **minden** szakma: mit ad XP-t és mennyit
-9. [Relikviák és rituálék](09-relikviak.md) — legendás tárgyak
-10. [Világesemények](10-vilagesemenyek.md) — vérhold, világboss, karaván, meteor, kincs, kihívás…
-11. [Királyság, raid és háború](11-raid-haboru.md) — királyok, ostrom, reputáció
-12. [Küldetések](12-kuldetesek.md) — mit hol vegyél fel, mit kapsz
-13. [Frakcióterületek és saját birtok](13-teruletek.md) — fővárosok, claim, építésvédelem
-14. [Parancsok listája](14-parancsok.md) — minden parancs egy helyen
-15. [Party (csapat)](15-csapat.md) — csapatalakítás, közös XP, party-HUD
-16. [Kazamaták](16-kazamatak.md) — kulcs-kapus dungeonök, futam-passz, heti pecsét
-
----
-
-## 📜 Világ és történet (Lore)
-
-A szerver kanonikus háttértörténete — a Teremtéstől a Káoszkorig, a négy frakció eredete, a
-fővárosok, és a hozzájuk illő egyedi tárgyak katalógusa.
-
-- [**Az Élet Fája és a Káosz Kora**](lore/LORE.md) — a teljes világ-történet + frakció-lore
-
-## 💡 Fejlesztési ötletek (brainstorm)
-
-> **Figyelem:** ez **nem** játékos-tartalom, hanem a fejlesztés ötlettára — *nincs elköteleződés*,
-> nem minden valósul meg. Ideiglenesen került ide, betekintésre.
-
-- [**Ötlettár — index**](ideas/README.md) — 356 kidolgozott ötlet, 11 kategóriában
-
-| Kategória | Miről szól |
+| Kézikönyv | Mire való? |
 |---|---|
-| [A) Polish](ideas/A-polish.md) | GUI/HUD/spell-QoL, kényelmi funkciók, effektek |
-| [B) Új mechanika](ideas/B-mechanika.md) | Progresszió, céhek, dungeonök, claim/territórium |
-| [C) Admin / infra](ideas/C-infra.md) | Balansz-adat, moderáció, üzemeltetés |
-| [D) Világ, hangulat](ideas/D-vilag.md) | Immerzió, fővárosi élet, közösségi események |
-| [E) Kaszt és spec](ideas/E-kaszt.md) | Kaszt-identitás, spec-szinergia, signature-pillanatok |
-| [F) Gazdaság](ideas/F-gazdasag.md) | Árfolyam, adó, szerződések, luxus-sinkek |
-| [G) PvP, háború](ideas/G-pvp.md) | Raid-variánsok, rivalizálás, taktikai réteg |
-| [H) PvE, végjáték](ideas/H-pve.md) | Esemény-típusok, boss-mélyítés, ko-op |
-| [I) Szakmák](ideas/I-szakmak.md) | Mestermű, érc-események, recept-láncok |
-| [J) Questek, story](ideas/J-quest.md) | Objektíva-típusok, döntés-flagek, NPC-emlékezet |
-| [K) Lore-integráció](ideas/K-lore.md) | A lore beépítése: itemek, Nether-zóna, Suttogók, feketepiac |
+| [Minden funkció](docs/FEATURES.md) | Az aktív, részleges, letiltott és tervezett rendszerek teljes katalógusa |
+| [Legújabb változások](docs/LATEST_CHANGES.md) | A futóként átadott JAR és az integrált release közötti eltérések, plugin-rollout |
+| [Játékos kézikönyv](docs/PLAYER_GUIDE.md) | Kezdés, gameplay, parancsok és játékosoldali korlátok |
+| [Builder kézikönyv](docs/BUILDER_GUIDE.md) | Világhelyszínek, crate-ek, NPC-k, régiók és builder-checklistek |
+| [Admin kézikönyv](docs/ADMIN_GUIDE.md) | Admin/moderáció, parancsok, permissionök, GUI-k, config, recovery és playtest |
 
----
+A teljes command-, route-, alias-, permission-, config-, message- és
+komponensleltárt a **Repository Docs Inventory** GitHub Actions workflow
+letölthető artifactja készíti. Ez gépi ellenőrzési réteg, nem hatodik
+kézikönyv.
 
-*Jó kalandozást! ❄️ Ha valamit nem értesz, kérdezz egy admintól vagy egy tapasztaltabb játékostól.*
+Kiegészítő belső források:
+
+- [architektúra](docs/ARCHITECTURE.md);
+- [resource pack modelljegyzék](docs/RESOURCE_PACK_CMD.md);
+- [lore-kódex](docs/LORE.md) és [technikai lore-megfeleltetés](docs/LORE_REFERENCE.md);
+- [fejlesztési roadmap és ötletbank](ROADMAP.md);
+- [Discord- és képi teaser-csomag](docs/TEASER.md).
+
+Az aktív dokumentáció minden fenti Markdown-oldala szó szerint tükröződik
+az `IceSMPGuides` repóba, azonos könyvtárszerkezettel. Régi auditnaplók és
+párhuzamos redirect-oldalak nem részei az aktív dokumentációs készletnek.
+
+## Jelenleg futó baseline
+
+Az auditált szerver-JAR az `IceSMP-1.0-TESTING.jar`, SHA-256:
+`da039f0e2bdf0e67b216ce82d7d3fe3b6da0af6e18f6fa175762c37493795a05`.
+A resource- és bytecode-összevetés alapján a legvalószínűbb forrásállapot
+`775d9e247be675db1c7c9beaaecf4a90349bfcd3` (2026. július 12.).
+Ez `HIGH_CONFIDENCE`, nem exact mapping, mert a JAR nem tartalmaz Git SHA-t
+vagy valódi build-időt. A részletes bizonyíték a
+[legújabb változásokban](docs/LATEST_CHANGES.md#bizonyíték-és-ismert-határok)
+olvasható.
+
+## Build és ellenőrzés
+
+Követelmény: Java 21 és elérhető Gradle-dependency repositoryk.
+
+```bash
+./gradlew clean build --no-daemon --stacktrace
+python3 scripts/check_consistency.py
+python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+python3 scripts/generate_repository_inventory.py \
+  --root . --output build/repository-inventory --mode strict
+python3 scripts/check_documentation_coverage.py \
+  --root . \
+  --inventory build/repository-inventory/repository-inventory.json \
+  --output build/repository-inventory \
+  --mode strict
+python3 scripts/check_markdown_links.py --root .
+git diff --check
+```
+
+A zöld build kód- és regressziós bizonyíték. Production rollout előtt az
+[admin kézikönyv acceptance checklistjét](docs/ADMIN_GUIDE.md#release-acceptance-checklist)
+is végig kell futtatni staging/Folia környezetben.
