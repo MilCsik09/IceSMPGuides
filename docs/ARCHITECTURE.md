@@ -37,12 +37,13 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | Csomag | Fájlok | Szerep |
 |--------|-------:|--------|
 | `core/` | 2 | `IceSMPCore` — összeszerelés, életciklus, ütemezés. |
-| `managers/` | 119 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
-| `listeners/` | 119 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem). |
+| `managers/` | 120 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
+| `listeners/` | 120 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem). |
 | `spells/` | 56 | Spell-rendszer: `Spell` SPI, `BaseSpell`, `ConfiguredSpell` builder, `SpellCatalog`, egyedi spellek. |
 | `commands/` | 94 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
 | `gui/` | 46 | Inventory-menük + `GuiUtil` közös helperek + adat-vezérelt `CommandMenu` rendszer. |
 | `crates/` | 14 | Dependency-free crate domain: strict validáció, selector/key plan, atomi opening lifecycle, recovery/kompenzáció, scheduler gate, audit és thread-safe formázás. |
+| `factions/` | 8 | Explicit tagsági értékobjektum, immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és frakcióeredetű adósság-ledger. |
 | `data/` | 13 | Enumok és értékobjektumok (`CurrencyType`, `FactionType`, `JobType`, `SpecializationType`, `Territory`/`TerritoryType`, `BlockCuboid`…). |
 | `relics/` | 9 (6 + `ability/`) | Relikvia-keret: `RelicRegistry`, `RelicDefinition`, triggerek. |
 | `items/` | 12 | Item-gyárak (katalizátor, befogó item, tervrajz, egyedi alapanyag…). |
@@ -109,6 +110,21 @@ A dependency-free `MotdSelector` tesztelhetővé teszi a rotációt és esemény
 `motdRegressionTest` a negatív epoch floor-mod viselkedést, a random stabilitást/pool-lefedést,
 a teljes signed-`long` és strict boolean szabályokat, a placeholder whitelistet, a symlink/TOCTOU
 ikonvédelmet, a generációs interleavinget és a jarban szállított ikonok 64×64 dekódolását is ellenőrzi. Ez nem helyettesíti a valódi Folia ping/reload és proxy nélküli runtime playtestet.
+
+
+### 3.1.2 Natív HUD scoreboard — konfigurálható layout
+
+A jobb oldali natív scoreboard sorait a `hud.sidebar.layout` lista írja le; a dinamikus
+játékállapot nem akadálya a szerkeszthetőségnek. A `text`, `spacer`, `separator`, `target`,
+`resource`, `info` és `party` sortípusok sablonjai futásidőben kapják meg a dokumentált
+`{token}` értékeket. A fejléc címe és a layout reload után élőben frissül, hibás vagy hiányzó
+lista esetén pedig a beépített alapelrendezés lép életbe.
+
+A teljes, már kibontott layout legfeljebb 15 scoreboard-sort használ. Túlcsorduláskor a
+`hud.sidebar.eviction-order` szerinti opcionális szekciók esnek ki; a combat target csak harcban,
+a resource csak aktív kaszt-erőforrásnál, a party pedig tagonként bővül. Az alaplayout első
+`spacer` sora választja el a resource-packből érkező cím-glyphöt a felső vonaltól. A glyph
+`height`/`ascent` metrikája továbbra is a resource pack font-JSON-jának felelőssége.
 
 ### 3.2 Üzenetek — több-fájlos merge + formátum-tudatos rendering
 `MessageManager.load()` egyesíti a `messages/<csoport>.yml` fájlokat (a `MESSAGE_GROUPS` szerint),
@@ -275,6 +291,109 @@ támadó saját `getScheduler()`-ére hoppol.
 > **Új szabály/típus bekötése:** típus → `TerritoryType` (build/claim jog); szabály → új kulcs a
 > `rules` alá + `defaultRule` + a service egy `deny*`/`is*At` metódusa + egy listener-handler.
 > A `claim` tiltását a `TerritoryManager.isClaimBlockedAt` adja (csak védett zónában).
+
+### 3.10 Frakciótagság és passzív-policy
+
+#### Tagság: a fallback nem jogosultság
+
+`FactionType` továbbra is pontosan a négy valódi frakciót jelenti. A hiányzó
+`factions.yml` assignment a `FactionMembership.guest()` állapot: a játékos a
+Menedék vendége, de nem `NEUTRAL` polgár. A `FactionManager` API-jának szerepei:
+
+- `getMembership` / `getChosenFaction` / `hasChosenFaction` — autoritatív
+  tagsági olvasás;
+- `isEligibleForFactionBenefits`, `isMember`, `sameChosenFaction` — gameplay-
+  entitlement és összehasonlítás;
+- `getEconomyFaction` — kizárólag megjelenítési vagy valuta-fallback; hiányzó rekordnál
+  `NEUTRAL` értéket mutathat, ezért gameplay-kapuban tilos használni;
+- `everChosen` + utolsó választás PDC-történet — az assignment hiánya nem
+  hozhat létre új ingyenes első választást, és nem kerülheti meg a szezonvégi
+  lockoutot vagy a szezonális váltási limitet.
+
+Quest, community goal, season source, council, tax, raid/duel/spy, caravan,
+dungeon/world-boss jutalom és minden más frakciós jogosultság ugyanebből az
+explicit modellből indul. Az onboarding fix `NEUTRAL` Creutzér-jutalma
+vendég-útravaló; nem tesz állampolgárrá. A vendég nincs az aktuális periodikus
+adóbeszedési körben, de a hiányzó assignment nem törölheti egy korábbi polgár
+adóhátralékát vagy adócsalási strike-ját. A `FactionTaxDebtLedger` minden
+tartozást és strike-ot `(UUID, eredet-frakció)` szerint tart nyilván: váltáskor
+a régi tétel nem konvertálódik, hanem az eredeti valutából az eredeti kasszába
+törlesztődik. A legacy `tax-arrears` / `tax-evasion-strikes` migráció aktív
+explicit tagságot, majd tartós utolsó választást keres; bizonyíték nélkül a
+rekord `legacy-tax-debts-unresolved` alatt marad, és nem lesz implicit
+`NEUTRAL`.
+
+#### Resolver-rétegek
+
+1. **`FactionPassiveConfig`** a merge-ölt live configból validált, immutable
+   `FactionPassiveSettings` snapshotot épít és atomikusan publikál.
+2. **`FactionPassivePolicy`** Bukkit-esemény nélkül oldja fel a sebzés-, Wither-
+   idő-, exhaustion- és mobtarget-döntést; ez a viselkedési unit/regressziós
+   tesztek elsődleges célpontja (`factionPassiveRegressionTest`, a Gradle
+   `check` része).
+3. **`FactionMobContextResolver`** a runtime managerekből és PDC-markerekből
+   `CORRUPTION`, `DUNGEON`, `INVASION`, `WORLD_BOSS`, `EVENT_MOB`, `QUEST_MOB`
+   és `CROWN_CURSE` kontextust készít, továbbá elkülöníti a markerelt ambient
+   és a vad undeadet.
+4. **`FactionPassiveListener`** csak Paper/Folia adapter: eseményt csatornává
+   alakít, meghívja a policyt, majd az esemény saját régiószálán alkalmazza a
+   döntést.
+5. **`FactionPassiveService`** thread-safe, mulandó per-player/per-mob
+   provokációs és megtorlási állapotot tart. Quit, kick, frakcióváltás, reload
+   és disable után ürül; lejáratkor lusta pruning is fut.
+
+Alap sebzés- és exhaustion-policy:
+
+| Frakció | Csatorna | Alapérték |
+|---|---|---:|
+| RED | FIRE / FIRE_TICK / LAVA / HOT_FLOOR | `0.25 / 0.25 / 0.50 / 0.25` sebzésszorzó |
+| RED | entitás okozta FIRE vagy továbbégés | `0.75` sebzésszorzó |
+| RED | IceSMP `TUZ` spelliskola | `1.0`; csak explicit kapcsolóval érinti a RED policy |
+| BLUE | FREEZE / DROWNING | `0.0 / 0.50` sebzésszorzó |
+| BLUE | konfigurált természetes exhaustion ok | `0.25` cancel-esély; Hunger/script/admin ok nincs az alaplistában |
+| NEUTRAL | FALL | `0.50` sebzésszorzó |
+| DARK | Wither sebzés / véges effektidő | `0.50 / 0.50` szorzó, külön kapcsolókkal |
+
+AI-precedencia, legmagasabbtól a vanilla fallbackig:
+
+1. admin vagy scriptelt kényszercélzás;
+2. boss-, dungeon-, rontás-, invázió-, event- és questkontextus;
+3. koronaátok vagy más explicit harci marker;
+4. provokáció és megtorlás;
+5. Vérhold;
+6. markerelt ambient undead-polgárjog;
+7. vadoni frakciópasszív;
+8. vanilla viselkedés.
+
+Az explicit NEUTRAL policy csak spontán békés/semleges mobaggrót és külön az
+Enderman spontán stare-okát szűri; tulajdonosi, scripted, eventes vagy
+megtorló targetet nem. A DARK ambient truce támadásig teljes lehet, majd alapból
+`60 s` per-player megtorlás és `16` blokkos közeli undead-riasztás lép életbe.
+A vad DARK előny csak éjjel, targetenként `0.50` cancel-eséllyel él; Vérhold
+alatt alapból leáll, míg a valódi ambient városi lakó továbbra is felismerheti a
+DARK polgárt. A fent felsorolt harci kontextusok mindig megelőzik mindkettőt.
+
+A rejtett Suttogó-státusz ugyanezt a resolver/retaliation infrastruktúrát
+használja, de nem DARK polgárjog: alapból csak éjjel, targetenként `0.35`
+cancel-esélyt kap, Vérhold alatt leáll, provokációra `60 s`-re megtörik. A
+markerelt harci content itt is megelőzi. A truce tanúja külön
+`factions.whisper.truce-witness-*` gyanúágat indíthat; ez a rejtett státusz ára,
+nem faction-benefit assignment.
+
+Minden `factions.passives.*` gameplay-érték reloadkor új snapshotba kerül;
+`/icesmp reload` után restart nem szükséges. A sebzésszorzó véges és nem
+negatív, de nincs önkényes felső plafon; az esély csak `[0,1]`. Domainhibánál a
+log megnevezi a kulcsot és az érintett előny kontrolláltan kikapcsol (`1.0`
+szorzó, `0.0` esély vagy `0` idő/sugár), nem csendes clamp történik. A legacy
+`factions.passives.blue-hunger-slow-chance` csak akkor fallback, ha az új
+`blue.natural-exhaustion-save-chance` nincs felülírva, és warning jelzi a
+leszűkült exhaustion-szemantikát.
+
+**Folia-határ:** a target event entitásának olvasása/mutációja helyi; közeli
+undead-riasztásnál minden idegen mob a saját entity schedulerére kap hopot. A
+globális state csak UUID-ket, időbélyegeket és immutable configot tart. A policy-
+teszt bizonyítja a döntési táblát, de nem helyettesíti a többjátékos, több-régiós
+Folia staginget vagy a productionközeli mob-AI/playtestet.
 
 ---
 
@@ -448,11 +567,11 @@ a `SimpleRelicDefinition` a deklaratív eset. A triggerek a `relics/RelicTrigger
   holt bejegyzés, tartalom-drift.
 - **Loader-szint (`IceSMPLoader`):** runtime Maven-függőségek helye (`MavenLibraryResolver`) —
   jelenleg üres, új külső lib igényekor ide, ne a shadowJar-ba.
-- **Méret:** 551 Java-fájl, ~85 000 sor; 90 `*Manager` osztály (a `managers/` csomag 119 fájl).
-  Csomag-megoszlás: listeners 119, managers 119, commands 94, spells 56, gui 46, crates 14, utils 24, data 13,
+- **Méret:** 553 Java-fájl, ~85 000 sor; 90 `*Manager` osztály (a `managers/` csomag 120 fájl).
+  Csomag-megoszlás: listeners 120, managers 120, commands 94, spells 56, gui 46, crates 14, utils 24, data 13,
   items 12, relics 9, integration 7.
 - **Build:** `./gradlew clean build --no-daemon --stacktrace` futtatja a fordítást, a
-  a perzisztencia-, DEV-item-, moderáció-, MOTD-, sit-, crate-, config-startup-, AFK- és territory-capital-regressziós suite-okat.
+  a perzisztencia-, DEV-item-, moderáció-, MOTD-, sit-, crate-, config-startup-, AFK-, HUD- és territory-capital-regressziós suite-okat.
 - **Kiegészítő ellenőrzés:** `python3 scripts/test_dev_item_state.py` és
   `python3 scripts/check_consistency.py`. Pull requesten a `scripts/check_consistency_delta.py`
   hasonlítja a base/head eredményt.
