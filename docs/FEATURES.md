@@ -442,14 +442,22 @@ Kasztválasztás, XP/szint, specializáció, kasztpasszívok és admin XP/unlock
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Választás, XP-források, szintlépés, képességfeloldás és kapcsolódó combat/craft esemény.
 - **Ami még kellhet hozzá:** Nincs kötelező helyszín; resource-pack ikonok és balance-adatok tesztelendők.
-- **Fontos határ:** A konkrét élő balance és már létező játékosadat-migráció az élő config nélkül nem bizonyítható.
+- **Fontos határ:** A konkrét élő balance és több-régiós Folia viselkedés stagingben ellenőrizendő; production legacy játékosadat-migráció nincs.
+
+A teljes, 13 kasztot és 35 specializációt kiszolgáló Profile v2 alap a kaszt/spec egyetlen
+autoritatív adatmodellje és persistence-rétege. Nincs legacy player-profile migráció, PDC fallback,
+dual authority vagy runtime kill switch. Hiányzó profil determinisztikus revision-0 greenfield
+aggregátumként jön létre; hibás vagy owner-eltérő profil quarantine-ba kerül és fail-closed marad.
+Az IceSMP a verziózárt dependency manifest alapján ellenőrzi a kötelező megjelenítési és content
+stacket; eltérésnél nem aktivál félkész profilt.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
-- Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin`; `icesmp.admin.job`; `icesmp.admin.spec`; `icesmp.job.admin`
+- Permission: `icesmp.admin.job`; `icesmp.admin.spec`; quarantine recovery: `icesmp.admin.spec.recover`
 - Config: `classes.*`, `spells.*`, specialization- és ability-definíciók.
-- Tartós állapot: Kaszt, XP, specializáció és unlockok játékosonként tartósak.
+- Startup dependency policy: `class-spec-rework.dependencies.enforce`; dependency lock: `class-spec-dependencies.lock.yml`. Nincs runtime rollout flag.
+- Tartós állapot: ownerhez kötött Profile v2 kaszt, XP/szint, loadout, companion, Soulforge és operation receipt; explicit spell-provenance ledger.
 - Reload: Balance részben reloadolható; új enum/registry-szerkezet restartot igényel.
 
 </details>
@@ -828,21 +836,24 @@ A zászló szövetségest, törvényt és ellenséget is jelent. A játékosok k
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Belépés/kilépés/váltás, frakciókapcsolatok, étel/passzív/spawn hatások és frakcióspecifikus játékmenet.
+Belépés/kilépés/váltás, frakciókapcsolatok, étel/passzív/spawn hatások és frakcióspecifikus játékmenet. A frakciórekord nélküli új játékos a Menedék **vendége**, nem automatikus `NEUTRAL` polgár: frakcióelőny csak kifejezett választás után jár.
 
 - **Így találkozol vele:** `/faction`; főmenü frakciónézete. Parancs: /faction (alias: /f).
 - **Kinek szól:** Játékos, Admin, Builder, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Tagságváltás, join/quit, combat, fogyasztás, spawn és passzív esemény.
+- **Passzív defaultok:** RED környezeti hőnél `0.25/0.25/0.50/0.25` megtartott FIRE/FIRE_TICK/LAVA/HOT_FLOOR sebzés, entitás-tűznél `0.75`; a `TUZ` spelliskola változatlan. BLUE: fagyás `0`, fulladás `0.50`, a konfigurált természetes exhaustion okoknál `25%` megtakarítás. NEUTRAL: zuhanás `0.50`, csak spontán békés/semleges aggró és Enderman-szemkontaktus szűrhető. DARK: Wither sebzés/idő `0.50/0.50`, markerelt ambient undead-béke `60 s` megtorlással és `16` blokkos riadóval, vad undeadnél éjszakai `50%` target-cancel.
+- **Harci precedencia:** admin/scriptelt célzás → markerelt boss/dungeon/rontás/invázió/event/quest → koronaátok → provokáció/megtorlás → Vérhold → ambient polgárjog → vad passzív → vanilla. Vérhold alatt az ambient és a vad DARK truce alapból egyaránt megszűnik. A passzív nem támadhatatlanság.
+- **Jogosultság és tartósság:** a signature-food buff fogyasztáskor élő tagságot kér; a frakcióváltás assignment+history snapshotot és wallet-WAL-t használ. Sikertelen tartós írás nem publikál sikeres váltást és nem indít lifecycle jutalmat.
 - **Ami még kellhet hozzá:** Frakcióspawnokat, védett területeket és váltási feltételeket elő kell készíteni.
-- **Fontos határ:** Élő LuckPerms/group és világconfig nélkül a tényleges rollout nem bizonyítható.
+- **Fontos határ:** Az automatizált policy- és regressziós tesztek nem bizonyítják a productionközeli mob-AI-t, többjátékos viselkedést vagy szezonbalanszt; ehhez az admin acceptance mátrix szerinti staging playtest kell.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.faction`; `icesmp.admin.war`; `icesmp.faction.admin`; `király`; `király vagy icesmp.admin.faction`; `király vagy tanácstag`
-- Config: `factions.*`, relation-, passive-, food- és spawn-definíciók.
-- Tartós állapot: Tagság, relation és frakcióállapot tartós.
-- Reload: Balance reloadolható; tagság- és world-kötés változása migrációtesztet igényel.
+- Config: `factions.*`, különösen `factions.passives.*`, továbbá relation-, food- és spawn-definíciók.
+- Tartós állapot: Az explicit tagság és utolsó választás egy durable generáció; fizetős váltás exact wallet/membership WAL-lal recoveryzhető. A vendégállapot assignment hiánya. A provokációs/truce-state játékos–mob páronként mulandó és lifecycle cleanupot kap.
+- Reload: Minden frakciópasszív gameplay-érték ugyanabból az atomikusan publikált config-generationből frissül; restart nem kell. Ez nem helyettesíti az aktív combat alatti staging reloadtesztet.
 
 </details>
 
@@ -865,7 +876,7 @@ Céhkezelés, vezetői/királyi műveletek, tanács, treasury és közösségi p
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.faction`
 - Config: `factions.*`, guild-, king-, council- és treasury-definíciók.
-- Tartós állapot: Céh, vezetés, tanács és treasury állapota tartós.
+- Tartós állapot: Céh, vezetés és tanács tartós; a treasury, az eredet-frakciós adósság és a walletet is érintő adóbeszedés write-ahead journallal, startup recoveryvel és fail-closed kritikus írási körrel védett. Ismeretlen eredetű fejlesztői legacy adósság karanténban marad, és nem kötődik automatikusan későbbi frakcióhoz.
 - Reload: Policy reloadolható; vezetői állapotváltozás staging- és permissiontesztet igényel.
 
 </details>
