@@ -51,7 +51,7 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | `items/` | 13 | Item-gyárak (katalizátor/Lélekkapocs, befogó item, tervrajz, egyedi alapanyag…) + viselhető prezentáció. |
 | `warrior/` | 2 | Harcos gameplay vertical slice: transiens harci állapot + konkrét runtime (Csatatempó, Berserker, Guardian). |
 | `evoker/` | 2 | Sárkányidéző gameplay vertical slice: transiens állapot + konkrét runtime (Felerősítés, Vörös–Kék Eszencia, Visszhang/Időlenyomat). |
-| `archer/` | 2 | Íjász gameplay vertical slice: transiens állapot + konkrét runtime (Szélolvasás, Pontossági lánc, Kötelék). |
+| `archer/` | 3 | Íjász gameplay vertical slice: transiens állapot + konkrét runtime (Szélolvasás, Pontossági lánc, Kötelék) + a repülő nyilak korlátos, magától lejáró fegyelem-nyilvántartása (`ArcherShotLedger`). |
 | `shaman/` | 2 | Sámán gameplay vertical slice: transiens állapot + konkrét runtime (Totemkerék-rezonancia, Maelstrom-ritmus, Dagály↔Apály). |
 | `monk/` | 2 | Szerzetes gameplay vertical slice: transiens állapot + konkrét runtime (Áramlás, Harcművészeti Lánc, Stagger, Ködszál). |
 | `storage/` | 7 | `YamlStore` (atomikus írás) + `PersistentStore` SPI + fail-closed életciklus-koordinátor. |
