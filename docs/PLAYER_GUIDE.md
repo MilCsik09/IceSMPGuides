@@ -68,10 +68,14 @@ történeted.*
 
 ### Fontos: hogyan kezdesz frakciót választani?
 
-Új játékosként technikailag a **Semleges/Menedék kezdőállapotban** vagy. Ez
-biztonságos kiindulópont, nem egy végleges eskü. Az **első kifejezett
-frakcióválasztásod ingyenes**, ezért előbb nyugodtan ismerd meg a világot és a
-játékstílusokat.
+Új játékosként a **Menedék vendége** vagy. Ez fizikai és történeti
+kezdőállapot, nem automatikus `neutral` állampolgárság: amíg nem választasz
+kifejezetten frakciót, nem kapsz frakciópasszívot, frakcióquestet, tanácsi
+szavazatot, közösségi cél- vagy frakciós szezonpont-jóváírást. Az onboarding
+Creutzér-útravalója caldesterai vendégsegély, nem NEUTRAL-tagság.
+
+Az **első kifejezett frakcióválasztásod ingyenes**. A Menedék teljes jogú
+polgárává is tudatosan a `/faction join neutral` paranccsal válsz.
 
 ### Mit hol találsz?
 
@@ -89,9 +93,11 @@ játékstílusokat.
 
 ### Amit a képernyőd mesél
 
-- A **HUD** mutathatja a kasztod erőforrását, a csapatod állapotát, a fontos
-  világhelyzeteket és a kiválasztott adatokat. A `/hud` paranccsal személyre
-  szabhatod.
+- A **HUD** mutathatja a kasztod erőforrását, a class/spec mechanikád élő
+  barjait, tölteteit vagy rúnáit, a frakciódat, pénzedet, szintedet és a fontos
+  világhelyzeteket. A bankod fő frakcióvalutája mindig látszik, más pénznem csak akkor,
+  ha van belőle egyenleged. A `/hud` paranccsal személyre szabhatod; amíg a first-party
+  resource pack nincs sikeresen betöltve, a kompakt natív kijelzés automatikusan marad.
 - A **tablista** frakció- és ranginformációt adhat, háborúban pedig segít
   felismerni a viszonyokat.
 - Harc közben **sebzésszámok**, célpontinformáció és halálösszegző segít
@@ -112,25 +118,51 @@ véd — és milyen árat kér tőled a hűség.*
 
 Négy nagy hovatartozás alakítja a világot:
 
-| Frakció | Parancsazonosító | Játékstílus és passzív |
+| Frakció | Parancsazonosító | Alap passzív |
 |---|---|---|
-| 🔥 **Láng — Perinfernicitas** | `red` | tűz-, láva- és forróblokk-immunitás |
-| ❄️ **Fagy — Cryghaliris** | `blue` | fagyás- és fulladásimmunitás, lassabb éhségvesztés |
-| ⚖️ **Menedék — Ryanora és Caldestera** | `neutral` | zuhanásimmunitás, békésebb lények, adómentesség |
-| 💀 **Kitaszítottak** | `dark` | wither-immunitás, az élőhalottak nem támadnak; súlyos történeti és jogi ár |
+| 🔥 **Láng — Perinfernicitas** | `red` | a környezeti tűz, égés és magma sebzésének 25%-a, a láváénak 50%-a marad; entitás okozta tűznél 75% marad |
+| ❄️ **Fagy — Cryghaliris** | `blue` | nincs fagyássebzés, a fulladássebzés 50%-a marad; 25% esély a kijelölt természetes exhaustion elkerülésére |
+| ⚖️ **Menedék — Ryanora és Caldestera** | `neutral` | a zuhanássebzés 50%-a marad; spontán békés/semleges mob- és Enderman-szemkontaktus-aggró szűrése; adómentes polgárság |
+| 💀 **Kitaszítottak** | `dark` | a Wither-sebzés és -idő 50%-a marad; ambient városi undead-béke és enyhített éjszakai vad undead-előny, súlyos történeti és jogi árral |
 
 Belépés: `/faction join <red|blue|neutral|dark>`.
 
 ### Az első választás és a későbbi váltás
 
-- A kezdőállapotod **neutral/Menedék**, de az első tudatos választásod ingyenes.
+- A kezdőállapotod **Menedék-vendég**, nem `neutral`; az első tudatos
+  választásod ingyenes.
 - A későbbi váltásnak lehet pénzköltsége, várakozási ideje és szezonális
   korlátja. A jelenlegi értéket mindig a játék üzenete mutatja.
 - A szezon hajrájában a váltás lezárulhat, hogy a bajnoki verseny ne legyen
   kijátszható.
-- A `/faction leave` a Semleges állapotba helyez; nem biztosít kerülőutat a
-  váltási szabályok körül.
+- A `/faction leave` explicit `neutral` polgárságba helyez, nem törli vissza a
+  karaktert vendégállapotba. A korábbi választás tartós nyoma miatt sem a
+  kilépés, sem egy hiányzó assignment nem kerüli meg a cooldown-, szezonlimit-
+  vagy szezonvégi zár szabályait.
 - A frakcióválasztás és a kasztválasztás két külön döntés.
+
+### Mit jelent a passzív harc közben?
+
+- A Láng passzívja **nem** oltja ki az IceSMP `TUZ` varázslatiskolát, és a
+  markerelt boss-/eventsebzés alapból felülírhatja a környezeti védelmet.
+- A Fagy exhaustion-előnye csak a konfigurált természetes mozgásforrásokra
+  vonatkozik. Hunger-effektet, scripted éhséget, adminműveletet vagy az
+  elmaradt hazai étel miatti food-duty következményét nem törli. A signature
+  ételek buffja fogyasztáskor ellenőrzi az aktuális explicit tagságot: egy
+  vendég, másik frakció tagja vagy időközben resetelt játékos nem örökli a
+  tárgy korábbi tulajdonosának frakcióelőnyét.
+- A Menedék békéje nem támadhatatlanság: a megtámadott lény visszaüthet, az
+  Enderman az ütésre reagál, a scripted és eventes célzás pedig működik. A
+  fél zuhanássebzés parkourban is megmarad.
+- Thanaopolis markerelt, ambient élőhalott lakói a DARK játékost felismerik,
+  amíg nem provokálja őket. Támadás után 60 másodpercig az adott játékos–mob
+  pár, valamint a 16 blokkon belül ténylegesen riasztott undead példányok
+  megtorolhatják a támadást; ez nem old fel globális békét minden élőholtnál.
+  A vadonban csak éjjel és célzásonként 50% esélyű az előny. Vérhold alatt az
+  ambient és a vad DARK béke is alapból megszűnik.
+- Rontás-fajzat, dungeonmob vagy miniboss, inváziós mob/bajnok, világboss,
+  scripted event- és questmob, valamint a koronaátok célzása nem kap DARK
+  truce-ot.
 
 ### A Kitaszítottak
 
@@ -237,14 +269,39 @@ Az adományláda nem piac:
 - `/adomany add` — a kézben tartott stack felajánlása;
 - `/adomany` — a közös kínálat böngészése.
 
+A GUI felső, 0–8. sora egyirányú beadási zóna: bal kattintás a teljes
+kurzorstackot, jobb kattintás egy darabot ad be; a shift-kattintás, a
+hotbar-szám, az offhand-gomb és a drag is működik. Egy közös adományt
+egyszerre csak egy játékos vehet el; ha a fogadó inventoryd megtelik, a
+maradék a lábadnál esik le.
+
 Nincs vételár; amit elviszel, azt egy másik játékos neked szánta.
 
 ### Miért kerül pénzbe ennyi minden?
 
 Piaci díj, adó, frakcióváltás, claim-bővítés, rituálé, komp, ládakulcs és
 szakmai kellék is kivonhat pénzt a gazdaságból. Ezek tartják értékesnek a
-veretet. A Menedék adómentes; más frakcióknál hátralék is keletkezhet, ezért
-ne hagyd figyelmen kívül a pénzügyi figyelmeztetéseket.
+veretet. Az explicit Menedék (`NEUTRAL`) polgár adómentes; az assignment nélküli
+vendég nem tagja a polgári adóbeszedési körnek. Más frakcióknál hátralék is
+keletkezhet, ezért ne hagyd figyelmen kívül a pénzügyi figyelmeztetéseket. A
+frakcióváltás a régi tartozást nem váltja át: azt továbbra is az eredeti
+frakció valutájában, az eredeti kassza felé kell rendezni.
+
+### Ládák és kulcsok
+
+A lenti ládaszinten nyolc, alapból mindenki számára nyitható láda kap helyet:
+Köznapi, Ritka, Hősi, Mitikus, Mesterség, Expedíció, Hadizsákmány és Arkánum.
+A permission nem választja szét őket; az ár, a cooldown és a jutalomprofil igen.
+
+A `/crate` böngészőben megnézheted az esélyeket és kulcsot vásárolhatsz. A
+fizikai láda nyitásakor nem jelenik meg inventory-rulett: a kiválasztás a láda
+felett pörgő ItemDisplayen látszik, és a jutalom csak a reveal lezárása után
+kerül kiosztásra. Minden bundled láda nyitásonként pontosan egy kulcsot kér.
+A preview és a világban megjelenő tárgy a valódi resource-pack modellt mutatja.
+A lootban unique szakmaalapanyagok, ténylegesen craftolt és affixet rolloló
+felszerelések, valamint szakma- és szinttartományból sorsolt tervrajzok is
+vannak. Boss-only tervrajz csak a Mitikus poolból jöhet. Elytra egyik ládából
+sem eshet; szárnyként kizárólag a relikviák léteznek.
 
 ---
 
@@ -387,8 +444,12 @@ menüben kezelheted őket:
 
 - `/pet item` — befogóeszköz, ha az irányod használ ilyet;
 - `/pet summon`, `/pet dismiss` — idézés és elbocsátás;
+- `/pet release` — az aktív társ végleges elengedése (Istálló-hely felszabadítása);
 - `/pet name <név>` — elnevezés;
-- `/pet stance <aktiv|passziv|marad>` — viselkedés.
+- `/pet stance <aktiv|passziv|marad>` — viselkedés (szerep: aktív vadász, passzív kísérő, őrhelyen maradó).
+
+A Vadmester Istállója legfeljebb 3 befogott társat tart; teli Istállóval új befogás
+csak elengedés után lehetséges.
 
 A társ tapasztalatot szerezhet, megvédhet, és ritka Társvértet viselhet. A
 pontos befogható vagy idézhető lényt a választott irány és a játékbeli
@@ -547,8 +608,11 @@ A szezon végén jutalom és új pontverseny jön.
 
 ### A halkabb történetek
 
-Tábortűz mellett régi történetet hallhatsz, a krónikák megőrzik a korszak
-eredményeit, és titkos helyek várják az első felfedezőt. Egyes világhelyek vagy
+Tábortűzi történethez ülj le egy olyan székre vagy ülőblokkra, amelytől egy főirányban
+pontosan egy üres blokk, majd egy égő normál vagy lélektűz-campfire áll. A közvetlen
+tábortűz-kattintás nem indít mesét; a kivárás és a jutalom pillanatában is ugyanazon
+a széken kell ülnöd, és az elrendezésnek változatlannak kell maradnia. A krónikák
+megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt. Egyes világhelyek vagy
 NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat már
 aktiválta őket. Ha nem találod őket, az nem feltétlenül rejtvény: kérdezz rá
 az adminoknál vagy nézd meg a szerver közleményeit.
@@ -618,12 +682,28 @@ A küldetések lehetnek harci, gyűjtögető, készítő, felfedező, beszélget
 szállító, parkour-, raid- vagy világesemény-feladatok. Egy küldetés több célt
 is kezelhet párhuzamosan vagy sorrendben.
 
+### Honnan jön a küldetés, és hová kell visszavinni?
+
+Minden küldetésnek saját forrása van, és csak ott vehető fel:
+
+- **NPC-küldetés** — a mesélőre kattintva veszed fel. Ha a feladatait
+  teljesítetted, a küldetés „kész" állapotba lép, és VISSZA kell térned a
+  jogos leadási ponthoz (jellemzően ugyanahhoz az NPC-hez) — a jutalom és a
+  záró párbeszéd ott jár.
+- **Megbízás** — a küldetésnapló „Megbízások" füléről vállalható el
+  kattintással; a teljesítéskor magától lezárul.
+- **Történet-folytatás** — egy lánc előző lépésének teljesítése oldja fel
+  (van, amelyik azonnal folytatódik, van, amelyikhez el kell menned a
+  forrásához), a dialógus-választások pedig elágazó folytatást nyithatnak.
+- Néhány küldetést helyszín, tárgy vagy világesemény indít.
+
 ### Alapparancsok
 
-- `/quest log` — kattintható napló: Aktív, Felvehető, Teljesített.
-- `/quest list` — elérhető és aktív küldetések.
-- `/quest accept <id>` — felvétel.
-- `/quest info` — haladás.
+- `/quest log` — kattintható napló, öt füllel: Aktív, Kész (leadható),
+  Megbízások (itt vállalhatsz), Elérhető (mutatja, hol indul), Teljesített.
+- `/quest list` — a számodra látható küldetések.
+- `/quest info` — aktív küldetéseid és haladásod.
+- `/quest track <id|off>` — követett küldetés kijelölése (a naplóban ★).
 - `/quest abandon <id>` — feladás.
 
 Az első belépéskor egy rövid kezdő lánc automatikusan vezet végig az alapokon.
@@ -633,13 +713,14 @@ megoldásait.
 ### NPC-k és történet
 
 A küldetést adó vagy folytató NPC fölött személyes részecskejelzés jelenhet
-meg. A párbeszédekben választási lehetőséget is kaphatsz, amely másik
-folytatást nyit.
+meg — a színe elárulja, mi vár ott: arany = leadható küldetésed van nála,
+sárga = új küldetést ad, kék = napi/heti kínálat, lila = kaszt-tartalom,
+szürke = folyamatban lévő feladatod célpontja. Ha egy NPC több küldetést is
+kínál, kattintható listából választhatsz. A párbeszédekben választási
+lehetőséget is kaphatsz, amely másik folytatást nyit.
 
 Egyes NPC-k naponta rotáló kínálatot adnak, más feladat hetente vagy
-szezononként ismételhető. Ha az aktuális világban egy szükséges NPC nincs
-kihelyezve, a szerver engedélyezhet `/quest talk <npc-név>` tartalékutat; ezt
-csak akkor használd, ha a játék vagy a csapat kifejezetten erre irányít.
+szezononként ismételhető.
 
 ### Próbák, rejtvények és fejezetek
 
@@ -648,7 +729,12 @@ csak akkor használd, ha a játék vagy a csapat kifejezetten erre irányít.
 - A történeti fejezetek a szezonhoz kapcsolódhatnak.
 - A rejtvényküldetés nem mutatja meg a konkrét célt — ez szándékos.
 - A sötét és vezeklési láncoknak tartós következménye lehet.
-- A `/bestiarium` felfedezői és harci mérföldköveket gyűjt.
+- A `/bestiarium` felfedezői és harci mérföldköveket gyűjt: a négy kategória
+  (szörnyek, receptek, territóriumok, világbossok) kattintva lapozható, az
+  ismeretlen bejegyzések „???"-ként várnak a felfedezésre. A szörnyeknél
+  fajonként számoljuk az elejtéseket: elég kill után a bejegyzés
+  tudás-fokozatot lép (kódex-jegyzet, zsákmány-jegyzet, végül mestervadász
+  jelölés).
 
 Nem találsz itt megoldókulcsot. Ha elakadsz, olvasd újra a párbeszédet,
 vizsgáld meg a helyszínt, kérdezz más játékosokat — és csak ezután gondolj
@@ -744,6 +830,8 @@ legtöbb művelet a `/menu` felületéről is elérhető.
 | `/spec list` | választható specializációk |
 | `/spec choose <id>` | specializáció választása |
 | `/spec respec <class|profession>` | specializáció visszaváltása |
+| `/spec esku <irgalom|itelet|oltalmazas>` | Paplovag-irány (Eskü) választása az ülésre |
+| `/spec ima <vigasz|ostor|csend>` | Pap-litánia (ima) felvétele az ülésre |
 | `/talent` | talentfa |
 | `/profession info` | szakmai állapot |
 | `/profession recipes` | receptkönyv |
@@ -885,3 +973,4 @@ vagy kérdezd meg, hogy a kapu ki van-e építve és aktiválva.
 ---
 
 <sub>Dokumentált release: `4643ab53586f0c1ee7352df16dcd477013e6fad4`</sub>
+
