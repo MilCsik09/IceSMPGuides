@@ -29,7 +29,7 @@ Jelölések:
 ### 1.1. Kiadásblokkoló
 
 - 🚧 **H-ECON-001 — több tartományt érintő gazdasági crash-ablak.**
-  A bank-, claim- és adományfolyamatok egy része memóriát, inventoryt és
+  A bank- és claimfolyamatok egy része memóriát, inventoryt és
   több külön állományt módosít, de ezekhez nincs közös, tartós commitpont.
   A megoldási irány szűk WAL/pending rekord: az irreverzibilis lépés előtt
   tartós műveleti rekord, majd idempotens induláskori recovery. Teljes
@@ -97,8 +97,23 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
 
 - ◇ Az A17 kaszt-HP rendszer alapból ki van kapcsolva. Bekapcsolás előtt
   egységes pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
-- ◇ A hibrid spellköltségeket és a frakciópasszívok számait élő
-  playtestből kell hangolni.
+- ◇ A frakciópasszív-rework defaultjai csak konzervatív kiindulópontok. A
+  `docs/ADMIN_GUIDE.md` teljes membership/RED/BLUE/NEUTRAL/DARK, vegyes
+  játékosos, Suttogó- és lifecycle mátrixát productionközeli Folia stagingen
+  végig kell futtatni; az automatizált policyteszt nem runtime playtest.
+- ◇ Legalább egy teljes szezonban, privacy-safe aggregátumokkal mérni kell
+  frakciónként az elkerült sebzést, étel/exhaustion alakulását, halálokat,
+  quest- és dungeon-clear időt, eventrészvételt, gazdasági megtakarítást és
+  season-source termelést. Csak ezután indokolt a `0.25/0.50/0.75` damage,
+  `0.25` exhaustion és `0.50` wild-undead defaultok újrahangolása.
+- ◇ Külön nyitott kapu a DARK/non-DARK és NEUTRAL/non-NEUTRAL párok ugyanazon
+  mobnál, provokációval és nélküle, régióhatáron át; a játékos–mob retaliation
+  lease-ek target-függetlenségét, scheduler rejectiont, retired callbacket és
+  state-cleanupot loggal kell bizonyítani.
+- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás és az
+  adóbeszedés WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
+  sikertelen kompenzáció, journal-cleanup hiba, circuit-open és kontrollált
+  restart utáni idempotens folytatás.
 - ◇ Az Íjász és az Orgyilkos tényleges DPS-ét célbábun és valódi
   harchelyzetben is mérni kell; a DoT és a vanília sebzésréteg miatt a
   papírérték nem elég.
@@ -239,7 +254,10 @@ meta-progresszió; tárgyszettek; presztízs és reforge.
 
 💡 Világboss add/interrupt mechanika; esemény-auto-party; heti
 kihívásrotáció; vándorló vagy mythic boss; szörnyfészek; kooperatív
-boss-finisher.
+boss-finisher; bestiárium tanulmány-bónusz (III. tudás-fokozat után kis,
+config-kapcsolós bónusz a tanulmányozott faj ellen — pl. +2–3% sebzés
+és/vagy lélekkő-esély szorzó; balansz-review és a passzív-precedencia
+láncban rögzített hely szükséges hozzá).
 
 ### PvP és frakcióháború
 
