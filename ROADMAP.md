@@ -19,7 +19,7 @@ világban elvégzett bekötést.
 Jelölések:
 
 - 🚧 **kiadási kapu** — rollout előtt kötelező;
-- ⬜ **elkötelezett fejlesztés** — része az A–G tervnek;
+- ⬜ **elkötelezett fejlesztés** — része az A–H tervnek;
 - ◇ **builder- vagy runtime-kapu** — kézi előkészítést, illetve próbát igényel;
 - 💡 **ötlet** — értékes irány, de még nincs ütemezve;
 - ⏸ **döntésre vár** — tulajdonosi vagy design-döntés nélkül nem indul.
@@ -97,8 +97,23 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
 
 - ◇ Az A17 kaszt-HP rendszer alapból ki van kapcsolva. Bekapcsolás előtt
   egységes pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
-- ◇ A hibrid spellköltségeket és a frakciópasszívok számait élő
-  playtestből kell hangolni.
+- ◇ A frakciópasszív-rework defaultjai csak konzervatív kiindulópontok. A
+  `docs/ADMIN_GUIDE.md` teljes membership/RED/BLUE/NEUTRAL/DARK, vegyes
+  játékosos, Suttogó- és lifecycle mátrixát productionközeli Folia stagingen
+  végig kell futtatni; az automatizált policyteszt nem runtime playtest.
+- ◇ Legalább egy teljes szezonban, privacy-safe aggregátumokkal mérni kell
+  frakciónként az elkerült sebzést, étel/exhaustion alakulását, halálokat,
+  quest- és dungeon-clear időt, eventrészvételt, gazdasági megtakarítást és
+  season-source termelést. Csak ezután indokolt a `0.25/0.50/0.75` damage,
+  `0.25` exhaustion és `0.50` wild-undead defaultok újrahangolása.
+- ◇ Külön nyitott kapu a DARK/non-DARK és NEUTRAL/non-NEUTRAL párok ugyanazon
+  mobnál, provokációval és nélküle, régióhatáron át; a játékos–mob retaliation
+  lease-ek target-függetlenségét, scheduler rejectiont, retired callbacket és
+  state-cleanupot loggal kell bizonyítani.
+- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás és az
+  adóbeszedés WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
+  sikertelen kompenzáció, journal-cleanup hiba, circuit-open és kontrollált
+  restart utáni idempotens folytatás.
 - ◇ Az Íjász és az Orgyilkos tényleges DPS-ét célbábun és valódi
   harchelyzetben is mérni kell; a DoT és a vanília sebzésréteg miatt a
   papírérték nem elég.
@@ -211,6 +226,31 @@ visszatérési összefoglalójában.
 - ⬜ Moderációs workflow 2.0 a meglévő reportmodell migrálásával, új
   párhuzamos case-rendszer nélkül.
 
+### H — IceSMP Client Platform (opcionális Fabric kliensmod)
+
+A szerveroldali protokoll-alap (Client Bridge: transport, kézfogás,
+session-registry, rate limit, `/icesmp client` diagnosztika) elkészült —
+lásd `docs/ARCHITECTURE.md` „Client Bridge” szekció. A folytatás
+fázisonként, a terv szerinti sorrendben:
+
+- ⬜ Külön `IceSMP-Client` Fabric repo létrehozása (client-only skeleton,
+  `fabric.mod.json`, inert other-server mód).
+- ⬜ Phase 0 transport spike: valódi Paper↔Fabric HELLO/ACK roundtrip
+  exact 1.21.11-en, reconnect + proxy-hatás bizonyítással (CLIENT-02
+  acceptance-sor).
+- ⬜ Native HUD fázis: `HudSnapshot`/`ClassHudState` szerializáció +
+  presentation routing (nem új state-modell); `client.features.native-hud`
+  kapu csak ezután nyitható.
+- ⬜ Ability bar + `CAST_SLOT` keybind casting — ELŐFELTÉTEL: a
+  class/spell/cast hardening (PR #115) integrálva, közös canonical cast
+  entrypointtal; addig a `keybind-cast` kapu zárva.
+- ⬜ Spellbook/Profile natív screenek (query + action service extraction),
+  majd relic renderer és a további modulok a product spec sorrendjében.
+
+**Kilépési feltétel fázisonként:** vanilla kliens viselkedése változatlan,
+nincs dupla presentation, a kliens semmiben nem authority, és a feature
+egyetlen `client.features.*` kapcsolóval visszakapcsolható.
+
 ## 5. Közös alapok és függőségek
 
 | Alap | Első fázis | További használók |
@@ -225,7 +265,7 @@ visszatérési összefoglalójában.
 
 ## 6. Ötletbank — még nincs ütemezve
 
-Az alábbiak értékes irányok, de nem részei az A–G vállalásnak. Csak
+Az alábbiak értékes irányok, de nem részei az A–H vállalásnak. Csak
 külön scope-, exploit-, Folia- és gazdasági review után kerülhetnek fel
 elkötelezett fázisba.
 
@@ -239,7 +279,10 @@ meta-progresszió; tárgyszettek; presztízs és reforge.
 
 💡 Világboss add/interrupt mechanika; esemény-auto-party; heti
 kihívásrotáció; vándorló vagy mythic boss; szörnyfészek; kooperatív
-boss-finisher.
+boss-finisher; bestiárium tanulmány-bónusz (III. tudás-fokozat után kis,
+config-kapcsolós bónusz a tanulmányozott faj ellen — pl. +2–3% sebzés
+és/vagy lélekkő-esély szorzó; balansz-review és a passzív-precedencia
+láncban rögzített hely szükséges hozzá).
 
 ### PvP és frakcióháború
 

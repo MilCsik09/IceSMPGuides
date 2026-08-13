@@ -63,7 +63,7 @@ Minden helyszínhez legyen egy rövid átadólap:
 
 | Rendszer | Fizikai hely kell? | Hogyan kötődik a világhoz? | Bundled állapot | Fő builderteendő |
 |---|---|---|---|---|
-| Crate | Igen, ha blokkra kattintható crate kell | Tartós világ UUID + világnév + blokkkoordináta | Két definíció van; fizikai placement runtime adat | Építs pickup-biztos környezetet, majd `/crate set <id>` |
+| Crate | Igen, ha blokkra kattintható crate kell | Tartós világ UUID + világnév + blokkkoordináta | Nyolc alapdefiníció van; fizikai placement runtime adat | Kösd az alsó szint 8 állomását, majd `/crate set <id>` |
 | Sit-only | Nem külön helyszín, de a blokkok geometriája számít | Engedélyezett világok, anyagok és blokkállapot | Alapból engedélyezett | Támogatott ülőfelületekkel és megfelelő fejhellyel építs |
 | Territórium/főváros | Igen | Kör- vagy poligonzóna és opcionális magassági sáv | Nincs bundled élő zónapéldány | Határ, típus, frakció és spawn adminbekötése |
 | Játékosclaim | Játékos hozza létre | Blokkpontos doboz a világ nevével | Runtime tartós adat | Úgy tervezz telkeket, hogy a claimhatárok ne vágják ketté a közös infrastruktúrát |
@@ -154,10 +154,22 @@ Egy crate-definíció attól még létezhet, hogy egyetlen blokk sincs hozzá
 regisztrálva. Egy regisztrált blokk pedig veszélyessé válhat, ha a hozzá
 tartozó definíciót előbb törlitek a configból.
 
-A bundled release két crate ID-t ad: `koznapi` és `ritka`. Mindkettő
-`TRIPWIRE_HOOK` alapú kulcsot használ, de külön item-modellel,
-jutalomkészlettel és szabályokkal. Az elhelyezéskor az ID-t pontosan,
+A bundled release nyolc crate ID-t ad: `koznapi`, `ritka`, `hosi`,
+`mitikus`, `mesterseg`, `expedicio`, `hadizsakmany` és `arkanum`.
+Ezek az alsó szint 8 állomását töltik ki; a felső szint 8 helye későbbi
+szezonális, frakciós és eventládáknak marad. Mindegyik `TRIPWIRE_HOOK`
+alapú, saját item-modellel és jutalomprofillal, és a bundled configban egyik
+sem kér crate-specifikus permissiont. Az elhelyezéskor az ID-t pontosan,
 ékezet nélkül add meg.
+
+A reward-preview nem puszta Material-ikont használ: unique itemnél,
+recepttárgynál, tervrajznál és ládakulcsnál a tényleges `ITEM_MODEL` kerül a
+GUI-ba és a világban futó revealbe. A `random-blueprint` jutalom szakmával,
+`min-level`/`max-level` tartománnyal és az alapból hamis
+`include-loot-only` kapcsolóval szűrhető. Üres pool érvényteleníti a crate
+definícióját. `ELYTRA` sem közvetlen itemként, sem Elytrát eredményező
+receptből/tervrajzból nem engedélyezett; repülőszárnyat csak a relikviarendszer
+kezelhet.
 
 ### 4.2. Crate-hely létrehozása
 
@@ -196,7 +208,7 @@ Cserénél:
 5. próbáld ki a régi és az új kulcsot is;
 6. restart után ismét ellenőrizd.
 
-Ne cserélj crate-definíciót egy aktív spin vagy settlement közben. A
+Ne cserélj crate-definíciót aktív ItemDisplay-reveal vagy settlement közben. A
 config-generáció változása megszakíthatja a folyamatot, amely ezután
 recovery-ágra kerülhet.
 
@@ -459,12 +471,15 @@ Az érkezőpontnál:
 - legyen két blokk fejhely;
 - ne legyen folyadék, tűz, void, keskeny perem vagy zárt ajtó;
 - a nézési irány mutasson a kívánt tájékozódási pontra;
-- ellenőrizd első belépővel, frakcióváltással és ágy/anchor nélküli
+- ellenőrizd explicit frakcióválasztással, frakcióváltással és ágy/anchor nélküli
   halál utáni respawnnal.
 
-Új játékos a config szerint a semleges frakcióspawnra kerülhet. A külön
-`world-events.intro.first-join-spawn` teleport ezt követően másik introhelyre
-viheti; a két rendszert együtt kell tesztelni.
+Az assignment nélküli új játékos Menedék-vendég, nem `NEUTRAL` polgár. A
+`factions.spawn.first-join-at-neutral` ennek ellenére fizikailag a semleges
+frakcióspawnra teheti mint biztonságos fogadóhelyre; ez nem hoz létre
+assignmentet vagy frakcióelőnyt. A `world-events.intro.first-join-spawn`
+ezután külön introhelyre viheti. Együtt teszteld a két érkezési lépést, majd
+külön az explicit `/faction join neutral` utáni valódi NEUTRAL spawnteleportot.
 
 ### 6.4. Claimek és közös infrastruktúra
 
@@ -502,7 +517,7 @@ Teszteld:
 - betöltött és betöltetlen célchunkkal;
 - helyes yaw/pitch értékkel;
 - hibás világnévvel és hibás formátummal;
-- a semleges frakcióspawnnal együtt;
+- assignment nélküli vendégként, majd külön explicit `NEUTRAL` választással;
 - opcionális kameraút engedélyezése esetén megszakított reconnecttel.
 
 ### 7.2. Komp
@@ -550,7 +565,10 @@ vagy harci korlátozást.
 Szükséges permission: `icesmp.admin.parkour`.
 
 Egy pályánál teszteld a startot, célsugarat, cél megközelítését több
-irányból, kizuhanást, teleportot, újraindítást és a jutalomkiosztást.
+irányból, kizuhanást, teleportot, újraindítást és a jutalomkiosztást. A
+zuhanásos akadályt külön járd végig assignment nélküli vendéggel és explicit
+`NEUTRAL` polgárral: csak az utóbbi kapja az alap `0.50` zuhanásszorzót, de ő
+sem zuhanásimmunis.
 Ha quest `PARKOUR_TRIAL` objektíva hivatkozik rá, a pálya ID-jének pontosan
 egyeznie kell.
 
@@ -1026,3 +1044,4 @@ rituáléstruktúrákat és rejtett helyeket.
 
 A teljes pipálható csapatfolyamat:
 [release acceptance checklist](ADMIN_GUIDE.md#release-acceptance-checklist).
+
