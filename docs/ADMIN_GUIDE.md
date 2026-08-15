@@ -830,6 +830,7 @@ eszköz milyen felelősséggel jár. A pontos root/subcommand/alias routingot a
 | Láthatóság és kommunikáció | `/msg`, `/tell`, `/w`, `/reply`, `/socialspy`, `/vanish`, `/moderation` | PM, megfigyelés, staffjelenlét |
 | Inventory és hely | `/invsee`, `/offlinetp` | online inventory read/edit és utolsó ismert hely |
 | Tartalomadmin | `/events`, `/quest`, `/npcbind`, `/territory`, `/parkour`, `/crate`, `/iceitem` | esemény-, világ-, crate- és itemkezelés |
+| Season 0 / Prologue | `/prologue` (`status`, `start`, `advance`, `stage`, `stability`, `breach`, `finale`, `gate`, `reset`) | az egyszeri Prologue korszak live-ops vezérlése — a teljes referencia és a kockázati besorolás: [docs/PROLOGUE.md](PROLOGUE.md#14-admin-parancsok) |
 | Karakter és gazdaság | `/class`, `/spec`, `/profession`, `/currency`, `/faction`, `/relic`, `/sinner` | ritka, naplózandó játékosmutáció |
 | Játékosrendszerek | `/afk`, `/sit`, `/party`, `/claim`, `/market`, `/bank`, `/spellbook`, `/talent` és a többi publikus root | a játékoskézikönyv szerinti használat |
 
@@ -843,6 +844,10 @@ eszköz milyen felelősséggel jár. A pontos root/subcommand/alias routingot a
 | `/crate set <id>` / `/crate remove` | csak stagingen ellenőrzött blokk- és világkötéshez |
 | `/territory setcapital <frakció> selection [név...]` | a `/claim pos1` + `/claim pos2` pontos X/Y/Z dobozát teszi védett fővárossá; előbb ellenőrizd a személyes claim-konfliktust és utána a `/territory show` rajzot |
 | `/icesmp reload` | configmentés és validáció után; strukturális változásnál restart kellhet |
+| `/prologue start` | az éles Prologue-indítás a nyitás pillanatában; enélkül a korszak `DORMANT` marad és a stage-óra nem indul |
+| `/prologue gate open --force` | veszélyes override: megnyitja a Kaput valódi finálégyőzelem nélkül |
+| `/prologue gate close --force` | csak override-dal nyitott Kaput zár vissza; kiérdemelt győzelem után elutasít |
+| `/prologue reset --force` | **staging teszt-eszköz**: visszavonja a Season 1 átmenetet, a krónikát, az emlékművet és a teljes Prologue-állapotot; production világon ne használd |
 | `/faction set`, `/currency set`, `/relic give`, `/iceitem` | gazdasági vagy progressionmutáció; mindig jegyezd fel |
 
 ### Bizonyított eltérések a régi leírásoktól
@@ -1508,6 +1513,17 @@ beszedési útvonalnak: karanténban marad explicit adminmigrációig.
 | [ ] | CRATE-25 Random tervrajz policy | Admin/tesztelő | szakma- és szintszűrt normál pool, majd Mitikus `include-loot-only` pool | minden sorsolt recept a tartományban van; boss-only csak engedélyezett poolból jön | érintett pool tiltása | `crate/CRATE-25/` |
 | [ ] | CRATE-26 Elytra-tiltás | Admin | közvetlen `item: ELYTRA`, Elytra-recept és ilyen tervrajz tesztdefiníciója | mindhárom config betöltéskor elutasított; bundled lootban nincs Elytra | crate config rollback | `crate/CRATE-26/` |
 
+### Szakma-katalógus (rework)
+
+| Kész | Teszt | Felelős | Előkészítés | Elvárt eredmény | Hiba esetén | Bizonyíték |
+|---|---|---|---|---|---|---|
+| [ ] | PROF-01 Tervrajz nem sokszorozódik | Tesztelő | tervrajz jobb kattintás, majd a lap AZONNALI áthelyezése/eldobása a mentés alatt | a lap egyszer fogy el; ismert receptnél és mentési hibánál visszajár, duplikátum nem keletkezik | tervrajz-forrás tiltása, rollback | `profession/PROF-01/` |
+| [ ] | PROF-02 Inaktív szakma craft-kapu | Admin/tesztelő | receptkönyv megnyitása, majd `/profession clear` vagy váltás MÁSIK szakmára a nyitott GUI mellett | a régi szakma receptje nem craftolható; „Ezt a szakmát jelenleg nem gyakorlod" üzenet jön | craft-út tiltása | `profession/PROF-02/` |
+| [ ] | PROF-03 Főzetek valóban hatnak | Tesztelő | mind a 16 alkimista főzet elkészítése és elfogyasztása/eldobása | minden főzet a leírt hatást adja; a dobó/elnyúló változat a vanília terület-kezelést használja | alkimista rollout stop | `profession/PROF-03/` |
+| [ ] | PROF-04 Tomusok üllőn átadnak | Tesztelő | mind a 13 tomus elkészítése, üllőn felszerelésre helyezése | mindegyik átadja a nevében ígért bűbájt a megfelelő szintem | bűvölő rollout stop | `profession/PROF-04/` |
+| [ ] | PROF-05 Nincs nyersanyag-hurok | Admin | a gépi kapu (`scripts/check_consistency.py`) + kézi próba a korábbi 15 hurok receptjein | nincs olyan craft-kör, amely nettó nyersanyagot termel | katalógus rollback | `profession/PROF-05/` |
+| [ ] | PROF-06 Heti cél és tömeges XP | Tesztelő | recept-craft, shift-craft és 64-es kemencekivét | a craft-XP tölti a heti céh-célt; a tömeges munka darabonként számít a sapkáig | XP-kulcsok visszaállítása | `profession/PROF-06/` |
+
 ### Globális AFK
 
 | Kész | Teszt | Felelős | Előkészítés | Elvárt eredmény | Hiba esetén | Bizonyíték |
@@ -1885,7 +1901,3 @@ Kézi elfogadási minimum:
 - aktív/nyugalmi event, class-szint, `/hud mind`, pack elfogadás/elutasítás és letöltési hiba;
 - külső HUD plugin nélküli indulás, két Folia-régió és több GUI scale/képernyőfelbontás;
 - a pack sikeres betöltéséig natív compact fallback, utána pontosan egy class HUD.
-
-
-
-

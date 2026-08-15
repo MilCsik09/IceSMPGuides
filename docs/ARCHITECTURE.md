@@ -16,7 +16,7 @@
 ```
 IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
   └─ IceSMPCore                ← a teljes rendszer összeszerelése
-       ├─ konstruktor          → ~92 manager felépítése (szigorú sorrend), registerSpells()
+       ├─ konstruktor          → ~94 manager felépítése (szigorú sorrend), registerSpells()
        ├─ enable()             → config + perzisztens store-ok betöltése, listenerek + parancsok
        │                         regisztrálása, ütemezett feladatok indítása
        └─ disable()            → perzisztens store-ok mentése, majd futó rendszerek leállítása
@@ -40,7 +40,7 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | `managers/` | 125 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
 | `listeners/` | 121 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem + esemény-spawn debug). |
 | `spells/` | 59 | Spell-rendszer: `Spell` SPI, `BaseSpell`, `ConfiguredSpell` builder, `SpellCatalog`, egyedi spellek. |
-| `commands/` | 94 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
+| `commands/` | 95 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
 | `classrelic/` | 14 | Class Relic Framework: pure resolver/katalógus/jelzések + Paper homlokzat (`ClassRelicService`). |
 | `quest/` | 8 | Quest Framework v2 pure magja: forrás-policy + kontextus, kategória/láthatóság szótárak, gráf-validátor, választó-token registry, marker-paletta, valamint az első belépés üdvözlő-szövegének egyetlen szabálya (`OnboardingWelcomeCopy`: canonical copy + elavult stock-config felismerése, custom szöveg érintetlenül). |
 | `gui/` | 69 | Inventory-menük + `GuiUtil` közös helperek + adat-vezérelt `CommandMenu` rendszer + staged config-editor lapok (root/kategória/operational/world/crate + reward-editor). |
@@ -623,9 +623,9 @@ a `SimpleRelicDefinition` a deklaratív eset. A triggerek a `relics/RelicTrigger
   holt bejegyzés, tartalom-drift.
 - **Loader-szint (`IceSMPLoader`):** runtime Maven-függőségek helye (`MavenLibraryResolver`) —
   jelenleg üres, új külső lib igényekor ide, ne a shadowJar-ba.
-- **Méret:** 846 Java-fájl, ~85 000 sor; 92 `*Manager` osztály (a `managers/` csomag 125 fájl).
-  Csomag-megoszlás: listeners 122, managers 122, commands 94, spells 56, gui 69, crates 14, utils 26, data 15, classrelic 14,
-  items 12, relics 11, quest 7, integration 6.
+- **Méret:** 870 Java-fájl, ~85 000 sor; 94 `*Manager` osztály (a `managers/` csomag 125 fájl).
+  Csomag-megoszlás: listeners 121, managers 125, commands 95, spells 59, gui 69, crates 14, utils 26, data 15, classrelic 14,
+  items 12, relics 11, quest 8, integration 6.
 - **Build:** `./gradlew clean build --no-daemon --stacktrace` futtatja a fordítást, a
   a perzisztencia-, DEV-item-, moderáció-, MOTD-, sit-, crate-, config-startup-, AFK-, HUD- és territory-capital-regressziós suite-okat.
 - **Kiegészítő ellenőrzés:** `python3 scripts/test_dev_item_state.py` és
@@ -1134,11 +1134,39 @@ A kötelező kézi staging-próbák az [admin kézikönyv staging-mátrixai](ADM
 
 ## Szakma-recept és item-audit
 
+### Recept-fajta szerződés (a katalógus önpolicolása)
+
+A katalógus azért tudott 292 vanília-duplikátumig sodródni, mert nem volt szabály arra,
+*mitől recept egy recept* — nem volt mihez képest nemet mondani. Minden recept ezért
+kötelezően kimondja a fajtáját (`kind:`), és a fajta szabja meg, milyen kart húzhat meg:
+
+| `kind` | Mit ad | Kötelező megszorítás (gépi kapu) |
+|---|---|---|
+| `gyakorlo` | vanília-paritás, XP-ért | `level <= 15`, egyedi alapanyag nélkül; a GUI kiírja, hogy gyakorló |
+| `hozam` | ugyanaz olcsóbban/többet | nem zárhat pozitív nyersanyagkört |
+| `egyedi` | valódi custom tárgy | kötelező funkcionális komponens: `affix-tier` / `enchant` / `attributes` / `consumable` / `signature` / `potion-effects` |
+| `lanc` | egyedi alapanyag | egyedi kimenet vagy egyedi hozzávaló, és a kimenetnek kell fogyasztó |
+| `ritkasag` | loot-szintű tárgy | boss/esemény-kötött alapanyag + `amount: 1`, sokszorozás tilos |
+
+A kapukat a `scripts/check_consistency.py` és a `professionRecipeAuditRegressionTest`
+együtt tartja fenn. Amit a gép állít, az **mind a katalógus adataiból levezethető**:
+fajta-konzisztencia, funkcionális komponens megléte, ritkaság-kapu, zsákutcás lánc-alapanyag,
+valamint 1- és 2-körös nyersanyag-hurok (a blokk↔item visszaalakítás nevesített táblával).
+A **hozam-arány felső határa emberi szabály marad** — a checker nem modellezi a vanília
+receptgazdaságot, mert az nagy és törékeny infrastruktúra lenne egy olyan kérdésre, amit
+review-ban másodpercek alatt el lehet dönteni.
+
+Két eredmény-mező hordozza a korábban hiányzó viselkedést: a `result.potion-effects`
+(+ `result.potion-color`) valódi custom effekteket tesz a főzet-eredményre, hogy a vanília
+dobási/terület/időtartam-kezelés dolgozzon vele listener-utánzat helyett; a `result.enchant`
+enchantelt könyvnél stored-enchantként kerül fel. Mindkettő **meta-művelet**, ezért a
+data-komponens-blokk ELŐTT fut a `buildResult`-ban (a `setItemMeta` eldobná a komponenseket).
+
 | profession | recipe key | item | problem | previous behaviour | fixed behaviour | balance rationale | migration / compatibility |
 |---|---|---|---|---|---|---|---|
-| Fisher | `egyszeru_horgaszbot` / `kezdo_horgaszbot` | Fishing Rod | Exact semantic duplicate: `3×STICK + 2×STRING → FISHING_ROD` | Two progression records represented the same craft and could diverge by load order | `egyszeru_horgaszbot` is canonical; `kezdo_horgaszbot` and its recipe are removed | One unlock/cost path prevents fake progression depth and recipe ambiguity | Existing fishing rods remain vanilla-compatible; no item migration is required |
+| Fisher | `egyszeru_horgaszbot` / `kezdo_horgaszbot` | Fishing Rod | Exact semantic duplicate: `3×STICK + 2×STRING → FISHING_ROD` | Two progression records represented the same craft and could diverge by load order | Both are removed; the catalog's first rod is `uszokeszlet` (affix + Lure), which is not a vanilla duplicate | One unlock/cost path prevents fake progression depth and recipe ambiguity | Existing fishing rods remain vanilla-compatible; no item migration is required |
 | All | `icesmp:prof_*` legacy masterworks | PDC-stamped masterwork tools/books | Reload/disable did not remove previously registered Bukkit keys | Disabled or removed recipes could remain craftable until restart; repeated registration could be rejected | Manager owns a deterministic key set, removes it before rebuild and on disable, then registers once | No duplicate registry entries or stale craft path | Already crafted items remain valid; only future crafting availability changes |
-| All | Config catalog (438 before, 437 after) | All profession outputs | No early semantic collision validation, and a rejected reload could expose the already-cleared or partially rebuilt live maps | Similar/duplicate recipes were accepted silently; later validation failures could leave an incomplete runtime catalog | Sorted loading plus canonical input/output fingerprints validate a private candidate; immutable maps and recipe metadata are published with one `volatile` snapshot replacement | Exact duplicates fail early without destabilising active crafting, while intentional recipes with distinct input or output remain independent | Existing runtime generation remains active when a reload is rejected; no item migration is required |
+| All | Config catalog (437 before the rework, 302 after) | All profession outputs | No early semantic collision validation, and a rejected reload could expose the already-cleared or partially rebuilt live maps | Similar/duplicate recipes were accepted silently; later validation failures could leave an incomplete runtime catalog | Sorted loading plus canonical input/output fingerprints validate a private candidate; immutable maps and recipe metadata are published with one `volatile` snapshot replacement | Exact duplicates fail early without destabilising active crafting, while intentional recipes with distinct input or output remain independent | Existing runtime generation remains active when a reload is rejected; no item migration is required |
 | All | Unique profession outputs | Resource-pack model | Item/model references were distributed across config and pack | Missing mappings were only found visually | Build validator checks every referenced ITEM_MODEL against the manifest and checked-in pack | Visual identity remains stable without changing public model IDs | No public model ID changed; vanilla `PAPER` is the explicit no-pack fallback |
 
 The automated audit verifies **437 recipes**, zero duplicate keys, zero semantic duplicates, immutable recipe metadata,
@@ -1528,5 +1556,3 @@ registry-életciklust, a sequence-monotonitást és a rate limitert. A kliensold
 szimulált szerveres kézfogás-suite-okkal (lásd az AGENTS.md kliensprotokoll-DoD szabályát);
 az élő Paper↔Fabric roundtrip-bizonyítás (CLIENT-02) staging-teszt. A protokoll-tartomány
 szándékosan 1..1, és a feature-kapuk alapból zárva maradnak.
-
-
