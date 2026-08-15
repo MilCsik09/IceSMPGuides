@@ -27,6 +27,10 @@ Folia-/26.2-portolási határokat és a későbbi adapterek stabil szerződései
 
 A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, egyben:
 
+- **Kaszt-kifizetés visszajelzés:** a kaszt-magok eddig is emelték a képességek
+  erejét, de a játékos ebből semmit nem látott. Mostantól a megerősített cast
+  kiírja a kapott százalékot, az Íjász Szélolvasása pedig a találat
+  pillanatában jelez; kombó-lánc befejezőnél a kiírt érték a két bónusz összege.
 - **PlayerProfile-alap:** minden tartós játékos-állapot (kaszt, szakma, quest,
   pénztárca, statisztika, moderációs összegzés, crate-számlálók, heti céh-cél,
   halál-escrow) egyetlen, tranzakcióvédett profilrendszerben él — restart és
@@ -39,18 +43,40 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   erődkerettel), 64×64-es class/utility/rúna/pénznem ikonok, class/spec/szint/event parity,
   minden class strukturált mechanikaállapota, legfeljebb öt generic metric, automatikus
   charge-pipek, Wizard háromcsatornás ráhangolódása és DK slotonkénti rúnaregeneráció.
-  A fő frakcióvaluta mindig, a pozitív idegen banki valuták külön ikonnal jelennek meg;
+  Mind a négy frakcióvaluta állandó helyen, nulla egyenleggel is megjelenik;
   packhiánynál játékosonkénti natív fallback marad; a kijelzés teljesen first-party, külső HUD plugin nélkül.
   A panelglyphök a kliens 256×256-os font-atlasz korlátján belül maradnak, a jobb oldali
   horgony clip-space alapú, a teljes kompozíció fizikai méretét pedig a shader a kliens
   `ScreenSize` értékéből normalizálja. A magyar feliratok négyszeresen túlmintavételezett,
-  élsimított DejaVu-forrásból készülnek; ablak- és GUI-scale váltás nem mozdíthatja vagy
+  élsimított Inter SemiBold forrásból készülnek; ablak- és GUI-scale váltás nem mozdíthatja vagy
   többszörös méretűre nagyíthatja a HUD-ot.
+- **Egyedi survival HUD és HP-scaling előkészítés:** a normál vanilla szív-, páncél-, étel- és
+  oxigénsávot pack-readiness után egy alsó-középre horgonyzott panel váltja. A HP current/max és
+  százalék formában, az absorption külön jelöléssel, a másik három erőforrás mini-sávon és pontos
+  számmal látszik. A gyors, Folia-safe tick külön fut a class/sidebar snapshotfrissítéstől. A
+  class-health gate továbbra is kikapcsolt, de a normalizálás már tiltott, így későbbi staging
+  aktiváláskor a HUD a valódi skálázott HP-t fogja mutatni. Hardcore-heart asset nincs felülírva.
 - **Staff-eszközök:** automatikus single-writer `/invsee`, húzható
   adományláda-input, staged config-GUI (mentés/elvetés tranzakcióval).
+- **Társ-rendszer:** a Profile v2-ben tárolt társlista most a `/pet` GUI-ból és
+  `/pet select <hely>` paranccsal ténylegesen váltható; nem aktív társ is célzottan
+  elengedhető. Az aszinkron GUI csak a tartós művelet után frissül, az idézés
+  biztonságos, betöltött Folia-lokális állóhelyet keres, a pet saját ölése is ad
+  companion XP-t, a halál cooldownja pedig a durable commit alatt is fail-closed.
+- **Teljes class-integritás:** mind a 35 specializáció hét használható
+  aktív képességgel, hat ténylegesen bekötött doctrine-nal és mechanikailag
+  fogyasztott szint-50-es capstone-nal rendelkezik. Az új 35
+  specializációs csúcspróba csak az adott spec sikeres kasztolásait számolja.
+  A Druida, Pap, Sárkányidéző, Sámán, Varázsló és Halállovag hiányzó
+  producer→consumer ciklusai elkészültek; a durable démon/élőholt idézések
+  többé nem hoznak létre párhuzamos ideiglenes másolatot.
 - **Világesemények:** immerzív, Folia-biztos spawn-elhelyezés (távolság,
   víz- és partpuffer, nézési kúp), meteor-kráter terrain-visszaállítási
-  journallal.
+  journallal. A kereső jelöltjei most chunk-középre kerülnek, a 7 blokkos
+  effektív footprint/partpuffer egy régión belül marad, ezért a világboss,
+  invázió, meteor és escort keresése nem égeti el idő előtt a chunk-budgetet.
+  Az escort route és az inváziós mellékmobok egyoszlopos belső profilt
+  használnak; az admin parancs aszinkron keresést, nem kész spawnt jelent.
 - **Claimek:** fail-closed betöltés + a poligon-kijelölés csúcspont-limitje
   alapból megszűnt (a területkorlát maradt a valódi kapu).
 - **Konzol:** a boot-kori leltár-sorok elnémultak; hibakereséshez a
@@ -107,7 +133,8 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   Kategória- és láthatóság-rendszer (a rejtett quest felfedezésig sehol nem
   szivárog), tartós felfedezés- és forrás-audit a PlayerProfile-ban, atomikus
   és teljes gráf-validációval kapuzott quest-reload (hibás config a korábbi
-  definíciókat hagyja élőben), mind a 160 csomagolt küldetés migrálva.
+  definíciókat hagyja élőben), mind a 195 csomagolt küldetés migrálva
+  (160 világ- és történeti küldetés + 35 specializációs csúcspróba).
 
 ## Harminc másodpercben
 
@@ -119,7 +146,7 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
 | Funkcionális GUI-család | 14 | 22 |
 | Kaszt | 13 | 13 |
 | Specializáció | 31 | 35 |
-| Questdefiníció | 45 | 160 |
+| Questdefiníció | 45 | 195 |
 | Szakmai recept | 124 | 438 |
 | Szakmai alapanyag | 9 | 81 |
 | Relikvia | 5 | 6 |
@@ -394,3 +421,42 @@ A teljes 68 root parancs, 286 route, 79 root alias, 93 routing alias,
 44 permission, 13 550 configútvonal és 545 production komponens gépi
 referenciáját a `Repository Docs Inventory` workflow artifactja tartalmazza.
 
+## Season 0 / Prologue — Kárhozat Kapuja
+
+A release-jelölt tartalmazza a Season 0 egyszeri **Prologue** életciklust és
+Olethropyla, a már létező ősi Kárhozat Kapuja köré épülő átmenetet. A rendszer
+külön tartós világállapotot, alapból 25-ös Season 0 class-szintplafont,
+specializáció-/relic-/blueprint-/high-tier loot kapukat, Nether travel policyt,
+Gate Breach és finale encountert, participant scalinget, rehearsal módot,
+Profile v2 Founder/finale participationt, rendkívüli Krónikát, emlékművet és
+Season 1 átmenetet kezel.
+
+A `DORMANT` most teljes pass-through állapot: a Prologue nem rak XP-,
+specializáció-, relic-, blueprint-, rarity- vagy eseménykorlátot a szerverre,
+nem tiltja a normál season/community lifecycle-t, nem alkalmaz Nether-pecsétet
+vagy gate-location authorityt, nem futtat HUD/ambient/breach hatást, és nem ad
+idő előtti post-Prologue catch-upot. Az általános, Prologue-tól független
+szerverpolicyk továbbra is a saját konfigurációjuk szerint működnek.
+
+A completion hardeningben a Prologue encounter cleanupból kikerült a globális
+`Bukkit.getEntity(UUID)` lookup; az event entityk a közös transient-entity
+scheduler-handle életcikluson takarítódnak. A production `finale pause` már
+nemcsak az orchestrator tickjét állítja meg: az aktív encounter AI-ja, combatja,
+pending spawnjai, boss mechanikái és timeoutja is szünetel. A pause idő nem
+fogyasztja a timeout-budgetet, a pauseolt phase és a hátralévő encounter-idő
+restart után is megmarad, és resume ugyanabból a checkpointból építkezik.
+
+A finale boss halála azonnali in-memory spawn latch-et állít, mielőtt az
+encounter újra spawnolhatónak számítana; a tartós boss-victory állapot a
+`finaleId`-hoz kötött és idempotens. Persistence hiba esetén a finale fail-closed:
+nincs második boss, Gate activation vagy Season 1 továbblépés, amíg a tartós
+állapot nem rendezhető. Az irreverzibilis lánc sorrendje továbbra is
+**boss victory → Gate unlock → reward plan/Profile v2 reward → Chronicle →
+monument → Season 1 prepare/activate**, one-shot receiptekkel védve.
+
+A világépítői bekötéshez négy konfigurált runtime hook tartozik:
+`prologue-gate`, `prologue-gathering`, `prologue-breach`, `prologue-boss`.
+A repository szándékosan nem talál ki ezekhez koordinátát; a végleges staging
+világon kell őket biztonságos helyre kötni és bejárni. A productionközeli Folia
+pause/restart/finale és world-hook acceptance ettől továbbra is kézi staging
+kapu, nem CI-állítás.
