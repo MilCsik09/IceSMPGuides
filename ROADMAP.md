@@ -22,7 +22,7 @@ Jelölések:
 - ⬜ **elkötelezett fejlesztés** — része az A–H tervnek;
 - ◇ **builder- vagy runtime-kapu** — kézi előkészítést, illetve próbát igényel;
 - 💡 **ötlet** — értékes irány, de még nincs ütemezve;
-- ⏸ **döntésre vár** — tulajdonosi vagy design-döntés nélkül nem indul.
+- ⏸ **döntésre vár** — tulajdonosi vagy design-döntés nélkül indul.
 
 ## 1. Következő kiadási kapuk
 
@@ -34,6 +34,13 @@ Jelölések:
   A megoldási irány szűk WAL/pending rekord: az irreverzibilis lépés előtt
   tartós műveleti rekord, majd idempotens induláskori recovery. Teljes
   wallet- vagy claim-snapshotot nem szabad régiószálon szinkron írni.
+  A minta már létezik a repóban (`RespecTransactionJournal` +
+  `RespecRecoveryProtocol`, `DurableTransactionProtocol` +
+  `DurableRecoveryPolicy`, `FactionSwitchJournal`) — ide ezt kell rákötni,
+  nem újat tervezni. A `ClaimManager`-ben jelenleg nincs journal; a
+  `CurrencyManager.deposit:555-592` az itemeket az enqueue-olt
+  wallet-mutáció tartós kiírása ELŐTT veszi ki az inventoryból (logikai
+  hibára van kompenzáció, crashre nincs).
 
 **Kilépési feltétel:** a normál út, lemezhiba és több időablakban
 megszakított folyamat is bizonyítottan ugyanarra az eredményre áll helyre;
@@ -44,27 +51,42 @@ claim.
 
 Ezek nem mind kiadásblokkolók, de a forrásban még létező rések. Az
 implementálásuk előtt tételenként újra kell igazolni a kiváltási utat.
+A lista tételei 2026-08-14-én forrásban ellenőrizve; ami azóta elkészült,
+az ki van véve (kereskedő-karaván spawnútja: `CaravanManager:176-192`
+`EventSpawnGuard` + generáció-újraellenőrzés a hopolt callbackben).
 
 - 🚧 A `claims.yml` hibás szemantikai rekordját a loader jelenleg
-  kihagyhatja, egy későbbi mentés pedig véglegesítheti az adatvesztést.
-  Fail-closed betöltés, karantén és látható mentési hiba szükséges.
-- ⬜ A HUD és a parkour quit-takarítása mellé kick-út kell; a hosszú életű
-  report-, cooldown- és debounce mapekhez explicit purge-szabály kell.
+  kihagyhatja (`ClaimManager.load:1184-1187`), a következő `flushToDisk`
+  pedig már csak a túlélő claimeket írja vissza — így véglegesíti az
+  adatvesztést. Fail-closed betöltés, karantén és látható mentési hiba
+  szükséges.
+- ⬜ A hosszú életű report-, cooldown- és debounce mapekhez explicit
+  purge-szabály kell. A HUD/parkour kick-út ELŐTT tisztázandó, hogy valós
+  rés-e: a `ParkourListener` csak `PlayerQuitEvent`-et kezel, de a Paper
+  kick után is dob quit-eventet — ezt runtime-próbával kell eldönteni, nem
+  kódolvasással (a kaszt-service-ek eddig külön kezelték a kicket).
 - ⬜ A legacy `claims.block-in-*` beállításokat egyértelmű, validált sémára
   kell migrálni.
 - ⬜ A GUI-kban maradt közvetlen szövegek kerüljenek a
   `MessageManager`-be.
 - ⬜ A `/icesmp reload` csak valóban sikeres validálás után küldjön
-  sikerüzenetet.
-- ⬜ A `ProtectionBridge` konkrét policy/flag alapján döntsön; ne kezeljen
-  automatikusan minden WorldGuard-régiót tiltott területként.
-- ⬜ A kereskedő-karaván minden spawnútja menjen át az
-  `EventSpawnGuard`-on, és a régiószálra hopolt callback ismét ellenőrizze,
-  hogy az esemény még ugyanahhoz a generációhoz tartozik.
+  sikerüzenetet. A quest-hibáról már megy külön üzenet
+  (`IceSMPCommand:131-135`), de a siker-üzenet utána feltétel nélkül elmegy,
+  és a `ConfigValidator.validate` `void` — előbb visszatérési értéket kell
+  adnia, hogy legyen mire kapuzni.
+- ⬜ A `ProtectionBridge` konkrét policy/flag alapján döntsön; a
+  `queryProtected:96-101` jelenleg `getApplicableRegions(...).size() > 0`
+  alapján minden WorldGuard-régiót tiltott területként kezel.
 - ⬜ A `/menu` adjon utat a `/tanacs`, `/komp` és `/faction war`
-  funkciókhoz; staff-elemet csak megfelelő jogosultsággal mutasson.
+  funkciókhoz; staff-elemet csak megfelelő jogosultsággal mutasson. A két
+  parancs regisztrálva van (`IceSMPCore:1812-1813`), csak a `CommandMenus`
+  csempéje hiányzik.
 - ⬜ Tanácsszavazásnál játékidő-alapú alt-védelem, az ambient jutalmaknál
   napi keret, a parkournál tartós ranglista szükséges.
+- ⬜ Vanishben a publikus chat némán eldobódik
+  (`VanishListener.onChat:155-161`, `moderation.vanish.allow-chat: false`) —
+  a játékos nem kap visszajelzést, ami szerverhibának látszik.
+  Egy `MessageManager`-kulcs kell hozzá, a blokk szándékos.
 - ⬜ A szezon 41–53. napjának történeti üresjáratát és a túl korán
   elérhető rejtvényeket tartalom- és időkapu-tervvel kell rendezni.
 - ⏸ A Mételytépő és a Sárkánytojás-töredék tényleges megszerzési forrása
@@ -373,6 +395,15 @@ fázisonként, a terv szerinti sorrendben:
   BROWSE_RECIPES saját-szakma kapu (vanilla paritás), PositionCache/emitFx
   unloaded-world védelem; kliensen resync-ürítés teljessé téve,
   recept-fülek saját szakmára szűrve.
+- ✅ World-event spawn hardening: automatikus jelöltek chunk-középre
+  igazítva, effektív footprint/partpuffer egy régión belüli 7 blokkra
+  korlátozva, escort-route és inváziós hullám belső profillal; az admin
+  parancsok az aszinkron keresést nem jelentik többé kész spawnként.
+- ✅ Teljes class-mechanika audit: mind a 13 kaszt, 35 specializáció, 210
+  doctrine és 35 capstone producer→consumer útja bekötve; minden alap aktív
+  kit 7/7 feloldható spell. A csúcspróbák spec- és szintkapus
+  `CAST_SPELLS` questek, a durable pet/minion roster egyetlen példány-authorityt
+  használ, a Szentségtelen ghúl mutációja pedig tényleges Profile v2 társállapot.
 - ⬜ Review-ből nyitva hagyott kis tételek: (1) a protokollnak nincs
   aggregát (beágyazott listás) payload-méret garanciája — a jelenlegi
   tartalom-skálán elméleti, a hibaút a HUD-tick védőhálóval lefedve; ha a
@@ -479,4 +510,33 @@ Egy roadmap-tétel csak akkor zárható le, ha:
 8. a szükséges staging/runtime pontot nem CI alapján, hanem ténylegesen
    kipipálták az admin acceptance checklistben.
 
+## 8. Season 0 / Prologue — PR #121 kiadási állapot
 
+A `feat/prologue-doom-gate` branch a külön Prologue lifecycle-t, a Season 0
+content/progression gate-eket, Olethropyla egyetlen legitim Nether-átjáró
+policyjét, a Gate Breach/finale útvonalat, Profile v2 prestige státuszokat és a
+Season 1 átmenetet tartalmazza. A completion pass a finale pause, transient
+entity cleanup és boss-victory persistence race hardeningjét is lezárta.
+
+- ✅ **Forrásoldali completion:** Folia-safe transient cleanup, valódi encounter
+  pause, pause-időt kizáró timeout, paused restart recovery, finaleId-kötött
+  boss-victory pending receipt, fail-closed persistence failure és idempotens
+  Gate/reward/Season 1 settlement elkészült.
+- ✅ **DORMANT pass-through:** élesítés előtt nincs Prologue content/progression
+  ceiling, season/community override, Nether authority, HUD/ambient/breach vagy
+  idő előtti catch-up; a normál szerverconfig marad érvényben.
+- ✅ **Dokumentációs szinkron:** lore mapping, player-facing Prologue policy,
+  admin live-ops és builder hookok a meglévő kanonikus guide-okban szerepelnek.
+- ◇ **World-builder acceptance:** a `prologue-gate`, `prologue-gathering`,
+  `prologue-breach`, `prologue-boss` hookok tényleges élő térképes pontjai,
+  arena/perem és Nether-oldali érkezés továbbra is kézi world-build feladat.
+- ◇ **Staging runtime acceptance:** rehearsal, production pause/resume,
+  pause→restart→resume és a victory crash-windowk productionközeli Folia
+  szerveren még kézi próbát igényelnek; az automatizált regresszió nem helyettesíti ezt.
+- 🚧 **Build/CI gate:** csak az exact PR HEAD-en futott Java 21 `check`,
+  consistency/docs inventory és CI bizonyíték után tekinthető a PR kiadásra
+  késznek. Ha a GitHub runner billing/spending-limit miatt el sem indul, az
+  platform-blocker, nem zöld validáció.
+
+A Prologue scope-on kívül marad a Season 2 End-nyitás, az Első Csend
+magyarázata és a Néma Királynő végjátéka; ezek nem #121 hiányosságok.
