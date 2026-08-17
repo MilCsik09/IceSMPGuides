@@ -343,19 +343,38 @@ Kapcsolható HUD, rendezett tablista, szerep-/állapotjelzések és IceSMP-speci
 - **Mitől mozdul meg:** Csatlakozáskor, periodikus frissítéskor, státusz- és adatváltozáskor.
 - **First-party IceSMP HUD:** a resource pack elfogadása után játékosonként aktiválódó,
   rögzített geometriájú kijelzés öt teljesen külön skinből (a Menedék vendége saját erődkeretet kap),
-  13 class-ikonból, class/spec/resource/mechanika állapotból, legfeljebb öt generic metricből,
-  kilenc charge-pipből, DK-rúnákból és négy külön pénztárcahelyből. A fő frakcióvaluta mindig,
-  a többi banki valuta csak pozitív egyenlegnél jelenik meg a saját ikonjával.
+  13 class-ikonból, class/spec/resource/mechanika állapotból,
+  legfeljebb öt generic metricből, kilenc charge-pipből, DK-rúnákból és négy külön pénztárcahelyből.
+  A fő frakcióvaluta mindig, a másik három banki valuta nulla egyenlegnél is a saját, stabil
+  helyén jelenik meg. A tartós class XP-sáv nem foglalja az eseményláblécet; az legfeljebb három
+  párhuzamos eseményt ír ki teljes szélességben.
+- **Skálázásbiztos Player Frame:** bal felső, frakciószínű, gyors külön tickből frissülő HP-sáv
+  jelenlegi/maximális értékkel, százalékkal és absorption-jelöléssel, továbbá pontos páncél-, étel-
+  és feltételes oxigénkijelzéssel; az armor maximum nélküli flat szám, az oxigénoszlop csak fogyó
+  levegőnél jelenik meg. A frame és minden érték saját editor-komponens. A kiadott pack
+  csak a normál vanilla survival sprite-okat teszi
+  átlátszóvá; hardcore szíveket szándékosan nem fed le. A panel nem függ a class/sidebar HUD
+  láthatóságától, így `/hud mind` vagy natív class-HUD routing sem hagyhatja vakon a játékost.
 - **Fallback:** pack nélkül a natív compact Folia HUD marad. A resource-packes megjelenítés az
-  IceSMP first-party része; külső HUD plugin nincs a runtime- vagy dependency-stackben.
+  IceSMP first-party része; a survival értékeket ilyenkor a változatlan vanilla sávok mutatják,
+  külső HUD plugin pedig nincs a runtime- vagy dependency-stackben.
 - **Információs parity:** frakció, class, specializáció, class-szint, pénz, aktuális event,
   class resource és a játékhoz szükséges elsődleges/másodlagos, illetve összetett kiegészítő
   mechanikák ugyanabból az immutable HUD snapshotból készülnek. A Wizard három elemi
   ráhangolódása külön mini bar, a diszkrét combo/stack/charge értékek pedig vizuális pipsort kapnak.
 - **Személyes layout-editor:** a `/hud edit` lapozott, kattintható nézete kijelölt-elem kiemelést,
   1/5/10/15 pixeles mozgatást, közvetlen X/Y/méret bevitelt, preset- és szintetikus preview-váltást,
-  láthatóságot, undo/reset/save/cancel műveleteket ad. A Profile v2 csak a globális alaptól eltérő
-  mezőket tárolja, ezért a többi elem a későbbi globális változásokat is örökli.
+  láthatóságot, undo/reset/save/cancel műveleteket ad. A Player, Target és Party Frame külön
+  mozgatható csoport, alattuk minden grafika/adat saját elem. A DK-rúnák saját kategóriában vannak,
+  és nem osztoznak a többi kaszt generic charge-komponensével. A Profile v2 csak a tiszta
+  `hud.layout-v2.*` eltéréseket tárolja; legacy layout-migráció nincs.
+- **Target Frame:** egy játékos vagy mob megsebzése eseményvezérelten screen-space célpontkeretet
+  nyit a Player Frame mellett. A mob passzív/semleges/ellenséges/elit/boss bestiárium-grafikát,
+  a játékos saját frakciószínt kap; név, szint, current/max HP, százalék, státusz és játékosnál
+  class resource jelenik meg. Követő vitals-TextDisplay nincs, az eredeti entitásnévhez nem nyúl.
+- **Party Frame:** a Player Frame alatt legfeljebb négy másik tag WoW-stílusú sora látszik.
+  A sor palettája mindig az adott tag frakciója; HP/resource mellett vezető, halott, távoli és
+  offline állapotot is mutat. A renderer kizárólag immutable, Folia-safe cache-eket olvas.
 - **Ami még kellhet hozzá:** Nincs builderfeladat; a saját tablista és HUD production megjelenését deployment előtt ellenőrizni kell.
 - **Fontos határ:** A natív tablista az IceSMP-hez szükséges funkciókat biztosítja, nem általános külső tablista-motor.
 
@@ -452,11 +471,11 @@ A Felsők emlékei elvesztek, de a vérük emlékezik. A kaszt, a szakma, a megt
 
 > **Aktív és játékosok számára elérhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Kasztválasztás, XP/szint, specializáció, kasztpasszívok és admin XP/unlock műveletek. A külön class-health réteg létezik, de a csomagolt alapbeállításban ki van kapcsolva (`health.enabled: false`).
+Kasztválasztás, XP/szint, specializáció, kasztpasszívok és admin XP/unlock műveletek. Mind a 13 kaszt és 35 specializáció saját, ténylegesen fogyasztott harci mechanikával fut; a 210 doctrine-választás nem puszta címke, hanem a hozzá tartozó class service viselkedését módosítja. Minden alap aktív készlet pontosan hét, a kaszt/spec által valóban feloldható képességet tartalmaz. A külön class-health réteg létezik, de a csomagolt alapbeállításban ki van kapcsolva (`health.enabled: false`).
 
 - **Így találkozol vele:** `/class`, `/spec`, kaszt- és specializációs GUI. Parancs: /class (alias: /job, /kaszt); /spec (alias: /specializacio, /specialization). GUI: Kasztválasztó; Specializációk.
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
-- **Mitől mozdul meg:** Választás, XP-források, szintlépés, képességfeloldás és kapcsolódó combat/craft esemény.
+- **Mitől mozdul meg:** Választás, XP-források, szintlépés, képességfeloldás, doctrine-döntés, a spec saját producer→consumer harci ciklusa és kapcsolódó combat/craft esemény.
 - **Ami még kellhet hozzá:** Nincs kötelező helyszín; resource-pack ikonok és balance-adatok tesztelendők.
 - **Fontos határ:** A konkrét élő balance és több-régiós Folia viselkedés stagingben ellenőrizendő; production legacy játékosadat-migráció nincs.
 
@@ -467,11 +486,18 @@ aggregátumként jön létre; hibás vagy owner-eltérő profil quarantine-ba ke
 Az IceSMP a verziózárt dependency manifest alapján ellenőrzi a kötelező megjelenítési és content
 stacket; eltérésnél nem aktivál félkész profilt.
 
+Az 50. szintű záróképesség egyik specializációnál sem automatikus és nem
+dekoráció: a kaszt mesterpróbája után megjelenő, az aktív specializációhoz
+kötött `CAST_SPELLS` csúcspróbát kell teljesíteni. A 35 próbát a quest-rendszer
+tartós teljesítése oldja fel, utána a Profile v2 capstone állapota adja a
+képesség-provenanciát. Specváltás vagy respec nem hagyhat hátra idegen
+képességet, mérőt, töltetet vagy cooldown-resetet.
+
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: `icesmp.admin.job`; `icesmp.admin.spec`; quarantine recovery: `icesmp.admin.spec.recover`
-- Config: `classes.*`, `spells.*`, specialization- és ability-definíciók.
+- Config: `classes.*`, `class-gameplay.yml`, `spells.*`, specialization-, doctrine-, active-kit- és ability-definíciók.
 - Startup dependency policy: `class-spec-rework.dependencies.enforce`; dependency lock: `class-spec-dependencies.lock.yml`. Nincs runtime rollout flag.
 - Tartós állapot: ownerhez kötött Profile v2 kaszt, XP/szint, loadout, companion, Soulforge és operation receipt; explicit spell-provenance ledger.
 - Reload: Balance részben reloadolható; új enum/registry-szerkezet restartot igényel.
@@ -533,6 +559,9 @@ Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state ke
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
 Nyolc profession, szakmai specializációk, XP, heti cél, gyűjtési bónusz és szakmai GUI.
+A receptkatalógus 392 receptet tartalmaz, és minden recept kimondja a **fajtáját**
+(gyakorló / hozam / egyedi / lánc / ritkaság); a fajta szabja meg, mit adhat a
+vanília fölé, és ezt gépi kapu tartja fenn.
 
 - **Így találkozol vele:** `/profession`, `/szakmacel`, profession GUI. Parancs: /profession (alias: /prof, /szakma); /szakmacel (alias: /weeklygoal). GUI: Szakmaválasztó.
 - **Kinek szól:** Játékos, Admin, Builder, Tesztelő, Eventes.
@@ -547,6 +576,15 @@ Nyolc profession, szakmai specializációk, XP, heti cél, gyűjtési bónusz é
 - Config: `professions.*`, `profession-materials.*`, heti cél és resource beállítások.
 - Tartós állapot: Profession, XP, specializáció és heti cél állapota tartós.
 - Reload: Balance és receptek célzott reloadot kapnak; periódus/reset scheduler restartot igényelhet.
+- Recept-fajták: minden recept `kind:` mezőt visel. `egyedi` csak funkcionális komponenssel
+  (affix/enchant/attribútum/consumable/signature/potion-effects), `ritkasag` csak boss-kötött
+  alapanyaggal és `amount: 1`-gyel, `gyakorlo` csak L15-ig és egyedi alapanyag nélkül.
+- Eredmény-mezők: `result.potion-effects` (+ `result.potion-color`) valódi főzethatáshoz,
+  `result.enchant` a bűvölőkönyvekhez — mindkettőt a `buildResult` alkalmazza.
+- Craft-kapu: a recept-craft élő szakmatagságot kér (`hasProfession`), nem csak megőrzött szintet.
+- Tervrajz: a lap a tartós mentés ELINDÍTÁSA ELŐTT fogy el, sikertelen mentésnél visszajár.
+- A recept-craft XP-je a heti céh-célt is tölti; a tömeges munka (shift-craft, kemencéből
+  kivett adag) darabonként számít a `professions.xp.bulk-event-cap` sapkáig.
 
 </details>
 
@@ -558,6 +596,13 @@ Nyolc profession, szakmai specializációk, XP, heti cél, gyűjtési bónusz é
 
 Szakmai receptkönyv, craft-korlátok, blueprint-feloldás, katalizátorvédelem és masterwork craft.
 
+A Vanilla Crafting Boundary megőrzi a survival sandboxot: building block, workstation,
+storage, redstone, transport, food, vanilla tool és basic combat gear szabadon craftolható,
+enchantolható és javítható. Ezek nem kapnak automatikusan template-et, UUID-t, rollt,
+Signature-t, runát, setet vagy Ascensiont. Canonical IceSMP gear csak explicit profession,
+loot, boss, event, blueprint, quest vagy admin producerből jön létre; vanilla recept,
+üllő, smithing, enchanting és grindstone nem moshatja le vagy írhatja át az identityt.
+
 - **Így találkozol vele:** Crafting események, blueprint item, szakmai receptkönyv GUI. GUI: Szakmai receptkönyv.
 - **Kinek szól:** Játékos, Admin, Builder, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Craft-előkészítés/befejezés, blueprint használat és item-validáció.
@@ -568,7 +613,8 @@ Szakmai receptkönyv, craft-korlátok, blueprint-feloldás, katalizátorvédelem
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: `crafting.*`, `profession-recipes.*`, `profession-materials.*`, itemdefiníciók.
+- Config: `crafting.*`, `itemization.vanilla-boundary.*`, `profession-recipes.*`,
+  `profession-materials.*`, itemdefiníciók.
 - Tartós állapot: Blueprint/unlock és szakmai állapot tartós; craft tranzakció eseményalapú.
 - Reload: Receptcache célzottan reloadolható; strukturális registry-váltás restartot igényelhet.
 
@@ -580,11 +626,41 @@ Szakmai receptkönyv, craft-korlátok, blueprint-feloldás, katalizátorvédelem
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Adatvezérelt ritkaság, egyedi anyag, item-provenance, rúnázás, signature enchantok és tárgyvédelmek.
+Az Itemization 2.0 stabil template- és példányazonosságot, hatfokú ritkaságot,
+normalizált roll qualityt, 0–2 rúnahelyet, signature/set fogyasztókat és bounded,
+UUID-authority crafter provenance-t ad. A `/profession forge` vanilla GUI Full
+Reforge, egy authored rollra alkalmazható Stat Lock, quality-padlót emelő Amplifier,
+költséglépcsőt megőrző Stability Seal, determinisztikus Ascension és veszteséges
+salvage előnézetet kínál. A Forge kiválasztott socketes rúna-remove és egyetlen
+WAL-műveletként végrehajtott old→new replace előnézetet is ad; a régi rúna a bundled
+`destroy` policy szerint megsemmisül. Reroll, rúnacsere és ascension közben az item UUID-ja nem
+változik; az ismételt reroll költséglépcsője magával az itemmel utazik.
 
-- **Így találkozol vele:** Craft, loot, itemhasználat, anvil/rúna esemény; admin itemadás.
+A jelenlegi systemic survival katalógus 48 authored template, 15 registry-bekötött
+Signature Effect, 3 szett, 7 explicit ascension-út és 10 valós rúna. A 392 receptből
+15 gear-recept canonical `ItemTemplate → ItemInstance`; ezek szint, blueprint és
+masterwork quality-padlót adhatnak, de nem változtatják meg a template stat-budgetjét.
+
+Az ascension csak explicit stage-et definiáló template-nél működik. Az új rollérték
+a régi normalizált qualityt viszi át az új authored tartományba, nem sorsol újra;
+közben item level, fixed/rolled budget, követelmény, rune socket, lore/model és
+Signature-fokozat változhat. A pilotban a magasabb Signature-fokozat additív,
+configolt erősítést kap, nem kontrollálatlan multiplikatív szorzót.
+
+A régi random-affix, egyrúnás, relikvia- és custom tárgyak felismerhetők maradnak.
+Az ismeretlen eredetű legacy gear nem rerollolható, nem ascendelhető és nem salvage-
+elhető automatikusan; piaci engedélye külön config-policy. A combat authored gear
+engedélyezésekor a normál gear producer nem esik vissza új legacy random-affix gearre,
+a crate parser pedig ilyen receptjutalmat elutasítja.
+Az eddigi legacy egy-rúnás insert kompatibilitás megmarad, de canonical remove/replace
+nem fut rajta. Külön, kétoldalú közvetlen player-trade rendszer nincs a repóban; az
+ellenőrzött ItemInstance-átruházási authority ebben a körben a WAL-os market.
+
+- **Így találkozol vele:** `/profession recipes`, `/profession forge`, mining,
+  combat/world-boss loot, rúnázás, `/market`; admin: `/iceitem template <id>`.
 - **Kinek szól:** Játékos, Admin, Builder, Tesztelő, Eventes.
-- **Mitől mozdul meg:** Item létrehozása, frissítése, craftja, lootja és használata.
+- **Mitől mozdul meg:** Item létrehozása, craftja, rerollja, rúnázása, piaci
+  escrow-ja, salvage-e és authored ascensionje.
 - **Ami még kellhet hozzá:** Resource-pack `ITEM_MODEL` mappingek, lootforrások és displaynevek ellenőrzendők.
 - **Fontos határ:** Meglévő, régi metadata-s itemek migrációját production mintán kell tesztelni.
 
@@ -592,8 +668,15 @@ Adatvezérelt ritkaság, egyedi anyag, item-provenance, rúnázás, signature en
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: `item-rarity.*`, `dev-items.*`, crafting-, rune- és signature-item definíciók.
-- Tartós állapot: Az itemadat magában az itemben és egyes dev-item state-ekben tartós.
+- Config: `itemization.*`, `item-templates.*`, `item-sets.*`, `item-rarity.*`, `dev-items.*`, crafting-, rune- és signature-item definíciók.
+- Tartós állapot: A canonical példányadat, reroll count/költséglépcső, receipt-lista,
+  rune/ascension/provenance az itemben van. A bounded loot-diverzitási előzmény a
+  PlayerProfile v2 statisztikai szekciójában, a ritka mining napi anti-farm budgetje
+  a Profile v2 economy extensionben marad reconnect és restart után is.
+- Tranzakció: `item-mutation-journal.yml` exact before/after inventory snapshotot
+  készít payment előtt; playerdata publish után a receiptet tartalmazó candidate és
+  az elfogyasztott anyagok egy snapshotként recoveryzhetők. Insert/remove/replace ugyanazt
+  a boundaryt használja; mixed rune/payment witness nem automatikusan rendeződik.
 - Reload: Definíciók részben reloadolhatók; meglévő itemek frissítő listeneren vagy újrageneráláskor változnak.
 
 </details>
@@ -652,7 +735,7 @@ Mérföldkövek és jutalmak, datapack advancementek, harci statisztika és rang
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit forrás-keret (NPC / Megbízások-tábla / lánc / helyszín / tárgy / esemény / auto / admin), a felvétel és a leadás KIZÁRÓLAG a jogosult forrásnál történhet; NPC-forrású questnél a feladatok teljesítése után KÉSZ állapot jön, és a leadási pontnál (alapból az adó NPC-nél) zárul a küldetés. Kategóriák (story/mellék/kaszt/frakció/napi/heti/titok…), láthatóság (a rejtett quest felfedezésig sehol nem látszik), tartós felfedezés és küldetés-követés, öt-füles napló, objective progress, napi feladatok és admin/builder questkészítő.
+Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit forrás-keret (NPC / Megbízások-tábla / lánc / helyszín / tárgy / esemény / auto / admin), a felvétel és a leadás KIZÁRÓLAG a jogosult forrásnál történhet; NPC-forrású questnél a feladatok teljesítése után KÉSZ állapot jön, és a leadási pontnál (alapból az adó NPC-nél) zárul a küldetés. Kategóriák (story/mellék/kaszt/specializáció/frakció/napi/heti/titok…), kaszt-, specializáció- és szintkapuk, láthatóság (a rejtett quest felfedezésig sehol nem látszik), tartós felfedezés és küldetés-követés, öt-füles napló, objective progress — köztük sikeres, engedélyezett kasztolást számláló `CAST_SPELLS` —, napi feladatok és admin/builder questkészítő.
 
 - **Így találkozol vele:** `/quest`, `/daily`; questlog (öt fül: Aktív/Kész/Megbízások/Elérhető/Teljesített) és quest builder GUI. Parancs: /quest (alias: /kuldetes, /quests); /daily. GUI: Küldetésnapló; Quest builder.
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
@@ -704,15 +787,15 @@ Pet/társ kezelés, befogás, XP, harci viselkedés, parancsok és társ-GUI.
 
 - **Így találkozol vele:** `/pet`; Pet GUI; befogó item és játékosparancs. Parancs: /pet (alias: /companion, /tars). GUI: Társ GUI.
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
-- **Mitől mozdul meg:** Befogás, pet parancs, combat, XP és GUI-művelet.
-- **Ami még kellhet hozzá:** Nincs kötelező helyszín; mob-kompatibilitás és biztonságos pet spawn tesztelendő.
+- **Mitől mozdul meg:** Befogás, társlistás kiválasztás, pet parancs, combat, gazda- vagy pet-killből érkező XP és GUI-művelet.
+- **Ami még kellhet hozzá:** Nincs kötelező helyszín; az idézés betöltött, Folia-lokális oszlopokban stabil talajt és három blokk szabad testteret keres.
 - **Fontos határ:** Entity lifecycle, chunk unload és protection plugin interakció runtime tesztet igényel.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: `pets.*`, capture-item és kapcsolódó message/itemdefiníciók.
+- Config: `pets.*`, benne az Istálló-kapacitás és a biztonságos spawn keresési tartománya; capture-item és kapcsolódó message/itemdefiníciók.
 - Tartós állapot: Tulajdonjog, petadat és XP tartós.
 - Reload: Balance reloadolható részei következő eseménynél érvényesek; aktív pet entityk újraszinkronizálása kellhet.
 
@@ -957,6 +1040,13 @@ A megsebzett világ jelekben beszél: vörös holdban, egy távoli horda zajába
 
 Blood Moon, world boss, Wild Hunt, invasion, meteor, caravan, escort, abundance, treasure és szerverchallenge.
 
+A közös spawnkereső az automatikus jelölteket chunk-középre igazítja, a
+footprint- és partvizsgálatot pedig legfeljebb 7 blokkos, egy Folia-régión
+belüli körre korlátozza. Így egy jelölt csak egy chunkot fogyaszt a keresési
+keretből; az escort útvonala és az invázió külső hulláma saját, egyoszlopos
+belső profilt használ. Adminindításkor a parancs először csak a keresés
+elindulását igazolja, tényleges sikert az esemény spawn utáni broadcastja jelez.
+
 - **Így találkozol vele:** `/events`; admin eventindítók és automatikus eseménytriggerek. Parancs: /events (alias: /esemeny, /event).
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** Ütemezett/valószínűségi trigger, adminindítás, spawnpont és lifecycle esemény.
@@ -967,9 +1057,36 @@ Blood Moon, world boss, Wild Hunt, invasion, meteor, caravan, escort, abundance,
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.events`
-- Config: `world.*`, event-, boss-, mob-, loot- és season-definíciók.
+- Config: `world.*`, `world-events.water-safety.*`, `world-events.profiles.*`,
+  valamint event-, boss-, mob-, loot- és season-definíciók.
 - Tartós állapot: Event-, spawnpont-, raid- és finaleállapot részben tartós.
 - Reload: Definíciók reloadolhatók részenként; aktív esemény saját state-jét nem szabad félúton lecserélni.
+
+</details>
+
+### Season 0 / Prologue — Olethropyla
+
+<!-- icesmp-doc-id: feature.world.prologue -->
+
+> **Aktív kód, kézi élesítést és builder-előkészítést igényel** · A futó JAR-hoz képest: **Új rendszer**
+
+Az egyszeri Prologue lifecycle Season 0 progression- és contentkapukat, Gate
+Breach/finale eseményt, Olethropyla Nether-authorityt, résztvevő-skálázást,
+prestige státuszokat és a Season 1 idempotens átmenetét kezeli.
+
+- **Így találkozol vele:** Élesítés után a Kárhozat Kapujának HUD-ja, áttörései és fináléja; admin live-ops: `/prologue`.
+- **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
+- **Mitől mozdul meg:** Kizárólag a `/prologue start` vagy más, állapotot ténylegesen módosító adminfolyamat után; a friss `DORMANT` állapot teljes pass-through.
+- **Ami még kellhet hozzá:** A négy `prologue-*` runtime hook és a productionközeli staging acceptance.
+- **Fontos határ:** `DORMANT` alatt nincs Prologue XP-/contentkorlát, season/community override, Nether-pecsét vagy gate-location authority, HUD/ambient/breach és catch-up; a Prologue-tól független szerverconfig változatlanul érvényes.
+
+<details>
+<summary>Admin- és technikai jegyzet</summary>
+
+- Permission: `icesmp.admin.prologue`
+- Config: `world-events.prologue.*`, valamint a kapcsolódó spawn/profile/anchor utak.
+- Tartós állapot: `prologue.yml`, finale run state és Season 1 transition receipt.
+- Reload: A tartalmi overlay csak aktív Prologue alatt él; `DORMANT`/lezárás/tiltás esetén a konfigurált értékek visszaállnak.
 
 </details>
 
@@ -1003,20 +1120,53 @@ Szezonállapot, jutalmak, történetmesélés, finálé, monumentum, holiday, am
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Mobskálázás, loot table, dungeon/mob jutalom, minionvédelem, bestiárium és undead segédszabályok.
+Mobskálázás, loot table, dungeon/mob jutalom, minionvédelem, bestiárium és undead
+segédszabályok. A combat gear-sor releváns forrásnál authored Itemization 2.0
+template-et választ: level/class/spec/build/üres slot/forrás legfeljebb 1,5× súlyt
+adhat, az utolsó legfeljebb 32 drop pedig csak enyhe, nem garantált diverzitási
+korrekciót végez. A más kasztnak való, kereskedhető tárgyak súlya pozitív marad.
+
+A Mob/Encounter 2.0 normál survival progressionje Lv. 1–50, a földrajzi/event
+bónuszokkal elérhető általános hard cap Lv. 70. A mob szintjét rétegesen az explicit
+encounter vagy authored hely, a MobTemplate, majd a territory/biome/mélység/távolság
+és event állapot határozza meg. A HP gyorsabb, a damage lassabb, külön bounded görbén
+nő; 70 fölötti boss csak authored override, nem wilderness extrapoláció.
+
+A rendszer 18 canonical MobTemplate-et használ surface/night/deep/swamp/Nether/End/
+storm és meglévő event forrásokra, miközben a többi vanilla mob fallbackként
+helyes marad. A hét rank: Normal, Veteran, Elite, Champion, Miniboss, Boss és World
+Boss; a 12 archetype közös ability registryre épül. Hat reusable ability vanilla
+telegráfot ad, az Elite spawnkor legfeljebb két biztonságos affixet kaphat a hétből.
+Az invasion hullámai/bajnoka, a kultisták és a Wild Hunt canonical rankot kapnak.
+
+A világboss startkor stabil, csökkenő hozadékú player-count és élő equipped-CombatPower
+snapshotot készít. A power csak valid main/offhand+armor canonical itemek tényleges
+stat/rúna/Signature/szett kontextusa; nem publikus Gear Score. Late
+join után contribution gyűjthető, de a HP nem ugrál. A bounded ledger sebzést,
+tankolást, Monk/Paladin ally-healt és shieldet, valamint telegráf-kitérés objective-et
+támogat; self-paddinget,
+pre-combat farmot és dupla settlementet elutasít. Az érdemi résztvevő személyes,
+PlayerProfile receipt-alapú ascension komponenst kap; tele inventorynál a jutalom
+reconnectig függőben marad, nem esik a földre.
 
 - **Így találkozol vele:** `/bestiarium`; automatikus spawn/kill/loot események. Parancs: /bestiarium (alias: /bestiary, /lajstrom). GUI: Bestiárium (kattintható kategória-főoldal + lapozható lajstrom: ismert bejegyzések ikonnal, ismeretlenek „???" sziluettként, teljesítmény-%-kal). A szörny-bejegyzések faj-szintű mélységet kapnak: elejtés-számláló, első-elejtés dátum és kill-alapú tudás-fokozatok (kódex-jegyzet → zsákmány-jegyzet → mestervadász), a világbossok archetípusonként (nem vanilla-fajonként) kerülnek a lajstromba. Külső kijelzéshez: `%icesmp_bestiary_<kategória>%` és `_total` placeholderek.
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** Mob spawn, sebzés, ölés, loot, bestiárium-felfedezés és minion lifecycle.
-- **Ami még kellhet hozzá:** Mobspawnokat, arénákat, farmvédelmet és lootforrásokat ellenőrizni kell.
-- **Fontos határ:** Vanilla/custom mob és más lootplugin együttműködése runtime tesztet igényel.
+- **Ami még kellhet hozzá:** Mobspawnokat, arénákat, telegráf-láthatóságot,
+  farmvédelmet, 50–60 fős encounter terhelést és lootforrásokat stagingen ellenőrizni kell.
+- **Fontos határ:** A forrásregresszió nem bizonyít production Folia region-hopot,
+  harcérzetet vagy vanilla/custom mob és más lootplugin együttműködést.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: `world.*`, `loot.*`, mob-, bestiary- (mérföldkövek, `bestiary.knowledge-tiers`, `bestiary.codex-notes.*`), scaling- és miniondefiníciók.
-- Tartós állapot: Bestiárium progress és egyes loot/event state-ek tartósak; mob entity runtime.
+- Config: `world.yml` `mob-scaling.*` és `world-events.world-boss.*`,
+  `mob-templates.yml`, `loot.*`, `itemization.loot.*`, bestiary- (mérföldkövek,
+  `bestiary.knowledge-tiers`, `bestiary.codex-notes.*`) és miniondefiníciók.
+- Tartós állapot: Bestiárium progress, bounded authored-loot előzmény és egyes
+  loot/event state-ek tartósak; mob/ability/ledger entity runtime. A személyes boss
+  reward eligibility/delivery receipt a PlayerProfile v2 `OPERATIONS` szekcióban él.
 - Reload: Loot/balance reloadolható; már spawnolt mobok nem feltétlenül változnak visszamenőleg.
 
 </details>
@@ -1323,7 +1473,3 @@ a saját tesztcsomagjának sikeres lezárása után távolítható el.
 
 <sub>Dokumentációs snapshot: 2026-07-30 · release `4643ab535…` · deployed mapping:
 `775d9e247…` (`HIGH_CONFIDENCE`, nem `EXACT`).</sub>
-
-
-
-

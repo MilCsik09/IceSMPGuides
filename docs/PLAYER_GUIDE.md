@@ -42,6 +42,7 @@ részeket a [legújabb változások](LATEST_CHANGES.md) foglalják össze.
 14. [Játékosparancsok](#14-parancsok-listája)
 15. [Party és céh](#15-party-csapat)
 16. [Kazamaták](#16-kazamaták)
+17. [Prologue / Season 0](#17-prologue-season-0-amit-játékosként-tudnod-kell)
 
 ---
 
@@ -93,17 +94,35 @@ polgárává is tudatosan a `/faction join neutral` paranccsal válsz.
 
 ### Amit a képernyőd mesél
 
-- A **HUD** mutathatja a kasztod erőforrását, a class/spec mechanikád élő
-  barjait, tölteteit vagy rúnáit, a frakciódat, pénzedet, szintedet és a fontos
-  világhelyzeteket. A bankod fő frakcióvalutája mindig látszik, más pénznem csak akkor,
-  ha van belőle egyenleged. A `/hud edit` kattintható szerkesztőjében külön mozgathatod,
-  méretezheted vagy elrejtheted az elemeket; a mentésed restart után is megmarad. A nem
+- A jobb felső **class HUD** mutatja a kasztod erőforrását, a class/spec mechanikád élő
+  sávjait, tölteteit vagy rúnáit, a frakciódat, pénzedet, szintedet és legfeljebb három
+  egyidejű világeseményt. A négy frakcióvalutád mindegyike saját, állandó helyet kap, ezért a
+  nulla egyenleg sem rendezi át a panelt. A tartós class XP-sáv kikerült innen, hogy az eseménysor
+  olvasható maradjon; a teljes kaszt-XP-det a `/job status` mutatja.
+  A `/hud edit` kattintható szerkesztőjében külön mozgathatod, méretezheted vagy elrejtheted az
+  elemeket. A DK-rúnák saját kategóriát kaptak, és nem mozgatják a többi kaszt tölteteit.
+  A mentésed restart után is megmarad. A nem
   módosított elemek automatikusan követik a szerver globális HUD-alapját. Amíg a first-party
   resource pack nincs sikeresen betöltve, a kompakt natív kijelzés automatikusan marad.
+- A bal felső, frakciószínű **Player Frame** váltja fel a vanilla szíveket, páncélt, éhséget
+  és levegőbuborékokat. A HP current/max és százalék formában jelenik meg; az absorption külön
+  pajzsként látszik. A páncél maximum nélküli flat szám, az étel saját mini-sávot
+  kap, az oxigén pedig csak fogyó levegőnél jelenik meg. A frame, név, HP-sáv, HP-szöveg,
+  százalék, pajzs, páncél, étel és oxigén külön editor-komponens; a Player Frame csoporttal
+  együtt is mozgathatók. Pack nélkül a vanilla kijelzők maradnak láthatók.
+- Ha egy mobra vagy játékosra nézel a beállított hatótávon belül, a Player Frame mellett
+  jelenik meg a **Target Frame**.
+  A mobok bestiárium-stílusú, a játékosok frakciószínű keretet kapnak. A név, szint,
+  current/max HP, százalék, rang/státusz, valamint játékosnál a class resource is látszik.
+  A kijelzés nem hoz létre követő feliratot a mob testén, ezért az eredeti nametag nem tűnik el.
+- Partyban legfeljebb négy másik tag **Party Frame-je** sorakozik a saját frame-ed alatt.
+  Minden sor az adott tag frakciószínét, HP-ját, class resource-át, valamint a vezető,
+  halott, távoli vagy offline állapotot mutatja.
 - A **tablista** frakció- és ranginformációt adhat, háborúban pedig segít
   felismerni a viszonyokat.
-- Harc közben **sebzésszámok**, célpontinformáció és halálösszegző segít
-  megérteni, mi történt.
+- Harc közben **sebzésszámok**, a képernyőn megjelenő Target Frame és halálösszegző segít
+  megérteni, mi történt. A rövid sebzésszámok továbbra is a találat helyén jelennek meg, a
+  tartósabb HP/resource információ viszont csak a saját Target Frame-edben látható.
 - A vanília **Haladás** képernyő IceSMP-füle mérföldköveket és rejtett
   felfedezéseket is őriz. Némelyik eredmény azért csendes, mert a titok a
   jutalom része.
@@ -317,21 +336,33 @@ Az IceSMP-ben **13 kaszt** közül választasz. A kaszt meghatározza a
 Lélekkapcsodat, az erőforrásodat, az alap képességeidet és a későbbi
 specializációid irányát.
 
-| Kaszt | Alaphangulat és szerepkör |
-|---|---|
-| Varázsló | távolsági elemi mágia és kontroll |
-| Harcos | közelharc, kitartás, tankolás |
-| Íjász | távoli sebzés, mozgás és csapdák |
-| Orgyilkos | gyors kitörés, méreg és árnyék |
-| Druida | természetmágia, alakok, több szerepkör |
-| Paplovag | szent közelharc, védelem és gyógyítás |
-| Halállovag | vér, fagy, rúnák és élvonal |
-| Sámán | elemek, totemek és támogatás |
-| Szerzetes | csi, gyors közelharc, tank vagy gyógyítás |
-| Pap | fény, pajzs, gyógyítás és árnymágia |
-| Boszorkánymester | átkok, tűz és idézett erők |
-| Démonvadász | mozgékony, kockázatos démoni harc |
-| Sárkányidéző | sárkány-eszencia, sebzés vagy gyógyítás |
+| Kaszt | Közös harci mag | Specializációk tényleges játékciklusa |
+|---|---|---|
+| Varázsló | **Rúnaszövés:** a legutóbbi két, megfelelő sorrendű mágiaiskola reakciót készít elő. | **Elementalista:** Tűz/Fagy/Vihar ráhangolódás → Konvergencia vagy Elemi Korona → elköltés. **Nekromanta:** korlátozott, tartós Holtak Udvara → aratás. |
+| Harcos | **Düh + Csatatempó:** a Düh a képességek ára, a változatos harci tettek külön tempófokozatot építenek. | **Berserker:** Vérőrület ↔ Kimerülés, kontrollált túlpörgés és levezetés. **Védelmező:** Őrség építése → pajzs/intercept az egy Eskütárson. |
+| Íjász | **Szélolvasás:** teljesen kihúzott, jól ütemezett, valódi távolsági lövések készítik elő a következő lövést. | **Mesterlövész:** egy prédán Pontossági lánc → gyengepont. **Vadmester:** közös célpont a társsal → Kötelék → társas finisher. |
+| Orgyilkos | **Lehetőség:** pozíció, kitérés, interrupt vagy észrevétlenség nyit egy egyszer elkölthető finisher-ablakot. | **Méregkeverő:** három toxin és dózisaik → katalizálás. **Fantom:** véges lopakodás, Észleltség és egy Árnyéknyom-visszhang. **Pestishozó:** saját találattal ültetett, keményen korlátozott járványtörzs. |
+| Druida | **Harmónia + alak/évszak:** a természetmágia Harmóniát épít, az alakváltás egy évszak áldásaként engedi ki. | **Vadőr:** kombópont és egy préda Szagnyoma → finisher. **Holdjós:** Nap↔Hold mérleg → Eclipse. **Védelmező:** Kéregrétegek és Gyökérháló. **Helyreállító:** Mag → érés → Virágzás. |
+| Paplovag | **Eskü + Meggyőződés:** a választott szerephez illő tettek erősítik a következő szerepazonos képességeket. | **Szentlélek:** egy Fényjelző társ → gyógyítás-visszhang. **Megtorló:** három Ítélet-jel → Verdict. **Védő:** Pajzstöltet → Megszentelt Föld. |
+| Halállovag | **Rúnakör:** a Vér és Fagy rúna újratölt, Halál rúnát csak átalakítással lehet teremteni; a spell előre kéri a saját rúnáját. | **Vérlovag:** nyolc találatnyi Vér Emlékezete → gyógyítás vagy pajzs. **Fagylovag:** Fagyjelek → részleges vagy teljes Zúzás. **Szentségtelen:** Dögvész-burst → a tartós ghúl mutációja. |
+| Sámán | **Totemkerék:** egyszerre egy fő és egy kísérő totem él; azonos kategória lecseréli a régit. | **Elemi:** élő totempár + elemi egyezés → Túltöltés. **Erősítő:** Vihar↔Föld ritmus → Maelstrom → költés. **Hullámhívó:** Dagály↔Apály egymást előkészítő gyógyítás. |
+| Szerzetes | **Áramlás:** a változatos technikák építik, ugyanannak a mozdulatnak a spamelése nem. | **Szélfutó:** meghatározott harcművészeti lánc → finisher. **Sörfőző:** Staggerben elhalasztott sebzés → tisztító főzet. **Ködszövő:** legfeljebb három Ködszál-társ → gyógyító tovagyűrűzés. |
+| Pap | **Litánia:** a választott ima tettei verseket gyűjtenek; a teljes litánia egyszeri áldást mond ki. | **Fegyelem:** Engesztelés → sebzésből önheal és pajzsháló. **Csontpap:** nem halálos áldozat → Velő/Osszárium → gyógyítás. **Árnyék:** Őrület küszöb → erősebb, de életbe kerülő cast → tudatos levezetés. |
+| Boszorkánymester | **Paktum + Lélekadósság:** a paktum ereje adósságot épít; azt csak visszafizető képesség csökkenti, a plafon új paktumot blokkol. | **Átok:** három átokoldal és egy átköthető Lélekfonal → elszívás. **Pusztítás:** Parázsbank → teljes bankos burst; maximumon Túlhevülés. **Demonológus:** legfeljebb háromféle tartós démon → paktum feloldása. |
+| Démonvadász | **Kárhozat-terhelés:** a magasabb terhelés nagyobb erőt, túlterhelve nagyobb bejövő sebzést is jelent; tudatosan levezethető. | **Tombolás:** Lélektöredékek → mozgással begyűjtött Momentum. **Bosszú:** bejövő sebzésből Fájdalom → legfeljebb két Sigil vagy hasító költés. |
+| Sárkányidéző | **Felerősítés:** első használat tölt, a következő I–III. rangon elenged; túl sok várakozás vagy nagy találat megszakíthatja. | **Perzselés:** vörös↔kék Eszencia-váltás → Izzás → egy burst. **Megőrzés:** egyszeri Visszhang és csak életet visszaállító Időlenyomat. |
+
+Ezek nem puszta szerepcímkék: minden sorban van felépíthető állapot és azt
+értelmesen elköltő vagy átváltó lépés. A HUD az aktív kasztodhoz tartozó
+mérőt, láncot, töltetet vagy rúnát mutatja; a spellkönyv pedig az egyszerre
+használható, legfeljebb hét képességedet. A pontos számokat továbbra is a
+játékbeli leírásból olvasd, mert a balance élőben változhat.
+
+A **kifizetés is látszik**, nem csak a felépítés: amikor a kaszt-magod
+ténylegesen megerősít egy képességet, az akciósáv kiírja a kapott
+százalékot (`✦ Kaszt-erő: +N%`), az Íjász Szélolvasása pedig a találat
+pillanatában jelzi vissza az elsütést. Ha egyszerre él kombó-lánc befejező
+és kaszt-bónusz, a kiírt százalék a kettő összege.
 
 ### A választás súlya
 
@@ -362,7 +393,9 @@ képességeket, így harc közben nem feltétlenül kell külön tárgyra válta
 
 A kasztonként eltérő alapéleterő-rendszer jelenleg konfigurációból
 **kikapcsolt** állapotú. Ne számolj vele aktív előnyként: az életerőt most a
-vanília alap, a felszerelés és az aktív talentek módosítják.
+vanília alap, a felszerelés és az aktív talentek módosítják. Az új túlélési HUD ettől
+függetlenül mindig a valódi jelenlegi/maximális értéket írja ki, ezért a későbbi HP-scaling
+bekapcsolásakor nem kell tíz szívre visszanormalizálnia a nagyobb életerőt.
 
 ---
 
@@ -435,11 +468,32 @@ menüben, mert ott látod a jelenlegi feloldási szinteket és korlátokat.
 ### Feltételek és respec
 
 - Az alap feltétel a 25. kasztszint.
+- A második megtanulható spec-slot alapból a 28. szinten nyílik. Egyszerre
+  legfeljebb két specializációt őrizhetsz; háromspeces kasztnál a harmadikhoz
+  az egyik helyet respecelned kell.
+- `/spec switch <first|second|spec-id>` csak harcon kívül és közeli ellenségtől
+  távol vált. Nem gyógyít, nem tölti vissza a kaszterőforrást, és nem nullázza
+  a képességek várakozási idejét.
 - Egyes sötét irányok frakciót, bűnös állapotot vagy történeti kaput kérnek.
 - `/spec respec class` visszavonja a kasztspecializációt, általában
   frakcióvalutáért.
 - A régi spechez kötött képességek lekerülnek, a hozzá kötött talentpontok
   visszatérnek.
+
+### Doctrine, mesterség és záróképesség
+
+- A 30., 40. és 50. szinten specializációnként két doctrine közül választasz
+  a `/spec doctrine <30|40|50> <választás>` paranccsal. A doctrine a saját
+  mechanikádat módosítja — nem csak cím vagy kozmetika —, és az adott
+  spec-slothoz tartozik.
+- Az 50. szinttől a spec-mesterség csak valódi harci használatból fejlődik;
+  céltalan vagy AFK spellspam nem számít mesterségnek.
+- A záróképességhez előbb teljesítsd a kasztod mesterpróbáját. Ezután a
+  küldetésnaplóban megjelenik a saját **specializációs csúcspróbád**: 18
+  sikeres használatot kér a megadott, már ismert képességeidből.
+- A próba csak a megkövetelt aktív specializációval halad. Sikertelen,
+  megszakított vagy másik spechez tartozó képesség nem növeli a számlálót.
+  Teljesítéskor pontosan a saját szint-50-es záróképességed oldódik fel.
 
 ### Társak
 
@@ -448,16 +502,34 @@ menüben kezelheted őket:
 
 - `/pet item` — befogóeszköz, ha az irányod használ ilyet;
 - `/pet summon`, `/pet dismiss` — idézés és elbocsátás;
-- `/pet release` — az aktív társ végleges elengedése (Istálló-hely felszabadítása);
-- `/pet name <név>` — elnevezés;
+- `/pet select <hely>` — a társlista adott helyének kiválasztása és megidézése;
+- `/pet release [hely]` — a kiválasztott vagy megadott társ végleges elengedése;
+- `/pet name <név>` — elnevezés, szóközt tartalmazó névvel is;
 - `/pet stance <aktiv|passziv|marad>` — viselkedés (szerep: aktív vadász, passzív kísérő, őrhelyen maradó).
 
-A Vadmester Istállója legfeljebb 3 befogott társat tart; teli Istállóval új befogás
-csak elengedés után lehetséges.
+A Vadmester Istállója alapból legfeljebb 3 befogott társat tart. A `/pet` menü
+felső sora mutatja a társlistát; egy társra kattintva tartósan kiválasztod és
+magad mellé hívod. Teli Istállóval új befogás csak elengedés után lehetséges.
 
-A társ tapasztalatot szerezhet, megvédhet, és ritka Társvértet viselhet. A
+A társ a te és a saját jogosult szörnyöléseiből is tapasztalatot szerezhet,
+megvédhet, és ritka Társvértet viselhet. Idézéskor a rendszer biztonságos,
+szabad állóhelyet keres a közeledben; ha ilyet nem talál, nem hozza létre a
+petet, hanem másik helyet kér. A rituáléval egyszer már megkötött állandó társ
+később új kellék nélkül visszahívható a `/pet summon` paranccsal. A
 pontos befogható vagy idézhető lényt a választott irány és a játékbeli
 visszajelzés határozza meg.
+
+A **tartós társ** és az **ideiglenes idézett hullám** nem ugyanaz. Az
+ideiglenes lény a képesség idejének végén eltűnhet; a megkötött Vadmester-társ,
+Demonológus-démon, Nekromanta-udvaronc vagy Szentségtelen ghúl a karaktered
+tartós társállapotához kötődik és relog után újraépíthető. Egy tartós idéző
+képesség nem hoz létre mellette egy második, ideiglenes ikerpéldányt.
+
+Ha egy roster megtelt, az új tartós idézés még az erőforrás és a cooldown
+elköltése előtt visszautasítható; előbb engedj el vagy arass le egy régi tagot.
+A Szentségtelen Dögvész-burstje csak valóban meglévő saját ghúlt mutál: a
+fokozat korlátozott, ténylegesen erősíti a társat és újrabelépés után is
+megmarad. Ghúl nélkül nincs láthatatlan vagy elvesző mutáció.
 
 ---
 
@@ -493,6 +565,24 @@ egy teljes, később elavuló táblázat.
 *A Káosz Korát nem csak hősök élik túl. Kell valaki, aki kivágja a gerendát,
 megfőzi az ellenszert és újraélezi a pengét.*
 
+### A normál Minecraft crafting nincs letiltva
+
+Ez továbbra is Minecraft survival. Profession nélkül is építhetsz, bányászhatsz,
+farmolhatsz, redstone-ozhatsz, készíthetsz csákányt, alap páncélt vagy fegyvert, és
+használhatod a crafting table-t, furnace-t, enchanting table-t, anvilt, smithing table-t
+és grindstone-t. A wood→stone→iron→diamond→netherite tool progression változatlan.
+
+A vanilla páncél, kard, íj, pajzs és más alap harci tárgy **Survival felszerelés**:
+craftolható, lootolható, enchantolható, javítható és használható, de nem kap IceSMP
+rollokat, Signature-t, rúnát, szettet vagy Ascensiont. A különleges canonical IceSMP
+MMORPG felszerelést ezzel szemben saját profession/loot/boss/event/quest út készíti és
+a `/profession forge` fejleszti. Ilyen tárgyat vanilla recept, üllő, smithing vagy
+grindstone nem alakíthat át; a rövid actionbar üzenet elmagyarázza a tiltás okát.
+
+Az armor trim és rename canonical tárgyon jelenleg szintén blokkolt, mert a cosmetic
+változásnak is meg kell őriznie és journalolnia kell az UUID/PDC/checksum állapotot.
+Netherite továbbra is kiváló survival material, de önmagában nem IceSMP endgame rang.
+
 Két fő szakmai helyed van:
 
 - **egy gyűjtögető szakma:** Bányász, Gyógynövényész vagy Favágó;
@@ -510,11 +600,95 @@ pedig a saját műhelyfolyamataikban haladnak.
 - `/profession info` — szakmai állapot.
 - `/profession join <szakma>` — tanulás vagy váltás.
 - `/profession recipes` — a ténylegesen ismert és zárolt receptek.
+- `/profession forge` — Itemization 2.0 műhely: reroll, Stat Lock, rúna remove/replace,
+  Ascension és salvage.
 - `/szakmacel` — a szakmád heti közös célja.
 
 A teljes receptkatalógus nem része ennek a kézikönyvnek. A receptkönyv jelzi a
 szintet, a hozzávalót, az esetleges tervrajzot és azt is, ha valamilyen
 szolgáltatói kellék hiányzik.
+
+Craftolni csak abból a szakmából tudsz, amelyet **éppen gyakorolsz**. A korábbi
+szakmád szintje megmarad a profilodon, de a receptjei váltás után zárva vannak.
+
+### Authored felszerelés és item műhely
+
+Az authored gear nem „véletlen kardfajta”: a recept előre megmondja a template-et,
+és csak a template által felsorolt roll-range-ekben van randomness. A szakmaszint,
+tervrajz és mestermű jelző additív, plafonozott minimum-qualityt adhat. A tárgyon
+megmarad a készítő UUID-ja, a név craftkori pillanatképe, a szakma, hely/idő és a
+Mestermű jelző; egy későbbi névváltás nem írja át az eredetét.
+
+A jelenlegi 48 tárgyas katalógus starter, mid-game és high-end felszerelést, három
+szettet, valamint mining/fishing/hunting/farming, profession, wilderness, event és
+boss forrásokat köt össze. A tíz rúna közül a Súly nagy célpont ellen, az Oltalom
+alacsony életerőn, a Vadász pedig nem játékos célpontra lőve ad bounded előnyt.
+
+A főkézben tartott canonical tárggyal nyisd meg a `/profession forge` felületet:
+
+- **Full Reforge:** minden rollolható stat újragurul;
+- **Stat Lock:** kattints egy statra, így az változatlan marad, a többi újragurul;
+- **Quality Amplifier:** a következő reroll minimum qualityjét emeli;
+- **Stability Seal:** a reroll megtörténik, de a következő költséglépcső nem nő;
+- **Ascension:** előre megmutatott, ritka és determinisztikus fejlesztés;
+- **Rúna eltávolítása:** válassz foglalatot; a költség kifizetése után a régi rúna
+  megsemmisül;
+- **Rúna cseréje:** válassz foglalatot és tarts új canonical rúnát a mellékkézben;
+  az old→new csere egyetlen atomikus művelet;
+- **Salvage:** irreverzibilis, veszteséges bontás runa-/salvage alapanyagra.
+
+A gombok megmutatják a költséget és az eredményt; a tényleges művelethez
+**SHIFT+katt** kell. A reroll count, az Ascension, a rúnák és a provenance piaci
+adásvétel, relog és restart után sem nullázódik.
+
+### A pilot survival gazdasági út
+
+Egy Bányász valódi vanilla érctörésből, közös napi anti-farm sapkával ritkán
+**Sarkfény-cseppkövet, Viharkvarcot, Mélységi Borostyánt, Néma Kristályt** vagy a
+Netherben **Kárhozat Parazsát** talál. Silk Touch, regenerált/pajzsolt blokk, AFK,
+védett régió és tele inventory nem termel ritka jutalmat. A Kovács ezt feldolgozott alapanyagokkal authored
+Vadvidéki Eskükarddá vagy tervrajzos Glatziendorfi gearré kovácsolja. A gear
+rerollolható, rúnázható és — trade policy szerint — a piacon eladható. A követett
+világboss személyes **Fekete Villám Szilánkja** olyan komponens, amely a Jégvért
+Ascensionjéhez kell. Az Ascension után ugyanaz az item UUID marad, és a rollok a régi
+relatív qualityn maradnak az új tartományban.
+
+A Bestiárium első elejtés után mutatja az authored mob rangját és archetípusát;
+további elejtésekkel képesség-/ellenállás-jegyek, majd a forrásprofil nyílik meg.
+Pontos drop rate-et nem spoilerez.
+
+### Miért van, hogy egy recept ugyanannyit ad, mint a műhelyasztal?
+
+Mert szándékosan. Az ilyen recept **gyakorló receptként** van megjelölve a
+receptkönyvben: azért létezik, hogy a szakma elején legyen mit csinálni és
+legyen miből XP-t szerezni — nem azért, hogy nyerj rajta. Gyakorló recept csak
+alacsony szinten van, és sosem kér egyedi alapanyagot.
+
+Minden más recept ad valamit a műhelyasztal fölé: vagy **több jön ki ugyanabból
+az anyagból**, vagy olyasmi készül, amit vanília úton nem tudsz megcsinálni —
+sorsolt minőségű felszerelés, valódi hatású főzet, bűvölőkönyv, étel-buff vagy
+a szakmaláncok egyedi alapanyaga.
+
+Az alkimista főzetei és a bűvölő tomusai **valódi hatást hordoznak**: a főzet
+megiható és dobható, a tomus üllőn átadja a bűbájt.
+
+### Melyik szakma mit ad?
+
+Mindegyiknek megvan a maga terméke, és ezek nem helyettesítik egymást:
+
+- **Kovács** — fém fegyver és páncél, sorsolt minőséggel.
+- **Favágó** — íjak, fejszék és az erdőjáró bőrdarabok.
+- **Bányász** — több érc ugyanabból a fejtésből, plusz saját csákány- és ásóvonal.
+- **Halász** — horgászbotok és a víz alatti felszerelés.
+- **Szakács** — ételek és italok rövid, tematikus buffokkal.
+- **Bűvölő** — bűvölőkönyvek, tekercsek és a hét rúna.
+- **Alkimista** — **harci, azonnali** főzetek: erő, gyorsaság, gyógyítás, méreg.
+- **Gyógynövényes** — **hosszú hatású, harcon kívüli** kenőcsök és teák, plusz a
+  **Méregvonó Pép**, az egyetlen hordozható ellenszer. Az utóbbi minden aktív hatást
+  levesz rólad — a rosszat is, a jót is, tehát nem mindig éri meg meginni.
+
+Az alkimista és a gyógynövényes szándékosan egymás ellenpárja: az egyik hatást ad,
+a másik levesz.
 
 ### Mesterfok és rúnák
 
@@ -576,7 +750,7 @@ A nagy harci események alapból nem torlódnak egymásra.
 | Jelenség | Mit jelent neked? |
 |---|---|
 | Vérhold | erősebb éjszakai ellenfelek, nagyobb kockázat és jutalom |
-| Világboss | közösségi nagy ellenfél, jelzett támadásokkal |
+| Világboss | közösségi nagy ellenfél, jelzett támadásokkal és személyes contribution-jutalommal |
 | Invázió | hullámokban érkező, megerősített szörnyek |
 | Vad Hajsza | kóbor elit fenevad és személyes jutalom |
 | Kereskedő-karaván | időleges, rotáló ritka kínálat |
@@ -594,12 +768,40 @@ A helyi, kisebb jelenségekről csak a közelben járók értesülhetnek. A
 mob-események, meteorok és kincsek védett területet, játékosclaimet és
 alkalmatlan terepet elkerülnek.
 
+Egy nagy esemény admin- vagy automatikus indítása előbb biztonságos helyet
+kereshet. A távoli hang/részecske csak érkezési előjel; a világboss, invázió,
+meteor vagy kíséret tényleges indulását a szerver eseményüzenete és az
+`/events status` állapota igazolja.
+
 ### A világ nehézsége
 
-A biztonságos vidékektől távolodva a szörnyek szintje emelkedhet. Erősebbek,
-de több kaszt-XP-t és jobb zsákmányt adhatnak. A spawnerből származó mobok
-nem a vadon kihívásának pótlására valók, ezért nem kapják meg ugyanazt a
-skálázást és jutalmat.
+A biztonságos vidékektől távolodva a szörnyek szintje emelkedhet. A normál vadon
+Lv. 1–50 között halad; a territory, biome, föld alatti mélység, dimenzió, Vérhold
+vagy más event együtt legfeljebb az általános Lv. 70 survival capig emelheti.
+Authored rom, dungeon vagy boss saját szintet írhat elő; 70 fölötti szint nem a
+végtelen távolsági skála, hanem külön boss/encounter tartalom. A HP gyorsabban,
+a sebzés óvatosabban nő, így a magas szint nem automatikus előjel nélküli one-shot.
+
+A **Veterán** erősebb alapellenfél, az **Elit** legfeljebb két, a neve mellett
+röviden jelzett affixet kaphat; a Bajnok/Miniboss/Boss saját mechanikákat használhat.
+Charge, slam, lövedéksorozat vagy zóna előtt vanilla kliensen is hang/részecske
+telegráf látható — ezt figyeld, ne csak a nametaget. A spawnerből származó mobok
+nem a vadon kihívásának pótlására valók, ezért nem kapják meg ugyanazt a skálázást
+és jutalmat.
+
+Világbossnál nem csak a killing blow számít. Érdemi bosssebzés, tankolás és a
+támogatott encounter-célok contributiont adnak; AFK, önmagadon farmolt heal vagy
+harc előtti padding nem. A boss HP-ja a harc eleji résztvevő-snapshot alapján,
+csökkenő hozadékkal skálázódik, ezért ki-/belépéssel nem ugráltatható. A küszöböt
+elérő játékos személyes ascension komponenst kap. Ha tele az inventoryd, a jutalom
+nem esik a földre: felszabadított hellyel a következő reconnectkor újrapróbálható.
+
+Az authored harci felszerelés enyhén figyelembe veszi a szintedet, kasztodat,
+specializációdat, jelenlegi gear-statisztikáidat, üres felszereléshelyedet és a
+forrást. Ez nem személyes kívánságlista: más buildhez vagy kaszthoz való,
+piacon értékes darab továbbra is eshet. A közelmúlt ismétlődése csak finoman
+módosítja a súlyokat, és nem garantál rövid úton Mitikus tárgyat; az előzmény
+kilépéssel vagy szerver-újraindítással sem nullázódik.
 
 ### Szezonális liga
 
@@ -731,6 +933,9 @@ szezononként ismételhető.
 
 - A kasztpróbák és mesterpróbák a választott szerepedhez illő feladatokat
   adnak.
+- Az 50-es specializációs csúcspróba a mesterpróba után, csak a megfelelő
+  aktív speccel jelenik meg. A megadott képességek 18 sikeres használata oldja
+  fel a záróképességet; nem kér külön NPC-t vagy rejtett arénát.
 - A történeti fejezetek a szezonhoz kapcsolódhatnak.
 - A rejtvényküldetés nem mutatja meg a konkrét célt — ez szándékos.
 - A sötét és vezeklési láncoknak tartós következménye lehet.
@@ -920,7 +1125,7 @@ zászlók alatt élő Felsők is indulhatnak közös kalandra.
 - a közeli mobölésből származó kaszt-XP megosztható;
 - bizonyos eseményeknél minden közeli tag személyes zsákmányt kap;
 - a párttagok nem sebzik egymást;
-- a HUD mutatja a tagok életét;
+- a saját frame-ed alatti party HUD mutatja a tagok életét, class resource-át és állapotát;
 - egyes kazamatakapuk közös kulcsnyitást támogatnak.
 
 A vezető `/party kick`, `/party promote` és `/party disband` műveleteket
@@ -975,11 +1180,38 @@ vagy kérdezd meg, hogy a kapu ki van-e építve és aktiválva.
 
 ---
 
+## 17. Prologue / Season 0 — amit játékosként tudnod kell
+
+A **Prologue** az IceSMP egyszeri nyitó korszaka. Nem külön karakter vagy külön szerver:
+a most megszerzett legitim karakterhaladásod, tárgyaid, achievementjeid és kozmetikai
+státuszaid **nem törlődnek** a Season 1 kezdetén.
+
+Amíg az üzemeltetők nem élesítik és az állapot `DORMANT`, a Prologue semmilyen
+saját fejlődési, tartalmi vagy utazási korlátot és semmilyen Prologue HUD- vagy
+ambient hatást nem alkalmaz. Ilyenkor a szerver normál konfigurációja érvényes.
+
+Az élesített nyitó korszakban szándékos fejlődési plafon védi a később érkező játékosok esélyeit.
+Az alapbeállítás szerint a kasztod **25. szintig** fejlődhet; a plafon fölé XP sem bankolódik.
+A kasztspecializáció és a normál relikvia-progresszió létezik a világban, de a Prologue alatt
+még nem választható/szerezhető meg rendes játékúton. Egyes magasabb loot- és tervrajzszintek
+ugyanezért későbbi tartalomnak számítanak. A játékbeli menü mindig jelzi az aktuális kaput.
+
+A **Kárhozat Kapuja** már a Prologue előtt is a világ része. Season 0 alatt elmehetsz hozzá,
+a hozzá kötött felfedező- és lore-tartalom működhet, de a Kapun **nem lehet átjutni a Netherbe**.
+Saját Nether-portált továbbra sem lehet szabadon létrehozni. A Kapu állapotának romlását időnként
+a HUD vagy a fallback kijelzés stabilitásmérője és helyi események jelezhetik.
+
+A Prologue lezárása után a világ wipe nélkül lép tovább Season 1-be. A normál szezonliga ekkor
+indul el ténylegesen. Az új vagy lemaradó, 25. szint alatti karakterekhez configolható
+**catch-up XP-bónusz** tartozhat; ez csak a normál XP-t gyorsítja, nem oszt dupla tárgyjutalmat.
+
+A nyitó korszak végének történeti részleteit ez az útmutató szándékosan nem spoilerezi.
+
+---
+
 *Aetrinita alatt mindenki ugyanúgy ébred. Onnantól azonban nincs két egyforma
 út. Válassz olyat, amelyről egyszer érdemes lesz krónikát írni.*
 
 ---
 
 <sub>Dokumentált release: `4643ab53586f0c1ee7352df16dcd477013e6fad4`</sub>
-
-

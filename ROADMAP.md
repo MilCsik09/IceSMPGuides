@@ -22,7 +22,7 @@ Jelölések:
 - ⬜ **elkötelezett fejlesztés** — része az A–H tervnek;
 - ◇ **builder- vagy runtime-kapu** — kézi előkészítést, illetve próbát igényel;
 - 💡 **ötlet** — értékes irány, de még nincs ütemezve;
-- ⏸ **döntésre vár** — tulajdonosi vagy design-döntés nélkül nem indul.
+- ⏸ **döntésre vár** — tulajdonosi vagy design-döntés nélkül indul.
 
 ## 1. Következő kiadási kapuk
 
@@ -34,6 +34,13 @@ Jelölések:
   A megoldási irány szűk WAL/pending rekord: az irreverzibilis lépés előtt
   tartós műveleti rekord, majd idempotens induláskori recovery. Teljes
   wallet- vagy claim-snapshotot nem szabad régiószálon szinkron írni.
+  A minta már létezik a repóban (`RespecTransactionJournal` +
+  `RespecRecoveryProtocol`, `DurableTransactionProtocol` +
+  `DurableRecoveryPolicy`, `FactionSwitchJournal`) — ide ezt kell rákötni,
+  nem újat tervezni. A `ClaimManager`-ben jelenleg nincs journal; a
+  `CurrencyManager.deposit:555-592` az itemeket az enqueue-olt
+  wallet-mutáció tartós kiírása ELŐTT veszi ki az inventoryból (logikai
+  hibára van kompenzáció, crashre nincs).
 
 **Kilépési feltétel:** a normál út, lemezhiba és több időablakban
 megszakított folyamat is bizonyítottan ugyanarra az eredményre áll helyre;
@@ -44,27 +51,61 @@ claim.
 
 Ezek nem mind kiadásblokkolók, de a forrásban még létező rések. Az
 implementálásuk előtt tételenként újra kell igazolni a kiváltási utat.
+A lista tételei 2026-08-14-én forrásban ellenőrizve; ami azóta elkészült,
+az ki van véve (kereskedő-karaván spawnútja: `CaravanManager:176-192`
+`EventSpawnGuard` + generáció-újraellenőrzés a hopolt callbackben).
 
 - 🚧 A `claims.yml` hibás szemantikai rekordját a loader jelenleg
-  kihagyhatja, egy későbbi mentés pedig véglegesítheti az adatvesztést.
-  Fail-closed betöltés, karantén és látható mentési hiba szükséges.
-- ⬜ A HUD és a parkour quit-takarítása mellé kick-út kell; a hosszú életű
-  report-, cooldown- és debounce mapekhez explicit purge-szabály kell.
+  kihagyhatja (`ClaimManager.load:1184-1187`), a következő `flushToDisk`
+  pedig már csak a túlélő claimeket írja vissza — így véglegesíti az
+  adatvesztést. Fail-closed betöltés, karantén és látható mentési hiba
+  szükséges.
+- ⬜ A hosszú életű report-, cooldown- és debounce mapekhez explicit
+  purge-szabály kell. A HUD/parkour kick-út ELŐTT tisztázandó, hogy valós
+  rés-e: a `ParkourListener` csak `PlayerQuitEvent`-et kezel, de a Paper
+  kick után is dob quit-eventet — ezt runtime-próbával kell eldönteni, nem
+  kódolvasással (a kaszt-service-ek eddig külön kezelték a kicket).
 - ⬜ A legacy `claims.block-in-*` beállításokat egyértelmű, validált sémára
   kell migrálni.
 - ⬜ A GUI-kban maradt közvetlen szövegek kerüljenek a
   `MessageManager`-be.
 - ⬜ A `/icesmp reload` csak valóban sikeres validálás után küldjön
-  sikerüzenetet.
-- ⬜ A `ProtectionBridge` konkrét policy/flag alapján döntsön; ne kezeljen
-  automatikusan minden WorldGuard-régiót tiltott területként.
-- ⬜ A kereskedő-karaván minden spawnútja menjen át az
-  `EventSpawnGuard`-on, és a régiószálra hopolt callback ismét ellenőrizze,
-  hogy az esemény még ugyanahhoz a generációhoz tartozik.
+  sikerüzenetet. A quest-hibáról már megy külön üzenet
+  (`IceSMPCommand:131-135`), de a siker-üzenet utána feltétel nélkül elmegy,
+  és a `ConfigValidator.validate` `void` — előbb visszatérési értéket kell
+  adnia, hogy legyen mire kapuzni.
+- ⬜ A `ProtectionBridge` konkrét policy/flag alapján döntsön; a
+  `queryProtected:96-101` jelenleg `getApplicableRegions(...).size() > 0`
+  alapján minden WorldGuard-régiót tiltott területként kezel.
 - ⬜ A `/menu` adjon utat a `/tanacs`, `/komp` és `/faction war`
-  funkciókhoz; staff-elemet csak megfelelő jogosultsággal mutasson.
+  funkciókhoz; staff-elemet csak megfelelő jogosultsággal mutasson. A két
+  parancs regisztrálva van (`IceSMPCore:1812-1813`), csak a `CommandMenus`
+  csempéje hiányzik.
 - ⬜ Tanácsszavazásnál játékidő-alapú alt-védelem, az ambient jutalmaknál
   napi keret, a parkournál tartós ranglista szükséges.
+- ⬜ Vanishben a publikus chat némán eldobódik
+  (`VanishListener.onChat:155-161`, `moderation.vanish.allow-chat: false`) —
+  a játékos nem kap visszajelzést, ami szerverhibának látszik.
+  Egy `MessageManager`-kulcs kell hozzá, a blokk szándékos.
+
+**Szakma-katalógus rework (2026-08-15) — lezárva.** A katalógus 437-ről 295-re csökkent, majd
+a szakma-identitás pótlásával 376-ra állt be; minden recept kimondja a fajtáját, és a fajta-szabályokat gépi kapu tartja
+fenn (`check_consistency.py` + `professionRecipeAuditRegressionTest`). Lezárt tételek:
+15 nyersanyag-hurok, 16 hatás nélküli főzet, 13 üres enchantkönyv, 9 loot-ritkaságot
+törő recept, a tervrajz-duplikáció, az inaktív szakmával craftolás, a recept-XP heti
+célba kötése és a tömeges XP darabszám-alapú jóváírása. A részletek a
+`docs/ARCHITECTURE.md` „Recept-fajta szerződés" szekciójában élnek.
+
+- ◇ **Szakma-rework runtime acceptance:** a `docs/ADMIN_GUIDE.md` PROF-01..07 sorai
+  productionközeli Folia stagingen még kézi próbát igényelnek — különösen a
+  tervrajz-fogyasztás versenyhelyzete, a 16 főzet tényleges hatása és a Méregvonó Pép
+  hatás-törlése.
+- ⏸ A 15 új identitás-recept balansza (gyógynövényes kenőcsvonal, bányász ásó- és
+  szerencsecsákány, favágó erdőjáró szett, két alkimista főzet) élő próbán mérendő:
+  a hatás-időtartamok konzervatív kiindulópontok, nem mért értékek.
+- ⏸ A szakmák közti XP-tempó (a mért ~11 270 favágó akció vs. ~1 879 alkimista craft
+  ugyanazért az 1→50 alap-XP-ért) továbbra is nyitott: nem az akciószámot, hanem a
+  várható játékidőt kell kiegyenlíteni, és ehhez mérés kell, nem becslés.
 - ⬜ A szezon 41–53. napjának történeti üresjáratát és a túl korán
   elérhető rejtvényeket tartalom- és időkapu-tervvel kell rendezni.
 - ⏸ A Mételytépő és a Sárkánytojás-töredék tényleges megszerzési forrása
@@ -217,25 +258,53 @@ nyilvános felületre.
 
 ### C — PvE Depth
 
-- ⬜ Elit-affix réteg: kevés, jól olvasható affix, legfeljebb kettő
+- ✅ `MobTemplate` + hibrid 1–50 progression, ahol az explicit encounter/zóna
+  felülírja, a távolság/mélység/territory pedig survival-wilderness fallback;
+  általános vadon hard cap 70. A rendszer 18 authored template-et, vanilla fallbacket,
+  12 archetype-vokabulárt és külön bounded HP/damage görbét ad.
+- ✅ Elit-affix réteg: kevés, jól olvasható affix, legfeljebb kettő
   mobonként, spawnkor rögzített döntéssel és bounded élettartammal.
-- ⬜ Eseményvezérelt boss contribution ledger sebzés, gyógyítás, tankolás
-  és mechanikai részvétel alapján.
+- ✅ Eseményvezérelt, legfeljebb 128 résztvevős boss contribution ledger sebzés,
+  támogatás, tankolás és objective API-val; a világboss start-snapshotból skálázódik,
+  a személyes komponens receipt-alapúan idempotens és tele inventorynál függőben marad.
 - ⬜ Személyes harci összefoglaló; nyilvános DPS-szégyenfal nélkül.
-- ⬜ Bestiárium 2.0 többszintű kutatással és információs/kozmetikai
-  jutalmakkal.
+- ✅ Bestiárium authored rang/archetípus → ability/resistance → loot-profile
+  tudáslépcsőkkel; pontos drop rate nélkül. Kozmetikai jutalomkatalógus későbbi scope.
+
+**Release-gate:** a dependency-free domain/source regresszió nem helyettesíti az
+exact Java 21 CI-t és a 50–60 fős Folia staging playtestet (region-hop, late join,
+disconnect, full inventory, boss despawn/restart, képesség-telegráf olvashatóság).
 
 **Kapunyitás D/E felé:** minden idézett entitás életciklusa rendezett,
 a jutalom pénzsemleges, az offline jogosultság az inboxba kerül.
 
-### D — Profession és item economy
+### D — Survival itemizáció, profession és piac
 
+- ✅ Vanilla Crafting Boundary foundation: a normál survival crafting, tool- és
+  basic gear progression szabad; a canonical MMORPG itemek crafting/anvil/smithing/
+  enchanting/grindstone identity-laundering útjai központi, fail-closed policy alatt
+  állnak. A vanilla/basic gear nem canonical salvage- vagy profession-input.
 - ⬜ A 16 profession-specializáció tényleges passzívjai és fizetős respec.
-- ⬜ Veszteséges salvage szigorú tiltólistával.
-- ⬜ `ItemIdentityService` és bounded item history, csak fontos
-  mérföldkövekkel.
-- ⬜ Rúna 2.0 UX: előnézet, kódex és rúnapor-salvage; több foglalat nélkül.
+- ✅ Controlled reroll (Full Reforge, Stat Lock, Quality Amplifier, Stability Seal),
+  deterministic authored ascension és veszteséges salvage szigorú legacy/admin/
+  bind tiltással, bounded költséggörbével és item-mutation WAL recoveryvel.
+- ✅ Az authored `ItemTemplate`/`ItemInstance`/`ItemIdentityService`, 0–2 rúnahely,
+  signature/set fogyasztó és build-aware, restartbiztos soft-diversity alap
+  elkészült; a Phase 4–5 pure-domain regresszió és consistency kapu zöld. Az exact
+  Java 21 Gradle CI forráskapu, a Folia staging identity/migration/death/market
+  runtime acceptance külön kötelező release-gate.
+- ✅ Az első survival vertical slice a jelenlegi 48 authored template-es systemic
+  katalógusban is megmarad:
+  vanilla mining → Sarkfény-cseppkő → profession craft → reroll/rúna/piac →
+  világboss-komponens → ugyanazon UUID-val ascension.
+- ✅ Rúna 2.0: canonical insert, kiválasztott socketes remove és atomikus replace
+  ugyanazon whole-inventory mutation WAL-on fut. A Forge előnézet/költség/SHIFT
+  megerősítést ad; a régi rúna explicit `destroy` economy-sink policyt követ.
 - ⬜ Crafting order piactér escrow-val és naplózott settlementtel.
+- ⬜ Equipment 2.0: külön `armorFamily` metadata és CLOTH/LEATHER/MAIL/PLATE
+  stat-budget/proficiency; a Bukkit `Material` nem armor-family authority.
+- ⬜ Profession 2.0 feldolgozási láncok (fiber→cloth, hide→leather,
+  leather+metal→mail, ore/alloy→plate) és equipment resource-pack rework.
 
 **Kapunyitás E felé:** a tárgyazonosság másolás, újraindítás és
 inventoryhiba után is bizonyítható; nincs új pénzforrás.
@@ -373,6 +442,15 @@ fázisonként, a terv szerinti sorrendben:
   BROWSE_RECIPES saját-szakma kapu (vanilla paritás), PositionCache/emitFx
   unloaded-world védelem; kliensen resync-ürítés teljessé téve,
   recept-fülek saját szakmára szűrve.
+- ✅ World-event spawn hardening: automatikus jelöltek chunk-középre
+  igazítva, effektív footprint/partpuffer egy régión belüli 7 blokkra
+  korlátozva, escort-route és inváziós hullám belső profillal; az admin
+  parancsok az aszinkron keresést nem jelentik többé kész spawnként.
+- ✅ Teljes class-mechanika audit: mind a 13 kaszt, 35 specializáció, 210
+  doctrine és 35 capstone producer→consumer útja bekötve; minden alap aktív
+  kit 7/7 feloldható spell. A csúcspróbák spec- és szintkapus
+  `CAST_SPELLS` questek, a durable pet/minion roster egyetlen példány-authorityt
+  használ, a Szentségtelen ghúl mutációja pedig tényleges Profile v2 társállapot.
 - ⬜ Review-ből nyitva hagyott kis tételek: (1) a protokollnak nincs
   aggregát (beágyazott listás) payload-méret garanciája — a jelenlegi
   tartalom-skálán elméleti, a hibaút a HUD-tick védőhálóval lefedve; ha a
@@ -479,4 +557,33 @@ Egy roadmap-tétel csak akkor zárható le, ha:
 8. a szükséges staging/runtime pontot nem CI alapján, hanem ténylegesen
    kipipálták az admin acceptance checklistben.
 
+## 8. Season 0 / Prologue — PR #121 kiadási állapot
 
+A `feat/prologue-doom-gate` branch a külön Prologue lifecycle-t, a Season 0
+content/progression gate-eket, Olethropyla egyetlen legitim Nether-átjáró
+policyjét, a Gate Breach/finale útvonalat, Profile v2 prestige státuszokat és a
+Season 1 átmenetet tartalmazza. A completion pass a finale pause, transient
+entity cleanup és boss-victory persistence race hardeningjét is lezárta.
+
+- ✅ **Forrásoldali completion:** Folia-safe transient cleanup, valódi encounter
+  pause, pause-időt kizáró timeout, paused restart recovery, finaleId-kötött
+  boss-victory pending receipt, fail-closed persistence failure és idempotens
+  Gate/reward/Season 1 settlement elkészült.
+- ✅ **DORMANT pass-through:** élesítés előtt nincs Prologue content/progression
+  ceiling, season/community override, Nether authority, HUD/ambient/breach vagy
+  idő előtti catch-up; a normál szerverconfig marad érvényben.
+- ✅ **Dokumentációs szinkron:** lore mapping, player-facing Prologue policy,
+  admin live-ops és builder hookok a meglévő kanonikus guide-okban szerepelnek.
+- ◇ **World-builder acceptance:** a `prologue-gate`, `prologue-gathering`,
+  `prologue-breach`, `prologue-boss` hookok tényleges élő térképes pontjai,
+  arena/perem és Nether-oldali érkezés továbbra is kézi world-build feladat.
+- ◇ **Staging runtime acceptance:** rehearsal, production pause/resume,
+  pause→restart→resume és a victory crash-windowk productionközeli Folia
+  szerveren még kézi próbát igényelnek; az automatizált regresszió nem helyettesíti ezt.
+- 🚧 **Build/CI gate:** csak az exact PR HEAD-en futott Java 21 `check`,
+  consistency/docs inventory és CI bizonyíték után tekinthető a PR kiadásra
+  késznek. Ha a GitHub runner billing/spending-limit miatt el sem indul, az
+  platform-blocker, nem zöld validáció.
+
+A Prologue scope-on kívül marad a Season 2 End-nyitás, az Első Csend
+magyarázata és a Néma Királynő végjátéka; ezek nem #121 hiányosságok.

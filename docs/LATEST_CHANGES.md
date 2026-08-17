@@ -25,8 +25,131 @@ Folia-/26.2-portolási határokat és a későbbi adapterek stabil szerződései
 
 ## Augusztus eleji integrációs hullám (staging előtt)
 
+### Vanilla Crafting Boundary — stacked foundation
+
+- A normál Minecraft crafting és a wood→netherite survival tool/basic gear út újra
+  szabad; a korábbi profession craft-gate defaultból ki van kapcsolva.
+- Az új `ItemTransformationPolicy` VANILLA_SURVIVAL, BASIC_SURVIVAL_GEAR,
+  CANONICAL_MMO_GEAR és LEGACY domainre oszt, és egy helyen dönt crafting, cook,
+  stonecutter, anvil, smithing, trim, enchanting, grindstone, villager és durability ügyben.
+- Canonical/legacy inputból vanilla output, két canonical UUID anvil merge-je,
+  netherite upgrade, repair, grindstone és tiltott enchant fail-closed. A prepare és
+  committed result-slot kapu shift/hotbar/repeated interakciót is ellenőriz.
+- Canonical rename és trim default blokkolt: konfigurálható policy-jelzésük sem írhat
+  közvetlen ItemMetát, csak későbbi WAL-os mutation adapter oldhatja fel.
+- Az identity inspect `POLICY_VIOLATION` állapotban felismeri a command/plugin/loot úton
+  felkerült, whitelistán kívüli enchantot; market és CombatPower nem fogadja csendben.
+- Vanilla/basic gear nem canonical salvage vagy profession conversion input. Villager
+  és vanilla loot basic marad, Netherite survival material, nem MMORPG BiS authority.
+- Equipment 2.0, Profession 2.0, CLOTH/LEATHER/MAIL/PLATE és a hozzájuk tartozó resource
+  pack külön jövőbeli scope; `Material` nem `ArmorFamily`.
+
+### PR #127 final source closure
+
+- A Target Frame most teljes runtime producerláncot kapott: player-owner bounded,
+  blokk-LOS-os raytrace → target-entity owner scheduler → immutable canonical metadata
+  snapshot → `TargetHudState` → közös first-party HUD renderer. MobTemplate ID/név,
+  level, rank, HP és legfeljebb két valid affix a Mob 2.0 runtime PDC authorityból jön;
+  stale/malformed adat vanilla fallbackre zár. Generációs token és egységes clear contract
+  védi a target switch, death, despawn, range/LOS, world change és disconnect útját.
+- A canonical rúnák insert/remove/replace lifecycle-ja lezárult. A Forge socketet választ,
+  previewt, költséget és SHIFT megerősítést mutat; replace egyetlen old→new mutation,
+  nem két crash-érzékeny lépés. Mindhárom művelet whole-inventory WAL-on fut, az item UUID,
+  provenance, ascension és másik rúna megmarad. A régi rúna explicit `destroy` sink.
+- A CombatPower equipment polling megszűnt. Inventory/equipment események és a plugin saját
+  item mutation, craft, market, crate, invsee és admin-give útjai explicit owner-thread
+  refresh hookot használnak. A set transient modifierek stabil kulccsal remove-before-add
+  lifecycle-t követnek; duplicate UUID és invalid slot továbbra is fail-closed.
+- Új behavioral regresszió védi a Target Frame generáció/clear/metadata/range szerződését,
+  a rune insert/remove/replace identity/receipt/recovery útját, továbbá a CombatPower,
+  set, world-boss cleanup, reward witness, contribution anti-padding és 2048-as atomic
+  ability-bound hardeninget.
+- A `100 000` mintás progression harness továbbra is statistical/Monte Carlo formula-
+  és balance-regresszió, nem multiplayer load test. Valódi Folia process-kill, full inventory,
+  disconnect, 50–60 játékos, TTK/healing/telegraph és mining/economy walkthrough külön
+  **STAGING REQUIRED**; ezekre a CI nem ad PASS minősítést.
+
+### Itemization 2.0 Phase 5.5 hardening
+
+- A mutation journal most hard-bounded és egy játékoshoz egyszerre egy pending műveletet
+  enged. Restartkor csak exact-before → abort és exact-after → commit automatikus;
+  mixed vagy azonos before/after állapot fail-closed kézi review.
+- A process-kill/retry regresszió bizonyítja, hogy az újrapróbálás nem duplikál, a
+  Profile v2 restart-regresszió pedig a 32 elemű soft-diversity sorrendjét, a mining
+  napi budget rolloverét és a corrupt-state tiltást ellenőrzi.
+- A survival vertical slice authority változatlan: az item UUID, provenance, roll quality,
+  rúna, reroll count és ascension stage az itemmel utazik; a playerhez tartozó pity/budget
+  marad a PlayerProfile v2-ben.
+- A katalógus 48 authored template-re, 15 tényleges Signature fogyasztóra, 3 szettre,
+  7 ascendelhető tárgyra és 10 rúnára bővült. A profession katalógus 15 canonical
+  gear receptet tartalmaz; a céltemplate craft előtt ismert.
+- Az öt ritka mining-anyag dimension/depth/block policyt, közös Profile v2 napi 6-os
+  budgetet és Silk Touch/regen/AFK/protection/full-inventory tiltást használ.
+
+### Mob/Encounter 2.0 pilot
+
+- A normál survival progression Lv. 1–50, a földrajzi/event bónuszokkal elérhető hard
+  cap Lv. 70. Encounter/authored hely/MobTemplate elsőbbséget élvez a territory,
+  biome/dimension, mélység, távolság és Vérhold fallback fölött; 70 fölötti display
+  level csak explicit authored bossnál lehet.
+- A HP és damage külön, monoton, bounded görbét kapott. Default HP: `1+(level-1)×0.08`
+  legfeljebb 8×; damage: `1+(level-1)×0.025` legfeljebb 3×, további abszolút cappal.
+- A canonical katalógus 18 MobTemplate-et, 6 registry abilityt, 7 rankot, 12 archetype-ot
+  és 7 Elite affixet ad. Egy elit spawnkor legfeljebb két valid affixet kap; a veszélyes
+  ability vanilla partikula/hang telegráfja megelőzi a sebzést.
+- Az invasion hullámai/bajnoka, a kultisták és a Wild Hunt canonical rank-scalinget
+  használnak. A Target Frame runtime producere canonical template ID-t, levelt, rankot,
+  HP-t és rövid affix státuszt vetít; a Bestiary authored template ID-t ismer fel,
+  vanilla fallback megmarad.
+- A világboss startkor diminishing player-count snapshotot készít, ezért a HP nem
+  ugrál late join/death/disconnect miatt. A snapshot a hat felszerelési slot owner-threaden
+  frissített, bounded CombatPower-cache-ét használja, nem rarityt vagy neutral referenciát
+  nevez ki kizárólagos authoritynak. A bounded contribution ledger sebzést, tankolást,
+  Monk/Paladin ally-healt és shieldet, valamint telegráf-kitérés objective-et kezel;
+  self/pre-combat paddinget tilt.
+  Az érdemi résztvevők PlayerProfile receipt-alapú személyes ascension komponenst
+  kapnak, full inventorynál world drop nélkül, reconnect/restart recoveryvel.
+- A dependency-free kapuk mellett a 100 000 mintás deterministic balance harness a
+  roll/amplifier eloszlást, promotion-sűrűséget, reroll capet, mining faucetet,
+  encounter görbét és 2048-as runtime-state capet ellenőrzi. A feature branch minden
+  forrásváltozását exact commiton futó Java 21 Gradle CI ellenőrzi. A
+  productionközeli Folia/process-kill és multiplayer balance külön staging gate marad.
+- A runtime source-contract már nem a régi, hatdarabos pilotot rögzíti: a recovery
+  többes receipt-witnesst fail-closed kezel, a systemic mobkatalógust pedig a reviewolt
+  15–25-ös tartományban tartja.
+
+### Itemization 2.0 Phase 4–5 — survival economy pilot
+
+- Az authored katalógus fölött elkészült a controlled reroll: Full Reforge, egyetlen
+  authored Stat Lock, Quality Amplifier, Stability Seal, bounded és itemmel utazó
+  költséglépcső.
+- Az explicit ascension stage-ek nem rerollolnak: a normalizált qualityt viszik át az
+  új roll-range-re, az UUID/provenance/rúnák megtartásával. A Glatziendorfi Jégvért
+  BASE→AWAKENED→ASCENDED pilotot és valós Signature-tier scalinget kapott.
+- A veszteséges salvage legacy/admin/account-bound/forbidden itemnél fail-closed;
+  outputja a reroll/rúna ökoszisztémába tér vissza, a gépi invariant pedig tiltja, hogy
+  a becsült output meghaladja a konzervatív inputértéket.
+- A Bányász vanilla deepslate érctörésből, protection/regen/AFK és napi Profile v2
+  budget mellett Sarkfény-cseppkövet találhat. Három profession gear recept már
+  közvetlenül canonical `ItemTemplate → ItemInstance`, bounded crafter provenance-szel.
+- A követett világboss személyes Fekete Villám Szilánkot ad az ascensionhöz. A market
+  megőrzi a teljes instance-et és elutasítja a malformed/duplicate/policy-sértő itemet.
+  A crate authored template rewardot támogat, és a bundled config többé nem oszt
+  legacy random-affix geart.
+- A `/profession forge` előnézeti GUI minden költséget és irreverzibilis következményt
+  mutat, SHIFT megerősítést kér. A szűk item-mutation WAL exact before/after snapshotból
+  recoveryzik; mixed állapotnál fail-closed admin review marad.
+
+> A pure-domain regresszió és a consistency/YAML kapuk lokálisan futnak. A lokális
+> Java 17-es izolált környezet helyett a feature branch exact commitos Java 21 Gradle
+> CI-je a build authority; a Folia process-kill/runtime acceptance továbbra is staging gate.
+
 A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, egyben:
 
+- **Kaszt-kifizetés visszajelzés:** a kaszt-magok eddig is emelték a képességek
+  erejét, de a játékos ebből semmit nem látott. Mostantól a megerősített cast
+  kiírja a kapott százalékot, az Íjász Szélolvasása pedig a találat
+  pillanatában jelez; kombó-lánc befejezőnél a kiírt érték a két bónusz összege.
 - **PlayerProfile-alap:** minden tartós játékos-állapot (kaszt, szakma, quest,
   pénztárca, statisztika, moderációs összegzés, crate-számlálók, heti céh-cél,
   halál-escrow) egyetlen, tranzakcióvédett profilrendszerben él — restart és
@@ -39,18 +162,48 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   erődkerettel), 64×64-es class/utility/rúna/pénznem ikonok, class/spec/szint/event parity,
   minden class strukturált mechanikaállapota, legfeljebb öt generic metric, automatikus
   charge-pipek, Wizard háromcsatornás ráhangolódása és DK slotonkénti rúnaregeneráció.
-  A fő frakcióvaluta mindig, a pozitív idegen banki valuták külön ikonnal jelennek meg;
+  Mind a négy frakcióvaluta állandó helyen, nulla egyenleggel is megjelenik;
   packhiánynál játékosonkénti natív fallback marad; a kijelzés teljesen first-party, külső HUD plugin nélkül.
   A panelglyphök a kliens 256×256-os font-atlasz korlátján belül maradnak, a jobb oldali
   horgony clip-space alapú, a teljes kompozíció fizikai méretét pedig a shader a kliens
   `ScreenSize` értékéből normalizálja. A magyar feliratok négyszeresen túlmintavételezett,
-  élsimított DejaVu-forrásból készülnek; ablak- és GUI-scale váltás nem mozdíthatja vagy
+  élsimított Inter SemiBold forrásból készülnek; ablak- és GUI-scale váltás nem mozdíthatja vagy
   többszörös méretűre nagyíthatja a HUD-ot.
+- **Moduláris Player Frame és HP-scaling előkészítés:** a normál vanilla szív-, páncél-, étel- és
+  oxigénsávot pack-readiness után egy bal felső, frakciószínű Player Frame váltja. A név, frame,
+  HP current/max, százalék, absorption, páncél, étel és feltételes oxigén külön editor-elem;
+  a páncél maximum és százalékos sáv nélküli flat érték. A gyors, Folia-safe tick
+  külön fut a class/sidebar snapshotfrissítéstől. A
+  class-health gate továbbra is kikapcsolt, de a normalizálás már tiltott, így későbbi staging
+  aktiváláskor a HUD a valódi skálázott HP-t fogja mutatni. Hardcore-heart asset nincs felülírva.
+- **Target/Party Frame és tisztább class panel:** a tartós class XP-sáv kikerült, az eseménylábléc
+  teljes szélességben legfeljebb három aktív eseményt mutat. A DK-rúnák saját editor-kategóriát
+  kaptak. Találat után screen-space Target Frame jelenik meg: a mob saját bestiárium-, a játékos
+  frakciófüggő grafikát, current/max HP-t, százalékot, szintet/státuszt és játékos resource-t kap.
+  A rendszer nem hoz létre követő vitals-TextDisplayt, így az eredeti mobnév érintetlen marad.
+  A Player Frame alatt négy WoW-stílusú, tagonként frakciószínű Party Frame mutat HP-t,
+  resource-t és online/távol/halott/vezető állapotot.
 - **Staff-eszközök:** automatikus single-writer `/invsee`, húzható
   adományláda-input, staged config-GUI (mentés/elvetés tranzakcióval).
+- **Társ-rendszer:** a Profile v2-ben tárolt társlista most a `/pet` GUI-ból és
+  `/pet select <hely>` paranccsal ténylegesen váltható; nem aktív társ is célzottan
+  elengedhető. Az aszinkron GUI csak a tartós művelet után frissül, az idézés
+  biztonságos, betöltött Folia-lokális állóhelyet keres, a pet saját ölése is ad
+  companion XP-t, a halál cooldownja pedig a durable commit alatt is fail-closed.
+- **Teljes class-integritás:** mind a 35 specializáció hét használható
+  aktív képességgel, hat ténylegesen bekötött doctrine-nal és mechanikailag
+  fogyasztott szint-50-es capstone-nal rendelkezik. Az új 35
+  specializációs csúcspróba csak az adott spec sikeres kasztolásait számolja.
+  A Druida, Pap, Sárkányidéző, Sámán, Varázsló és Halállovag hiányzó
+  producer→consumer ciklusai elkészültek; a durable démon/élőholt idézések
+  többé nem hoznak létre párhuzamos ideiglenes másolatot.
 - **Világesemények:** immerzív, Folia-biztos spawn-elhelyezés (távolság,
   víz- és partpuffer, nézési kúp), meteor-kráter terrain-visszaállítási
-  journallal.
+  journallal. A kereső jelöltjei most chunk-középre kerülnek, a 7 blokkos
+  effektív footprint/partpuffer egy régión belül marad, ezért a világboss,
+  invázió, meteor és escort keresése nem égeti el idő előtt a chunk-budgetet.
+  Az escort route és az inváziós mellékmobok egyoszlopos belső profilt
+  használnak; az admin parancs aszinkron keresést, nem kész spawnt jelent.
 - **Claimek:** fail-closed betöltés + a poligon-kijelölés csúcspont-limitje
   alapból megszűnt (a területkorlát maradt a valódi kapu).
 - **Konzol:** a boot-kori leltár-sorok elnémultak; hibakereséshez a
@@ -107,7 +260,8 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   Kategória- és láthatóság-rendszer (a rejtett quest felfedezésig sehol nem
   szivárog), tartós felfedezés- és forrás-audit a PlayerProfile-ban, atomikus
   és teljes gráf-validációval kapuzott quest-reload (hibás config a korábbi
-  definíciókat hagyja élőben), mind a 160 csomagolt küldetés migrálva.
+  definíciókat hagyja élőben), mind a 195 csomagolt küldetés migrálva
+  (160 világ- és történeti küldetés + 35 specializációs csúcspróba).
 
 ## Harminc másodpercben
 
@@ -120,7 +274,7 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
 | Kaszt | 13 | 13 |
 | Specializáció | 31 | 35 |
 | Questdefiníció | 45 | 160 |
-| Szakmai recept | 124 | 438 |
+| Szakmai recept | 124 | 376 |
 | Szakmai alapanyag | 9 | 81 |
 | Relikvia | 5 | 6 |
 | Rituálé | 19 | 21 |
@@ -245,6 +399,51 @@ inventory-overflow-t, settlementet és recoveryt kötelező stagingen tesztelni.
 Új PM/reply útvonalak és játékosreportok érkeztek. A report indoka legalább
 három szó. A chatnapló, a SocialSpy és a reportkezelés hozzáférését az
 adatkezelési szabályzathoz és a staffszerepekhez kell igazítani.
+
+### A szakmák végre azt adják, amit ígérnek
+
+A receptkatalógus átesett egy teljes átvizsgáláson: 437-ről 295-re csökkent,
+majd a szakma-identitás pótlásával **376 receptre** állt be. Minden recept
+indokolja a létezését.
+
+- **Az alkimista főzetei hatnak.** Korábban mind a 16 főzet üres palack volt: a
+  neve gyógyítást vagy erőt ígért, de semmit nem csinált. Most valódi hatásuk
+  van, és a dobható, illetve elnyúló változatokat a vanília terület- és
+  időtartam-kezelése működteti.
+- **A bűvölő tomusai átadják a bűbájt.** A 13 enchantkönyv üresen került ki a
+  receptkönyvből; üllőn nem adtak semmit. Most mindegyik a nevében ígért bűbájt
+  viszi.
+- **Eltűnt 15 nyersanyag-hurok.** Több receptpár körbe volt kötve úgy, hogy a
+  kör végén több nyersanyag jött ki, mint amennyi bement — rúnapor és glowstone,
+  sötéttölgy, lazurit, sőt vasból arany. Ezek korlátlanul ismételhető
+  pénznyomdák voltak.
+- **A tervrajz egyszer fogy el.** Korábban a lap gyors áthelyezésével a recept
+  elmentődött, de a tervrajz megmaradt — minden boss-only tervrajz újra és újra
+  eladható volt.
+- **Csak azt craftolod, amit gyakorolsz.** Szakmaváltás után a régi szakma
+  receptjei zárva vannak, még nyitva maradt receptkönyvből is.
+- **Ami a műhelyasztallal egyenértékű, az meg van jelölve.** Az ilyen recept
+  „gyakorló receptként" jelenik meg: azért van, hogy a szakma elején legyen
+  miből XP-t szerezni, nem azért, hogy nyerj rajta. Csak alacsony szinten van, és
+  sosem kér egyedi alapanyagot.
+- A recept-craft XP-je mostantól a **heti céh-célt is tölti**, és a tömeges munka
+  (shift-craft, kemencéből egyszerre kivett adag) darabonként számít.
+
+- **Minden szakma kapott saját terméket.** A takarítás után látszott, hogy a
+  gyógynövényesnek 27 receptből egyetlen egyedi tárgya volt — festéket és cukrot
+  gyártott. Most övé a **kenőcs- és teavonal**: hosszú hatású, harcon kívüli
+  támogatás, és a **Méregvonó Pép**, az egyetlen hordozható ellenszer, ami minden
+  aktív hatást levesz (a jókat is — nem mindig éri meg). Az alkimista marad a
+  harci, azonnali főzeteké; a kettő szándékosan egymás ellenpárja. A bányász saját
+  ásó- és szerencsecsákány-vonalat kapott, a favágó egy erdőjáró bőrszettet.
+- Ezzel a katalógus 295-ről **376 receptre** nőtt, és nincs olyan szakma, ahol
+  ötnél több szint telne el új recept nélkül. A bűvölő 21 új tomust kapott a
+  korábban lefedetlen vanília bűbájokra, az alkimista dobható és elnyúló
+  változatokat, a halász pedig négy szigonyt és a búvárfelszerelést.
+
+Ami eltűnt, az nagyrészt a műhelyasztal átnevezett másolata volt, vagy olyan
+tárgy, amit vanília úton csak lootból lehet szerezni — a Tenger Szíve, a
+nautilusz-héj, a szivacs és a totem gyárthatósága a ritkaságukat szüntette meg.
 
 ## Amit a staff kap
 
@@ -394,3 +593,42 @@ A teljes 68 root parancs, 286 route, 79 root alias, 93 routing alias,
 44 permission, 13 550 configútvonal és 545 production komponens gépi
 referenciáját a `Repository Docs Inventory` workflow artifactja tartalmazza.
 
+## Season 0 / Prologue — Kárhozat Kapuja
+
+A release-jelölt tartalmazza a Season 0 egyszeri **Prologue** életciklust és
+Olethropyla, a már létező ősi Kárhozat Kapuja köré épülő átmenetet. A rendszer
+külön tartós világállapotot, alapból 25-ös Season 0 class-szintplafont,
+specializáció-/relic-/blueprint-/high-tier loot kapukat, Nether travel policyt,
+Gate Breach és finale encountert, participant scalinget, rehearsal módot,
+Profile v2 Founder/finale participationt, rendkívüli Krónikát, emlékművet és
+Season 1 átmenetet kezel.
+
+A `DORMANT` most teljes pass-through állapot: a Prologue nem rak XP-,
+specializáció-, relic-, blueprint-, rarity- vagy eseménykorlátot a szerverre,
+nem tiltja a normál season/community lifecycle-t, nem alkalmaz Nether-pecsétet
+vagy gate-location authorityt, nem futtat HUD/ambient/breach hatást, és nem ad
+idő előtti post-Prologue catch-upot. Az általános, Prologue-tól független
+szerverpolicyk továbbra is a saját konfigurációjuk szerint működnek.
+
+A completion hardeningben a Prologue encounter cleanupból kikerült a globális
+`Bukkit.getEntity(UUID)` lookup; az event entityk a közös transient-entity
+scheduler-handle életcikluson takarítódnak. A production `finale pause` már
+nemcsak az orchestrator tickjét állítja meg: az aktív encounter AI-ja, combatja,
+pending spawnjai, boss mechanikái és timeoutja is szünetel. A pause idő nem
+fogyasztja a timeout-budgetet, a pauseolt phase és a hátralévő encounter-idő
+restart után is megmarad, és resume ugyanabból a checkpointból építkezik.
+
+A finale boss halála azonnali in-memory spawn latch-et állít, mielőtt az
+encounter újra spawnolhatónak számítana; a tartós boss-victory állapot a
+`finaleId`-hoz kötött és idempotens. Persistence hiba esetén a finale fail-closed:
+nincs második boss, Gate activation vagy Season 1 továbblépés, amíg a tartós
+állapot nem rendezhető. Az irreverzibilis lánc sorrendje továbbra is
+**boss victory → Gate unlock → reward plan/Profile v2 reward → Chronicle →
+monument → Season 1 prepare/activate**, one-shot receiptekkel védve.
+
+A világépítői bekötéshez négy konfigurált runtime hook tartozik:
+`prologue-gate`, `prologue-gathering`, `prologue-breach`, `prologue-boss`.
+A repository szándékosan nem talál ki ezekhez koordinátát; a végleges staging
+világon kell őket biztonságos helyre kötni és bejárni. A productionközeli Folia
+pause/restart/finale és world-hook acceptance ettől továbbra is kézi staging
+kapu, nem CI-állítás.

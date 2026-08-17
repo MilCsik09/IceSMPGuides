@@ -85,7 +85,7 @@ Minden helyszínhez legyen egy rövid átadólap:
 | Szezon-emlékmű | Opcionális | Egy configolt hely | Bundled location üres | Tartósan szabad terület a bannernek és hologramnak |
 | Városi őrjárat | Opcionális | Világ + legalább két waypoint | Bundled guard map üres | Járható útvonal, talaj- és szűkületteszt |
 | Árfolyamtábla | Igen | Admin aktuális állóhelye | Runtime elhelyezés | Látható, nem torlaszoló hely és eltávolítási hozzáférés |
-| Profession craft | Nem kötelező | `/profession recipes` GUI közvetlenül a játékos inventoryjából craftol | 438 receptdefiníció | A műhely csak tematikus; ne állítsd technikai követelménynek |
+| Profession craft | Nem kötelező | `/profession recipes` GUI közvetlenül a játékos inventoryjából craftol | 392 receptdefiníció | A műhely csak tematikus; ne állítsd technikai követelménynek |
 | Resource-packes tárgymegjelenés | Nem helykoordináta, de vizuális előfeltétel | Namespaced `item-model` kulcsok | Számos aktív modellhivatkozás | A packben legyen megfelelő modell, és teszteld pack nélkül is |
 | Globális AFK | Nem | Aktivitás és globális állapot | Nincs builderkötés | Ne építs jutalmazó AFK-zónát; ilyen deployment scope nincs |
 
@@ -599,6 +599,13 @@ A következő objektívatípusoknak van közvetlen builderhatása:
   játékostér;
 - dungeon- vagy eseménycélok — a kapcsolt zóna/arénarendszer működjön.
 
+A `CAST_SPELLS` objektívának **nincs world-build függősége**: csak a játékos
+saját, sikeresen végrehajtott és az objektíva engedélylistáján szereplő
+képességeit számolja. A 35 szint-50-es specializációs csúcspróba a
+Megbízások-felületről válik láthatóvá, miután a játékos teljesítette a kasztja
+mesterpróbáját, elérte az 50. szintet, és az előírt specializáció aktív. Ne
+köss hozzá rögtönzött NPC-t, arénát vagy `/npcbind` rekordot.
+
 A configquesteket ne írd át world build közben rögtönzött ID-kkel. A
 runtime quest builder csak az admin által létrehozott custom questeket
 szerkeszti; a bundled configquestekhez forrás/config release-folyamat kell.
@@ -678,6 +685,13 @@ Ha `points` módban nincs feloldható pont, a hívó a játékosút felé eshet
 vissza. Ne feltételezd, hogy egy hibás világnév „biztonságosan letiltja” az
 eseményt.
 
+Az automatikus fallback-jelöltek chunk-középre igazodnak, és az effektív
+footprint-/vízpuffer legfeljebb 7 blokk. Ez szándékos Folia-határ: a teljes
+terepvizsgálat ugyanabban a chunkban/régióban marad. A fix pontot a rendszer
+először a megadott oszlopon ellenőrzi; ha az alkalmatlan vagy régióhatárt
+érintő footprint miatt nem olvasható biztonságosan, közeli chunk-közepes
+fallbacket keres. Új területet a kereső nem generál.
+
 ### 9.2. Világboss-aréna
 
 Minimum builderfeltételek:
@@ -695,9 +709,30 @@ A `world-events.spawn-rules` eseménytípusonként szabályozza a territory,
 claim, WorldGuard-régió és víz kerülését. A fix pont megléte nem kerül meg
 minden további spawn-validációt.
 
+A boss szabad spawnmagját ezért legalább a chunk közepén mért 7 blokkos körre
+tervezd; a nagyobb aréna továbbra is ajánlott a harci mozgáshoz, de nem növeli
+a régiószálon egyszerre bejárt validációs footprintet.
+
 Teszteld az arénát normál és szezonbosszal, második fázissal,
 speciáltámadással, addokkal, despawnnal, boss halálával és teljes
 inventorys lootkiosztással.
+
+Mob/Encounter 2.0 mellett az aréna nem szűk HP-doboz. A `ring_warden` és a későbbi
+authored bossok charge/slam/zóna telegráfjának talajon és vanilla kliensen is jól
+olvashatónak kell lennie. Hagyj legalább két eltérő kitérési irányt, ne vezessen minden
+menekülőút claim/storage/dekoráció mögé, és az add spawnhely ne zárja körbe azonnal a
+játékost. A rendszer nem rombol terepet, ezért ne építs olyan mechanikát, amelynek a
+jelentése csak blokkpusztítással lenne érthető.
+
+A világboss HP-ja a startkori releváns játékos-snapshotból származik, late joinkor nem
+ugrik. Playtesten 1, 2, 5 és nagyobb csoporttal mérd a járható felületet, mechanic
+frequencyt és time-to-killt; ne csak a killing blow-t ellenőrizd. A personal rewardhoz
+érdemi contribution kell, tele inventorynál pedig a komponens függőben marad és
+reconnect után kézbesíthető — arénába ezért ne tervezz „leeső bossláda” látványelemet.
+
+Authored location szintje felülírhatja a survival-distance alapot, de a teljes vadont
+ne fesd statikus MMO zónákra. Territory/biome/mélység maradjon valódi survival input;
+Deep Dark vagy mélybánya telegráfjainál külön ellenőrizd a fény- és részecske-kontrasztot.
 
 ### 9.3. Kereskedő-karaván
 
@@ -1001,6 +1036,13 @@ kezelhető.
 
 ## 17. Átadás és kötelező playtest
 
+A companionokhoz nem kell külön builder-spawnpont. A `/pet summon` a játékos
+körül keres stabil, nem folyékony talajt és három blokknyi szabad testteret,
+betöltött, aktuálisan birtokolt Folia-régióban. Szűk díszfolyosón, vízben vagy
+veszélyes padlón a kontrollált elutasítás helyes működés; közösségi terek
+átadásakor maradjon legalább egy közeli, nyílt idézési pont, és a protection
+plugin spawn-cancel ágát is próbáljátok ki.
+
 Egy helyszín átadólapján legyen:
 
 - [ ] stabil belső ID, világ és koordináta;
@@ -1045,3 +1087,47 @@ rituáléstruktúrákat és rejtett helyeket.
 A teljes pipálható csapatfolyamat:
 [release acceptance checklist](ADMIN_GUIDE.md#release-acceptance-checklist).
 
+## 18. Season 0 / Prologue — Olethropyla runtime hookok
+
+A Prologue **nem használ beégetett világkoordinátákat**. A végleges staging
+világon négy konfigurált runtime hookot kell feloldani és ellenőrizni:
+
+| Hook | Szerep | Builderfeltétel |
+|---|---|---|
+| `prologue-gate` | Olethropyla / Kárhozat Kapuja központi kapu-anchor | a tényleges ősi Kapu helye; védett, jól megközelíthető, a Nether-travel policyvel együtt tesztelve |
+| `prologue-gathering` | a production finale gyülekezőpontja | nagyobb játékoscsoport számára szabad, biztonságos tér, ne essen spawn- vagy combatveszélybe |
+| `prologue-breach` | a breach- és finale-hullámok encounter anchorja | moboknak/addoknak elegendő mozgástér, tiszta spawnmag, nincs claim/WG/territory ütközés |
+| `prologue-boss` | a finale boss arena anchorja | boss + addok + telegraphok számára szabad aréna, menekülési és játékosforgalmi útvonallal |
+
+A dokumentációba **ne írj kitalált koordinátát**. A hookok tényleges értéke a
+végleges world buildből jön; módosítás előtt készíts world/config backupot,
+és minden kötést a végleges release-builddel olvass vissza.
+
+### Builder acceptance
+
+A Prologue helyszínt csak akkor add át, ha mind a négy hook ténylegesen
+feloldódik, nincs idegen claim/WorldGuard/protection konfliktus, és a normál
+játékosos hozzáférés megfelel a Season 0 policynek. Külön próbáld ki:
+
+1. `DORMANT` állapotban a hookok semmilyen Prologue HUD-ot, ambient effektet,
+   breach-et vagy Nether gate-location korlátot nem aktiválnak;
+2. a `prologue-gate` elérhetőségét Season 0 alatt úgy, hogy a Kapu még nem
+   átjárható;
+3. a rehearsal teljes gathering → breach → boss útját tartós Gate/reward
+   side effect nélkül;
+4. production finale startot, pause-t, resume-ot és az irreverzibilis
+   szakasz előtti abortot;
+5. aktív wave és boss közbeni pause-t: a mobok nem harcolhatnak tovább, új
+   spawn/mechanika nem indulhat, a játékos sem ütheti büntetlenül a
+   befagyasztott event mobot;
+6. `BOSS_FIGHT` + pause alatti kontrollált restartot, majd resume-ot;
+7. abort, timeout és kontrollált shutdown után az event entityk teljes
+   cleanupját, árva Prologue mob nélkül;
+8. Gate-unlock után az egyetlen legitim Nether-átjárást Olethropylán; más
+   Nether-portál létrehozása továbbra is tiltott;
+9. az End policy változatlanságát — a Prologue buildermunka nem nyitja meg a
+   Véget és nem hoz létre alternatív portálrendszert.
+
+A world-hook acceptance kézi stagingkapu. A source-level Folia és regression
+tesztek nem helyettesítik a tényleges aréna-, collision-, spawn- és
+játékosforgalmi próbát.
