@@ -16,6 +16,15 @@ konfiguráció a mérvadó. Egy zöld build nem helyettesíti a Folia
 runtime-tesztet, egy lore-ban szereplő hely pedig nem helyettesíti a
 világban elvégzett bekötést.
 
+**Combat & Encounter foundation — forrásoldalon lezárva, staging előtt.** A 160 armor,
+a 25 meglévő weapon/offhand, a központi level gate, a rank/technique runtime és az
+opcionális wildlife retaliation gépi authorityja elkészült. Ez nem Itemization 3.0,
+Equipment 3.0 vagy Mob 3.0, és nem nyit új weapon production catalogot. Nyitott kézi
+kapu marad a reprezentatív build-TTK/TTL és healing érzet, a telegráf olvashatósága,
+a két-régiós Folia próba, valamint az 50–60 játékosos profiler/stressz. A későbbi tuning
+a bounded `CombatTelemetry` és a verziózott evidence report méréseit fogyassza; a kód
+nem módosít automatikusan balance értéket élő log alapján.
+
 Jelölések:
 
 - 🚧 **kiadási kapu** — rollout előtt kötelező;
@@ -184,8 +193,13 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
 
 ## 3. Runtime- és balanszkapuk
 
-- ◇ Az A17 kaszt-HP rendszer alapból ki van kapcsolva. Bekapcsolás előtt
-  egységes pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
+- ◇ Az A17 kaszt-HP rendszer alapból aktív. Kiadás előtt egységes
+  pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
+- ◇ A 2026-08-16-i caravan/world-boss spawnkifutás forrásoldali oka javítva: a guard
+  egy chunkon belül több Folia-lokális oszlopot próbál, majd a generált terepet preferáló
+  első fázis után legfeljebb 24 új chunkos aszinkron mentőfázist használ. Stagingen még
+  kötelező ugyanazon `-8513,10055` / `-8533,10036` környezet, óceánpart, erdő és hegyvidék
+  runtime próbája; veszélyes víz-, közeli-, látható vagy protection-fallback továbbra sincs.
 - ◇ A frakciópasszív-rework defaultjai csak konzervatív kiindulópontok. A
   `docs/ADMIN_GUIDE.md` teljes membership/RED/BLUE/NEUTRAL/DARK, vegyes
   játékosos, Suttogó- és lifecycle mátrixát productionközeli Folia stagingen
@@ -301,10 +315,17 @@ a jutalom pénzsemleges, az offline jogosultság az inboxba kerül.
   ugyanazon whole-inventory mutation WAL-on fut. A Forge előnézet/költség/SHIFT
   megerősítést ad; a régi rúna explicit `destroy` economy-sink policyt követ.
 - ⬜ Crafting order piactér escrow-val és naplózott settlementtel.
-- ⬜ Equipment 2.0: külön `armorFamily` metadata és CLOTH/LEATHER/MAIL/PLATE
-  stat-budget/proficiency; a Bukkit `Material` nem armor-family authority.
+- ✅ Equipment 2.0 foundation: canonical `ArmorFamily` (CLOTH/LEATHER/MAIL/PLATE),
+  13 kasztos proficiency authority, 48 sablonos migráció, equip/suppression lifecycle,
+  family-aware loot/market/CombatPower és validálható stat-budget profil. A Bukkit
+  `Material` továbbra sem armor-family authority.
 - ⬜ Profession 2.0 feldolgozási láncok (fiber→cloth, hide→leather,
-  leather+metal→mail, ore/alloy→plate) és equipment resource-pack rework.
+  leather+metal→mail, ore/alloy→plate), a 392 recept ownership/migration auditja,
+  family salvage, Masterwork és profession-specializáció.
+- 🟨 Equipment Resource Pack 2.0: RP2-A asset authority, RP2-B 40-line Art Bible és elfogadott
+  4-line pilot, valamint RP2-C 40-line/160-piece full-production source és automated/offline
+  evidence kész. Hátra van a teljes katalógus 1.21.11 human-client stagingje; a normál canonical
+  worn fallback jelenleg 0/160.
 
 **Kapunyitás E felé:** a tárgyazonosság másolás, újraindítás és
 inventoryhiba után is bizonyítható; nincs új pénzforrás.
@@ -451,6 +472,20 @@ fázisonként, a terv szerinti sorrendben:
   kit 7/7 feloldható spell. A csúcspróbák spec- és szintkapus
   `CAST_SPELLS` questek, a durable pet/minion roster egyetlen példány-authorityt
   használ, a Szentségtelen ghúl mutációja pedig tényleges Profile v2 társállapot.
+- ✅ Class UI rework első szállítható szelete: közös `ClassProgressView`,
+  két-loadoutos frakciótémás Kasztműhely, doctrine/mastery/capstone/DARK-seal
+  láthatóság, pontos switch- és spell-lock okok, respec-megerősítés, valamint
+  reprodukálható egyedi resource-pack háttér- és ornament-assetek.
+- ✅ Class UI rework második szelete: `CompanionProgressView`-alapú custom
+  Társműhely, lokalizált roster/szint/XP/mutáció/formaváltás, kétlépcsős
+  elengedés és automatikus ghúl/démon live-entity evolúció.
+- ✅ Class UI rework harmadik szelete: zárt 13/35 `ClassMechanicView`
+  mechanikakatalógus, célkijelölési súgók, Kasztműhelyből nyíló Társműhely,
+  valamint parancs nélküli Paplovag Eskü- és Pap Litánia-választó.
+- ✅ Class UI rework záró szelete: egységes nyolcféle inventory-felület
+  négy frakciótémával, 35 spec- és 13 kasztjelvény, doctrine/capstone/
+  relic-Awakening részletlapok, live class-mechanika projekció, teljes spell-
+  leíráskatalógus és Spellbookból indítható tartós mastery-fejlesztés.
 - ⬜ Review-ből nyitva hagyott kis tételek: (1) a protokollnak nincs
   aggregát (beágyazott listás) payload-méret garanciája — a jelenlegi
   tartalom-skálán elméleti, a hibaút a HUD-tick védőhálóval lefedve; ha a
@@ -572,6 +607,10 @@ entity cleanup és boss-victory persistence race hardeningjét is lezárta.
 - ✅ **DORMANT pass-through:** élesítés előtt nincs Prologue content/progression
   ceiling, season/community override, Nether authority, HUD/ambient/breach vagy
   idő előtti catch-up; a normál szerverconfig marad érvényben.
+- ✅ **Aktív Nether-kapu hardening:** a lezárt történeti kaput territory
+  bypass és command/plugin teleport sem kerüli meg normál
+  játékosnál; a valódi OP-státusz explicit üzemeltetői bypass. Nem-OP
+  Overworld→Nether belépés csak az Olethropyla kapukörzetéből indulhat.
 - ✅ **Dokumentációs szinkron:** lore mapping, player-facing Prologue policy,
   admin live-ops és builder hookok a meglévő kanonikus guide-okban szerepelnek.
 - ◇ **World-builder acceptance:** a `prologue-gate`, `prologue-gathering`,
@@ -587,3 +626,11 @@ entity cleanup és boss-victory persistence race hardeningjét is lezárta.
 
 A Prologue scope-on kívül marad a Season 2 End-nyitás, az Első Csend
 magyarázata és a Néma Királynő végjátéka; ezek nem #121 hiányosságok.
+
+## Professions 2.0 — source closure
+- Survival gathering remains vanilla-world activity; Professions 2.0 adds processing/economy, not static gathering nodes.
+- CLOTH/LEATHER/MAIL/PLATE production is stacked on Equipment 2.0. ArmorFamily/class proficiency are not redefined here.
+- Recipe migration/report authority: `docs/development/professions-2-recipe-migration.json`.
+- Economy graph/dead-content authority: `docs/development/professions-2-economy-graph.json`.
+- Runtime staging remains required for multiplayer throughput, real market prices, disconnect/packet-sync and 50–60-player balance.
+- Equipment Resource Pack 2.0 and crafting-order escrow marketplace remain future stacked scopes.

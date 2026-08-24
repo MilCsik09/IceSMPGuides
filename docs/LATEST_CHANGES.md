@@ -1,5 +1,12 @@
 # Mi változott a július 12-i szerververzió óta?
 
+- A combat staging hardening 160 páncéldarabját kézzel tervezett katalógus váltja fel:
+  minden darab fix armor/toughness értéket, family-azonos secondary rollt és két saját
+  magyar lore-sort kapott. A PLATE már korai szinten Diamond fölötti armorral indul, az
+  endgame PLATE pedig a Netherite toughness és knockback mércéjét is meghaladja. A
+  mobtechnikákat determinisztikus kontextuspontozás választja, a Target HUD két rövid
+  raytrace hibát áthidal; rank, disposition, HP és level marad látható.
+
 <!-- icesmp-doc-id: release.deployed-build-to-release -->
 
 > *A világ ugyanaz — de sokkal több módon válaszol arra, amit benne tesztek.*
@@ -23,6 +30,47 @@ Folia-/26.2-portolási határokat és a későbbi adapterek stabil szerződései
 > köztes mainline commit. A JAR nem tartalmaz Git SHA-t, ezért ez
 > `HIGH_CONFIDENCE`, nem `EXACT` azonosítás.
 
+## Unified Creature Combat Profiles — stacked foundation
+
+- Cow, Wolf, Zombie és Skeleton ugyanabból a canonical species/profile, level/rank/stat és
+  ability runtime authorityból él. A 91 soros Paper 1.21.11 matrixban a disposition és
+  engagement/provocation policy különbözteti meg, mikor léphetnek harcba.
+- A passzív állat levelt, rankot és physical technique-et kaphat, de nem kezdeményez.
+  A reakció stable UUID-seeded temperamentből FLEE vagy WARN/FIGHT; nem minden ütésnél új RNG.
+- Nyolc physical/defensive composition az öt jelenleg szükséges reusable primitive-ből épül.
+  A #137 hostile `Kind` definíciói kompatibilisek maradtak; MythicMobs-szerű DSL nem készült.
+- A régi wildlife damage/herd listener megszűnt. Fight és assist a közös cooldown/cast epoch/
+  disengage lifecycle-on, bounded entity schedulereken fut; Rabbit flee-first, Cow legfeljebb
+  két segítőt admitál, Bee/Wolf/Goat vanilla identityje megmarad.
+- Rank nem aggression és nem reward: az Elite Cow továbbra is PASSIVE/VANILLA_ONLY. Baby,
+  owner-safe tameable, breeding/farm interakció és spawner/egg/command reward faucet fail-closed.
+- A source és Paper runtime evidence elkészült, de a creature feel, tame/breeding, multiplayer
+  Folia region boundary és 100+ állatos farm továbbra is `HUMAN_GAMEPLAY_STAGING_REQUIRED`.
+
+## Combat & Encounter foundation — stacked recalibration
+
+- A 160 páncéldarab közvetlen, kézzel authorolt stat- és lore-authorityt kapott. A fizikai
+  armor, toughness és knockback resistance fix; a szűk secondary rollok biztosítják, hogy
+  két azonos craft ne legyen szükségszerűen egyforma. A négy family saját vanilla mércét
+  ver meg és saját kasztidentitást tart, ezért nem egyetlen slot/rarity formula osztja a
+  statokat. Az ID, visual, source, set, Signature, rune és ascension kapcsolatok megmaradtak;
+  az armor template-version 2-re nőtt, új fegyverkatalógus nem készült.
+- A `level-requirement` központi runtime kapu lett armoron, mainhanden és offhanden.
+  Underlevel canonical gear inert/suppressed, ACTIVE hozzájárulása nulla, de tele
+  inventorynál sem vész el vagy esik a földre. Pontos szinten, level-up/relog/reload
+  reconcile után ugyanaz a példány aktiválódhat. BASIC survival gear nem érintett.
+- A hét mob rank külön HP/damage/armor/mobility profilt és rankonként bounded technikakitet
+  használ. A 11 reusable technique target rule-t, vanilla telegráfot, castot, recoveryt,
+  opcionális interruptot és bounded summon/ally/area viselkedést kapott; nincs globális
+  mob scan vagy terrain-rombolás.
+- A parent recalibration első wildlife retaliation pilotja stabil temperamentet és bounded
+  herd assistet adott; a fenti stacked foundation ezt a külön listenert már a közös creature
+  profile/ability lifecycle-ba konszolidálja.
+- Az exact-head workflow valódi Paper 1.21.11 default ItemStack benchmarkot, a 160+25
+  item-reportot, level-gate/TTK/technique/wildlife evidence-t és SHA-256 manifestet csomagol.
+  A forrásoldali szimuláció nem helyettesíti a productionközeli Folia-, 50–60 player-,
+  telegráf-olvashatósági és balance staginget.
+
 ## Augusztus eleji integrációs hullám (staging előtt)
 
 ### Vanilla Crafting Boundary — stacked foundation
@@ -41,8 +89,31 @@ Folia-/26.2-portolási határokat és a későbbi adapterek stabil szerződései
   felkerült, whitelistán kívüli enchantot; market és CombatPower nem fogadja csendben.
 - Vanilla/basic gear nem canonical salvage vagy profession conversion input. Villager
   és vanilla loot basic marad, Netherite survival material, nem MMORPG BiS authority.
-- Equipment 2.0, Profession 2.0, CLOTH/LEATHER/MAIL/PLATE és a hozzájuk tartozó resource
-  pack külön jövőbeli scope; `Material` nem `ArmorFamily`.
+- Ez a foundation rögzítette a `Material != ArmorFamily` határt; az Equipment 2.0 a
+  következő stacked szakaszban valósítja meg, míg a Profession 2.0 és a teljes family
+  resource pack továbbra is külön jövőbeli scope.
+
+### Equipment 2.0 — stacked PR #128 fölött
+
+- Bevezetésre került a Materialtól független CLOTH/LEATHER/MAIL/PLATE domain és a 13
+  kaszt egyetlen proficiency authorityja. A 35 specialization a szülő kaszt familyjét tartja.
+- A 48 authored template schema 2-re migrált; 18 armor darab explicit familyt kapott
+  (3/2/5/8), a fegyverek, utilityk és két pajzs nem kaptak fake familyt. A három set
+  armor piece-e konzisztens, mind a hét ascension path family-stable.
+- Click, shift/hotbar, drag, right-click/plugin equipment event, dispenser, join, respawn,
+  class change és reload út fail-closed. Wrong-family gear birtokolható és kereskedhető,
+  de stat/set/Signature/rune/CombatPower hatása nincs; az item nem vész el.
+- A négy validált family profil ugyanazt az item-level budgetet más arányban osztja el.
+  A CombatPower normalizálja az armor family coefficientet; a flat Armor továbbra is flat,
+  nincs family cap vagy publikus gear score.
+- A build-aware loot saját familyt erősebben preferál, de megtartja az 1.5× plafont,
+  más family pozitív trade-súlyát és a 32 elemű soft-diversityt. A market metadata és
+  structured/string filter family-aware, vétel/listázás nem proficiency-zárt.
+- A determinisztikus `equipment-2-handoff.json` 48 template-es migration mapet,
+  balance reportot, 15 canonical recipe Profession 2.0 leltárt és az Equipment Resource
+  Pack 2.0 vizuális backlogját tartja. A következő stacked scope a Professions 2.0;
+  a teljes family crafting ownership, feldolgozási lánc, salvage és 392 recept auditja
+  szándékosan nincs ebben a PR-ben.
 
 ### PR #127 final source closure
 
@@ -169,13 +240,13 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   `ScreenSize` értékéből normalizálja. A magyar feliratok négyszeresen túlmintavételezett,
   élsimított Inter SemiBold forrásból készülnek; ablak- és GUI-scale váltás nem mozdíthatja vagy
   többszörös méretűre nagyíthatja a HUD-ot.
-- **Moduláris Player Frame és HP-scaling előkészítés:** a normál vanilla szív-, páncél-, étel- és
+- **Moduláris Player Frame és aktív HP-scaling:** a normál vanilla szív-, páncél-, étel- és
   oxigénsávot pack-readiness után egy bal felső, frakciószínű Player Frame váltja. A név, frame,
   HP current/max, százalék, absorption, páncél, étel és feltételes oxigén külön editor-elem;
   a páncél maximum és százalékos sáv nélküli flat érték. A gyors, Folia-safe tick
-  külön fut a class/sidebar snapshotfrissítéstől. A
-  class-health gate továbbra is kikapcsolt, de a normalizálás már tiltott, így későbbi staging
-  aktiváláskor a HUD a valódi skálázott HP-t fogja mutatni. Hardcore-heart asset nincs felülírva.
+  külön fut a class/sidebar snapshotfrissítéstől. A class-health gate alapból aktív, a
+  normalizálás tiltott, ezért a HUD a valódi skálázott HP-t mutatja. Hardcore-heart asset nincs
+  felülírva.
 - **Target/Party Frame és tisztább class panel:** a tartós class XP-sáv kikerült, az eseménylábléc
   teljes szélességben legfeljebb három aktív eseményt mutat. A DK-rúnák saját editor-kategóriát
   kaptak. Találat után screen-space Target Frame jelenik meg: a mob saját bestiárium-, a játékos
@@ -190,6 +261,9 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   elengedhető. Az aszinkron GUI csak a tartós művelet után frissül, az idézés
   biztonságos, betöltött Folia-lokális állóhelyet keres, a pet saját ölése is ad
   companion XP-t, a halál cooldownja pedig a durable commit alatt is fail-closed.
+  A custom Társműhely már a teljes fejlődési lapot, mutációt és következő formát
+  mutatja, az elengedés külön megerősítést kér, a ghúl/démon formaváltása pedig
+  automatikusan újraépíti az élő entity-projekciót.
 - **Teljes class-integritás:** mind a 35 specializáció hét használható
   aktív képességgel, hat ténylegesen bekötött doctrine-nal és mechanikailag
   fogyasztott szint-50-es capstone-nal rendelkezik. Az új 35
@@ -197,11 +271,33 @@ A júliusi tartalom fölé egy nagy technikai és felületi hullám érkezett, e
   A Druida, Pap, Sárkányidéző, Sámán, Varázsló és Halállovag hiányzó
   producer→consumer ciklusai elkészültek; a durable démon/élőholt idézések
   többé nem hoznak létre párhuzamos ideiglenes másolatot.
+- **Kasztműhely:** új, frakciószínű custom UI mutatja a két class-loadoutot,
+  a doctrine-döntéseket, a spec-mastery XP-t, a capstone-próba állapotát és a
+  DARK pecsétet. A váltás konkrét tiltási okot ad, a respec megerősítést kér,
+  a spellbook és a képesség-fa pedig külön jelzi a hiányzó végső próbát.
+  A beépített 13/35 mechanikakatalógus az aktív út valódi harci ciklusát és
+  kézi célkijelöléseit is leírja; a Paplovag Eskü és a Pap Litánia már külön
+  custom választófelületen, parancs nélkül állítható.
+- **Teljes class UI család:** a Profil, kasztválasztó, Spellbook,
+  képességfa, talentek, részletlapok, Társműhely és Kasztműhely nyolc
+  saját felületet kapott négy frakciótémával, 13 kaszt- és 35
+  specializáció-jelvénnyel. A doctrine-kódex, capstone- és relic/Awakening
+  részletlap élő runtime-állapotot mutat; a Spellbook minden spellhez
+  leírást ad, és jobb kattal tartósan fejleszti a spell-mastery-t.
+- **Prologue Nether-kapu hardening:** az aktív, még lezárt Olethropyla
+  történeti kapuját territory bypass, parancsos vagy pluginteleport sem kerüli
+  meg normál játékosnál; a valódi OP-státusz explicit üzemeltetői bypass.
+  Feloldás után a nem-OP belépés csak a konfigurált kapukörzetből legitim;
+  a Netherből való visszatérés változatlanul engedélyezett.
 - **Világesemények:** immerzív, Folia-biztos spawn-elhelyezés (távolság,
   víz- és partpuffer, nézési kúp), meteor-kráter terrain-visszaállítási
   journallal. A kereső jelöltjei most chunk-középre kerülnek, a 7 blokkos
   effektív footprint/partpuffer egy régión belül marad, ezért a világboss,
   invázió, meteor és escort keresése nem égeti el idő előtt a chunk-budgetet.
+  Egy chunkon belül több biztonságos oszlopot próbál, majd csak szükség esetén
+  indít legfeljebb 24 új chunkos és 768 blokkos, aszinkron terepbővítő mentőfázist; így a
+  látótávon kívüli, még nem generált környezet nem ejti el automatikusan az eventet.
+  A mentőfázis minimum 15 másodperces watchdogja régi staging-konfig mellett is él.
   Az escort route és az inváziós mellékmobok egyoszlopos belső profilt
   használnak; az admin parancs aszinkron keresést, nem kész spawnt jelent.
 - **Claimek:** fail-closed betöltés + a poligon-kijelölés csúcspont-limitje
@@ -632,3 +728,12 @@ A repository szándékosan nem talál ki ezekhez koordinátát; a végleges stag
 világon kell őket biztonságos helyre kötni és bejárni. A productionközeli Folia
 pause/restart/finale és world-hook acceptance ettől továbbra is kézi staging
 kapu, nem CI-állítás.
+
+## 2026-08-18 — Professions 2.0
+- A 392 meglévő profession recipe teljes gépi migrációs inventoryt kapott; a recipe ID-k és blueprint unlockok stabilak maradtak.
+- Bevezetésre került a processing/material economy authority, a négy Equipment 2.0 family termelési lánca, mixed MAIL dependency és bounded Masterwork.
+- Craft inventory commit all-or-nothing, batch-aware és full-inventory esetben nem dob tárgyat a világba.
+- Salvage family-aware, veszteséges és nem állítja elő újra az eredeti boss komponenst.
+- Új economy graph, migration report, RP handoff és seedelt sanity harness készült. Runtime/player-market végleges balansz staging-required.
+
+- Professions 2.0 adversarial closure: meglévő Equipment 2.0 template-ekkel létrejött CLOTH/LEATHER/MAIL craft-végpont, family-salvage reclamation sink, és a Masterwork achievement csak sikeres inventory commit után jár.

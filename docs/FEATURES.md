@@ -471,9 +471,9 @@ A Felsők emlékei elvesztek, de a vérük emlékezik. A kaszt, a szakma, a megt
 
 > **Aktív és játékosok számára elérhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Kasztválasztás, XP/szint, specializáció, kasztpasszívok és admin XP/unlock műveletek. Mind a 13 kaszt és 35 specializáció saját, ténylegesen fogyasztott harci mechanikával fut; a 210 doctrine-választás nem puszta címke, hanem a hozzá tartozó class service viselkedését módosítja. Minden alap aktív készlet pontosan hét, a kaszt/spec által valóban feloldható képességet tartalmaz. A külön class-health réteg létezik, de a csomagolt alapbeállításban ki van kapcsolva (`health.enabled: false`).
+Kasztválasztás, XP/szint, specializáció, kasztpasszívok és admin XP/unlock műveletek. Mind a 13 kaszt és 35 specializáció saját, ténylegesen fogyasztott harci mechanikával fut; a 210 doctrine-választás nem puszta címke, hanem a hozzá tartozó class service viselkedését módosítja. Minden alap aktív készlet pontosan hét, a kaszt/spec által valóban feloldható képességet tartalmaz. A külön class-health réteg a csomagolt alapbeállításban aktív (`health.enabled: true`).
 
-- **Így találkozol vele:** `/class`, `/spec`, kaszt- és specializációs GUI. Parancs: /class (alias: /job, /kaszt); /spec (alias: /specializacio, /specialization). GUI: Kasztválasztó; Specializációk.
+- **Így találkozol vele:** `/class`, `/spec`, kasztválasztó és a frakciószínű **Kasztműhely**. A nyolcféle custom karakterfelület mind a 13 kaszt és 35 spec saját jelvényét használja. A Kasztműhely ugyanabból a Profile v2 projekcióból mutatja mindkét loadoutot, a doctrine-választásokat, a spec-mastery rangot/XP-t, a capstone-próbát, a relic/Awakening állapotot és a DARK pecsét okát; külön megerősítést kér az aktív út respecjéhez. A teljes 13/35 mechanikakatalógus elmagyarázza az aktív harci ciklust és a kézi célkijelölést; Paplovag Eskü és Pap Litánia a GUI-ból is állítható. A Spellbook leírja a spelleket és jobb klikkel mastery-t fejleszt. Parancs: /class (alias: /job, /kaszt); /spec (alias: /specializacio, /specialization).
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Választás, XP-források, szintlépés, képességfeloldás, doctrine-döntés, a spec saját producer→consumer harci ciklusa és kapcsolódó combat/craft esemény.
 - **Ami még kellhet hozzá:** Nincs kötelező helyszín; resource-pack ikonok és balance-adatok tesztelendők.
@@ -492,6 +492,10 @@ kötött `CAST_SPELLS` csúcspróbát kell teljesíteni. A 35 próbát a quest-r
 tartós teljesítése oldja fel, utána a Profile v2 capstone állapota adja a
 képesség-provenanciát. Specváltás vagy respec nem hagyhat hátra idegen
 képességet, mérőt, töltetet vagy cooldown-resetet.
+Class XP commit után az alap- és aktív specializációs spell-grant ugyanabban a
+progression-reconcile körben frissül. A capstone szintjének egyetlen csomagolt
+forrása a `class-gameplay.yml`; a level-50 grant továbbra is csak `COMPLETED`
+próbaállapotnál történik.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
@@ -636,10 +640,26 @@ WAL-műveletként végrehajtott old→new replace előnézetet is ad; a régi r�
 `destroy` policy szerint megsemmisül. Reroll, rúnacsere és ascension közben az item UUID-ja nem
 változik; az ismételt reroll költséglépcsője magával az itemmel utazik.
 
-A jelenlegi systemic survival katalógus 48 authored template, 15 registry-bekötött
-Signature Effect, 3 szett, 7 explicit ascension-út és 10 valós rúna. A 392 receptből
-15 gear-recept canonical `ItemTemplate → ItemInstance`; ezek szint, blueprint és
-masterwork quality-padlót adhatnak, de nem változtatják meg a template stat-budgetjét.
+A combat progression authority 160 authored páncéldarabot — 40 teljes, négydarabos
+felszereléssort — és a már létező 25 fegyver/pajzs sablont kezel közös, normalizált
+költségmodellben. A katalógus 64 profession-craftolt darabot, 8 mechanikus szettet,
+15 registry-bekötött Signature Effectet, explicit ascension-utakat és 10 valós rúnát
+is összeköt. A canonical `ItemTemplate → ItemInstance` producer szint-, blueprint- és
+masterwork quality-padlót adhat, de nem írja át önkényesen a template stat-budgetjét.
+
+Az Equipment 2.0 mind a 160 armor-slot sablont explicit családba sorolja: 40 CLOTH,
+40 LEATHER, 40 MAIL és 40 PLATE. A 13 kaszt familyje fix, a specialization nem írja át.
+Azonos tierben a family nem rangsor: Cloth ability/resource/utility, Leather
+mobility/crit/sustain, Mail hybrid/resistance, Plate armor/HP/mitigation budgetet
+hangsúlyoz. Csak a katalógusban tényleges consumerrel rendelkező stat használható.
+
+Wrong-family vagy túl magas szintű authored gear birtokolható, rúnázható, listázható
+és megvehető; csak az aktív használata tiltott. A kapu minden canonical armor-,
+mainhand- és offhand-úton a jelenlegi kasztszintet hasonlítja az adott ascension-stage
+`level-requirement` értékéhez. Tiltott, no-class vagy underlevel equip nem ad fixed/rolled statot, setet,
+Signature-t, rúnahatást vagy CombatPowert. A market ArmorFamily szerint szűrhető
+(`@cloth`, `@leather`, `@mail`, `@plate`), a loot saját familyt preferál, de az eddigi
+1.5× cap és a bounded soft-diversity miatt más family trade-dropja sem tűnik el.
 
 Az ascension csak explicit stage-et definiáló template-nél működik. Az új rollérték
 a régi normalizált qualityt viszi át az új authored tartományba, nem sorsol újra;
@@ -783,9 +803,9 @@ A forrásban ténylegesen bekötött krónika, emlék, lore-parancs, párbeszéd
 
 > **Aktív és játékosok számára elérhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Pet/társ kezelés, befogás, XP, harci viselkedés, parancsok és társ-GUI.
+Pet/társ kezelés, befogás, XP, harci viselkedés, parancsok és custom Társműhely.
 
-- **Így találkozol vele:** `/pet`; Pet GUI; befogó item és játékosparancs. Parancs: /pet (alias: /companion, /tars). GUI: Társ GUI.
+- **Így találkozol vele:** `/pet`; a Profile v2-ből felépülő, class-assetes Társműhely; befogó item és játékosparancs. A GUI mutatja a szint/XP görbét, harci erőszintet, mutációt és következő formát, a végleges elengedés pedig külön megerősítést kér. Parancs: /pet (alias: /companion, /tars).
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Befogás, társlistás kiválasztás, pet parancs, combat, gazda- vagy pet-killből érkező XP és GUI-művelet.
 - **Ami még kellhet hozzá:** Nincs kötelező helyszín; az idézés betöltött, Folia-lokális oszlopokban stabil talajt és három blokk szabad testteret keres.
@@ -796,7 +816,7 @@ Pet/társ kezelés, befogás, XP, harci viselkedés, parancsok és társ-GUI.
 
 - Permission: —
 - Config: `pets.*`, benne az Istálló-kapacitás és a biztonságos spawn keresési tartománya; capture-item és kapcsolódó message/itemdefiníciók.
-- Tartós állapot: Tulajdonjog, petadat és XP tartós.
+- Tartós állapot: tulajdonjog, logikai társazonosság, szint/XP, felszerelés és mutáció Profile v2-ben tartós; az aktuális entity-forma ebből újraépíthető projekció.
 - Reload: Balance reloadolható részei következő eseménynél érvényesek; aktív pet entityk újraszinkronizálása kellhet.
 
 </details>
@@ -1043,8 +1063,11 @@ Blood Moon, world boss, Wild Hunt, invasion, meteor, caravan, escort, abundance,
 A közös spawnkereső az automatikus jelölteket chunk-középre igazítja, a
 footprint- és partvizsgálatot pedig legfeljebb 7 blokkos, egy Folia-régión
 belüli körre korlátozza. Így egy jelölt csak egy chunkot fogyaszt a keresési
-keretből; az escort útvonala és az invázió külső hulláma saját, egyoszlopos
-belső profilt használ. Adminindításkor a parancs először csak a keresés
+keretből. A guard ugyanabban a chunkban több biztonságos oszlopot is kipróbál;
+ha a már generált terepen nincs megfelelő hely, a nagy események külön,
+24 chunkra és 768 blokkra korlátozott aszinkron terepbővítő mentőfázist kapnak. Az escort
+útvonala és az invázió külső hulláma saját, egyoszlopos belső profilt használ.
+Adminindításkor a parancs először csak a keresés
 elindulását igazolja, tényleges sikert az esemény spawn utáni broadcastja jelez.
 
 - **Így találkozol vele:** `/events`; admin eventindítók és automatikus eseménytriggerek. Parancs: /events (alias: /esemeny, /event).
@@ -1079,6 +1102,7 @@ prestige státuszokat és a Season 1 idempotens átmenetét kezeli.
 - **Mitől mozdul meg:** Kizárólag a `/prologue start` vagy más, állapotot ténylegesen módosító adminfolyamat után; a friss `DORMANT` állapot teljes pass-through.
 - **Ami még kellhet hozzá:** A négy `prologue-*` runtime hook és a productionközeli staging acceptance.
 - **Fontos határ:** `DORMANT` alatt nincs Prologue XP-/contentkorlát, season/community override, Nether-pecsét vagy gate-location authority, HUD/ambient/breach és catch-up; a Prologue-tól független szerverconfig változatlanul érvényes.
+- **Aktív Nether-kapu:** lezárt állapotban territory bypass és közvetlen command/plugin teleport sem enged be normál játékost; a valódi OP-státusz explicit üzemeltetői bypass. Feloldás után a nem-OP indulási pontnak az Olethropyla kapukörzetében kell lennie.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
@@ -1132,12 +1156,26 @@ encounter vagy authored hely, a MobTemplate, majd a territory/biome/mélység/t�
 és event állapot határozza meg. A HP gyorsabb, a damage lassabb, külön bounded görbén
 nő; 70 fölötti boss csak authored override, nem wilderness extrapoláció.
 
-A rendszer 18 canonical MobTemplate-et használ surface/night/deep/swamp/Nether/End/
-storm és meglévő event forrásokra, miközben a többi vanilla mob fallbackként
-helyes marad. A hét rank: Normal, Veteran, Elite, Champion, Miniboss, Boss és World
-Boss; a 12 archetype közös ability registryre épül. Hat reusable ability vanilla
-telegráfot ad, az Elite spawnkor legfeljebb két biztonságos affixet kaphat a hétből.
-Az invasion hullámai/bajnoka, a kultisták és a Wild Hunt canonical rankot kapnak.
+A rendszer 18 canonical MobTemplate-et és egy 91 soros Paper 1.21.11 species matrixot
+használ. A hét rank és 12 archetype közös ability registryre épül. A #137 tizenegy legacy
+`Kind` technikája mellett nyolc authored composition használja az öt ténylegesen szükséges
+typed primitive-et (`DAMAGE`, `KNOCKBACK`, `DASH`, `RETREAT`, `GUARD`). Új Cow/Sheep/Pig/
+Horse kit authored paraméterekkel bővíthető, species-specific listener/service nélkül.
+
+PASSIVE, NEUTRAL, HOSTILE és NON_COMBAT elsősorban azt szabja meg, mikor nyílhat combat;
+level, rank, stat és technique ettől független. A passzív creature stable UUID-seeded
+TIMID/CALM/DEFENSIVE/TERRITORIAL/HERD_DEFENSIVE/PACK_DEFENSIVE policyból kap FLEE vagy
+WARN/FIGHT reakciót, így ugyanaz az entity nem dob új személyiséget minden ütésnél. Csak
+player, player projectile vagy player-owned valid damage provokál. Fight esetén ugyanaz a
+telegraph/cooldown/cast epoch/disengage runtime fut, mint hostile mobnál; a legacy wildlife
+damage listener megszűnt. Cow bounded herd defense-et, Rabbit flee-first identitást kap;
+Goat/Bee/Wolf/Llama és más neutral fajok vanilla trigger/social viselkedése megmarad.
+
+Minden combat-capable row canonical level/rank projectiont kap, de Elite vagy Lv40 PASSIVE
+nem auto-aggro. Baby alapból nem kap authored combatot, owner-safe tameable nem fordul a gazda
+ellen. A social query sugaras, jelölt- és asszisztens-capelt, nem rekurzív és entity-scheduleres.
+Passzív wildlife rewardja `VANILLA_ONLY`: a combat capability, level vagy rank önmagában nem
+ad gear-, soulstone-, encounter- vagy class-XP jutalmat.
 
 A világboss startkor stabil, csökkenő hozadékú player-count és élő equipped-CombatPower
 snapshotot készít. A power csak valid main/offhand+armor canonical itemek tényleges
@@ -1162,7 +1200,8 @@ reconnectig függőben marad, nem esik a földre.
 
 - Permission: —
 - Config: `world.yml` `mob-scaling.*` és `world-events.world-boss.*`,
-  `mob-templates.yml`, `loot.*`, `itemization.loot.*`, bestiary- (mérföldkövek,
+  `mob-templates.yml` `mob-abilities`, `creature-species`, `mob-templates`, `loot.*`,
+  `itemization.loot.*`, bestiary- (mérföldkövek,
   `bestiary.knowledge-tiers`, `bestiary.codex-notes.*`) és miniondefiníciók.
 - Tartós állapot: Bestiárium progress, bounded authored-loot előzmény és egyes
   loot/event state-ek tartósak; mob/ability/ledger entity runtime. A személyes boss
@@ -1473,3 +1512,13 @@ a saját tesztcsomagjának sikeres lezárása után távolítható el.
 
 <sub>Dokumentációs snapshot: 2026-07-30 · release `4643ab535…` · deployed mapping:
 `775d9e247…` (`HIGH_CONFIDENCE`, nem `EXACT`).</sub>
+
+## Professions 2.0 economy
+- Meaningful raw → refined → component → craft chains for textile, leather, hybrid mail and forged plate.
+- Cross-profession MAIL dependency and selected high-tier combat components.
+- Targeted canonical crafting, bounded non-guaranteed Masterwork, family-aware lossy salvage and player-market-ready material metadata.
+- Shift-click batch processing for stackable processing recipes with all-or-nothing inventory capacity checks.
+- Machine-readable migration, producer/consumer and resource-pack handoff reports.
+
+### Professions 2.0 family crafting
+A négy Equipment 2.0 family mind rendelkezik profession craft végponttal: CLOTH, LEATHER, MAIL és PLATE. A salvage-family maradékoknak valós, veszteséges visszanyerési sinkjük van; boss-komponens nem állítható vissza salvage-ből.

@@ -1166,6 +1166,52 @@ A részletes persistence-, recovery- és shutdown-folyamat:
   MYTHIC és nem account-bound template-et fogad; random-affix gear `recipe-item`
   startupkor érvénytelen crate-definíció.
 
+### Equipment 2.0 üzemeltetés
+
+- Authority: `item-templates.yml` → `itemization.equipment.family-profiles`; a 160 armor
+  teljes leaf-authorityja az `equipment-catalog-expansion.yml`, benne az `armor-family`
+  mezővel. Reload csak teljesen valid immutable snapshotot publikál; hiba esetén az előző
+  marad aktív.
+- Canonical mapping: Priest/Warlock/Wizard=CLOTH; Monk/Demon Hunter/Druid/Assassin=LEATHER;
+  Archer/Shaman/Evoker=MAIL; Warrior/Paladin/Death Knight=PLATE. Spec-váltás nem változtatja.
+- `/iceitem inspect [játékos]` a familyt, explicit class restrictiont, can-equip döntést
+  és a template-validáció állapotát is mutatja. Admin give más family játékosnak inventoryba
+  engedélyezett; a tényleges equip ugyanazon a kapun bukik.
+- Market family filter: `/market search @cloth|@leather|@mail|@plate`. Listázást és vételt
+  az eladó/vevő proficiencyje nem tiltja.
+- Az `equipment-catalog-expansion.yml` közvetlenül authorolt authority: a 160 armor
+  fix `base-armor`, toughness és — ahol van — knockback resistance értékét, egyedi magyar
+  lore-ját és szűk, family-azonos secondary rolljait nem generátor állítja elő. Az
+  `audit_long_term_equipment_catalog.py --require-eight-sets` a Leather/Gold/Chain/Copper/
+  Iron/Diamond/Netherite benchmarkokat, a teljes szettek védelmi minimumát, a négy slotot,
+  a lore-egyediséget és a craft-varianciát ellenőrzi.
+- Az `audit_combat_encounter_foundation.py --check` mind a 160 armor + 25 meglévő
+  weapon/offhand normalizált összehasonlítását, level gate-jét, TTK-mátrixát,
+  technikafedését és wildlife-policyját ellenőrzi. A követett authority:
+  `docs/development/combat-balance-authority.json`.
+- Template schema 2 és a rebalance-olt armorok template-versionje 2. A migráció az
+  ItemInstance UUID/provenance/rollminőség/rúna/ascension állapotát megtartja, majd az
+  új authorolt stat- és lore-authorityt rendereli rá.
+
+Stagingen külön próbáld: click/shift/number-key/drag/right-click/replace/dispenser,
+invsee/admin mutation, reconnect, death/keepInventory, class reset/váltás, full inventory,
+market roundtrip és mindhárom set. Wrong-family állapotban a fixed/rolled attribútum,
+backing Material default, set, Signature, rune és CombatPower mind maradjon OFF; az item
+ne essen a földre és ne duplikálódjon. A forrás-regresszió nem helyettesíti ezt a Folia
+acceptance-et.
+
+Külön kötelező eset: class nélküli karakter authored sisakot, mellvértet, lábvértet és
+csizmát jobb kattintással próbál felvenni. A felszerelés maradjon tiltott, az eredeti UUID-jú
+item a vanilla equip-tranzakció lezárása után pontosan egyszer kerüljön vissza az inventoryba.
+Teljes inventorynál maradjon fizikailag felszerelve, de suppression miatt minden canonical
+hatása legyen inaktív; sem eltűnés, sem klónozott példány, sem world drop nem elfogadható.
+
+Ugyanezt futtasd le minden armor-, mainhand- és offhand-úton a követelmény alatti,
+pontosan megfelelő és felette levő kasztszinttel. A döntési precedencia identity/slot/
+duplicate/profile/class-family-spec/level/suppression. Underlevel ACTIVE contribution
+mindig nulla; az eredeti UUID-t teljes inventory, relog, reload és későbbi level-up után
+is meg kell őrizni. BASIC survival gear kontrollként minden szinten használható marad.
+
 Staging acceptance — ezeket CI alapján ne pipáld ki:
 
 - **Process-kill:** külön reroll, rune insert/remove/replace és ascension közben állítsd le
@@ -1262,15 +1308,33 @@ anyagláncok és Equipment Resource Pack 2.0 nem részei ennek a változásnak.
 - Precedencia: encounter override → authored location → MobTemplate → wilderness
   distance, majd territory/biome-or-dimension/depth/event bónusz. A safe-zone ramp
   megmarad; claim önmagában nem tesz minden területet biztonságossá.
-- `mob-templates.yml`: ability-, loot-profile- és a 18 MobTemplate-authority.
-  Duplicate ID, invalid entity/rank/archetype, missing ability/loot vagy Bestiary ID
-  ütközés startupkor fail-fast. Vanilla fallbackhez nem kell minden mobot authoredolni.
+- `mob-templates.yml`: ability-, loot-profile-, 49 MobTemplate- és 91 soros
+  `creature-species` authority. A Paper runtime living/spawnable `EntityType` készletéhez
+  képest missing/extra row, invalid disposition/temperament/social/reward vagy missing
+  technique startupkor fail-fast; lookup fallbackje NON_COMBAT/VANILLA_ONLY.
 - A natural promotion csak `NATURAL` spawnnál sorsol Veteran/Elite rankot;
   protected-city selectorban nem. Mélység, Nether/End és Vérhold kis bounded bónuszt
   ad; Elite legfeljebb két valid affixet kap.
 - Az ability runtime globális scan helyett entity scheduler tickeket használ, legfeljebb
-  2048 aktív state-tel. Telegraph, cooldown, summon-darab és summon-lifespan bounded;
-  disable/death/despawn cleanup kötelező, terrain damage nincs.
+  2048 aktív state-tel. A legacy `Kind` definíciók kompatibilisek; a `COMPOSITE` ability
+  typed trigger/condition/target/action listája legfeljebb 8+8 elem. A jelenlegi primitive
+  vocabulary hét elemű; az authored PvE migráció kizárólag az `APPLY_EFFECT` és
+  `SUMMON_TEMPLATE` primitive-et, valamint az egyszeri `HEALTH_THRESHOLD` triggert adta
+  hozzá. A veszélyes action minimum 10 tick telegráfot igényel.
+- World boss, Invasion Champion és Prologue creature spawnhoz az
+  `AuthoredCreatureSpawnService` az egyetlen template/level/rank/stat/runtime attachment
+  út. Az event manager csak roster-, placement-, időzítés-, contribution- és settlement
+  orchestrator. A tuning- és lifecycle-részletek:
+  `docs/development/AUTHORED_PVE_CREATURE_MODEL.md`.
+- `creature-species.*`: category/disposition, level/rank, allowed temperament + súly,
+  stable fight-percent, provocation, base/rank technique, social cap, reward, baby és tame
+  policy. Ez az egyetlen wildlife truth source; a régi `wildlife-retaliation.*` config és
+  listener nincs használatban.
+- PASSIVE nem kezdeményez. Direkt player/player-projectile/player-owned damage után a
+  persisted reaction FLEE vagy WARN/FIGHT. Social felső korlát: 16 blokk, 32 jelölt,
+  6 asszisztens; shipped Cow: 6/12/2. Nincs recursive assist vagy cross-region direct mutation.
+- Reward audit: PASSIVE mindig VANILLA_ONLY; spawner/spawn egg/breeding/command/custom
+  hostile source sem automatikus faucet. Authored event/template explicit reward markert kap.
 - Világboss scaling: `1 + player-coefficient × (n-1)^player-exponent`, default
   `0.65`/`0.8`, max HP-szorzó `12`; damage per doubling `0.04`, max `1.18`.
   A snapshot startkor rögzül, late join nem skáláz újra. A power-inputot az
@@ -1282,12 +1346,17 @@ anyagláncok és Equipment Resource Pack 2.0 nem részei ennek a változásnak.
   operation receipt; full inventorynál nincs world drop. Restartkor COMMITTED
   eligibility kézbesíthető, PREPARED jelölt exact-before rollback.
 
-Mob 2.0 staging acceptance: (1) Lv. 1/10/25/50/70 és cap, (2) távolság + mélység +
+Mob 2.0 és unified creature staging acceptance — `HUMAN_GAMEPLAY_STAGING_REQUIRED`:
+(1) Lv. 1/10/25/50/70 és cap, (2) távolság + mélység +
 Deep Dark + territory + Vérhold, (3) Veteran/Elite max. két affix, (4) mind a 18 authored
 template és vanilla fallback, (5) telegráf/cast/caster death/target death/region hop/
-disable, (6) 1/2/5/40 fős boss snapshot, late join/death/disconnect, (7) contribution,
+interrupt/recovery/disable, (6) 1/2/5/40 fős boss snapshot, late join/death/disconnect, (7) contribution,
 AFK és duplicate settlement, (8) tele inventory + reconnect/restart delivery, (9)
-50–60 online játékos melletti profiler-felvétel. Ments JAR SHA-256-ot, config snapshotot,
+Cow/Pig/Sheep population feel, Rabbit flee, Horse/Goat defense, Elite Passive no-auto-aggro,
+Wolf/Bee neutral control, baby/tamed/environmental/farm interaction és herd cap, (10)
+breeding/restart/chunk reload stabilitás, multiplayer Folia multi-region assist, (11) 100+
+állatos farm egy provokációval, (12) hostile Zombie/Skeleton/Spider/Creeper/Witch/Enderman
+control és (13) telegraph/counterplay. Ments JAR SHA-256-ot, config snapshotot,
 boss encounter ID-t és az érintett Profile operation receiptet.
 
 ### Üzenetfájlok
@@ -1706,6 +1775,21 @@ beszedési útvonalnak: karanténban marad explicit adminmigrációig.
 | [ ] | CRATE-25 Random tervrajz policy | Admin/tesztelő | szakma- és szintszűrt normál pool, majd Mitikus `include-loot-only` pool | minden sorsolt recept a tartományban van; boss-only csak engedélyezett poolból jön | érintett pool tiltása | `crate/CRATE-25/` |
 | [ ] | CRATE-26 Elytra-tiltás | Admin | közvetlen `item: ELYTRA`, Elytra-recept és ilyen tervrajz tesztdefiníciója | mindhárom config betöltéskor elutasított; bundled lootban nincs Elytra | crate config rollback | `crate/CRATE-26/` |
 
+### Combat & Encounter recalibration
+
+| Kész | Teszt | Felelős | Előkészítés | Elvárt eredmény | Hiba esetén | Bizonyíték |
+|---|---|---|---|---|---|---|
+| [ ] | COMBAT-01 Valódi Paper benchmark | Fejlesztő | exact-head Paper 1.21.11 probe, 38 vanilla ItemStack | runtime attribute modifier értékek és SHA-256 csomagban | rollout stop | `combat/COMBAT-01/` |
+| [ ] | COMBAT-02 BASIC kontroll | Tesztelő | vanilla armor/fegyver minden kaszt- és szintállapotban | nincs canonical level/family gate | equipment rollback | `combat/COMBAT-02/` |
+| [ ] | COMBAT-03 Szint-határ minden sloton | Tesztelő | armor/main/offhand req−1, req, req+1 | req−1 inert, req és fölötte aktív | equipment rollout stop | `combat/COMBAT-03/` |
+| [ ] | COMBAT-04 Precedencia és tele inventory | Admin/tesztelő | invalid/duplicate/classless/wrong-family/underlevel, tele inventory | determinisztikus denial, nincs drop/loss/clone | érintett producer tiltása | `combat/COMBAT-04/` |
+| [ ] | COMBAT-05 Reaktiváció | Tesztelő | level-up, relog, respawn és reload suppressed itemmel | ugyanaz az UUID pontosan egyszer aktívvá válik | reconcile rollback | `combat/COMBAT-05/` |
+| [ ] | COMBAT-06 Katalógus integritás | Fejlesztő | 160 armor + 25 jelenlegi combat item report | ID/verzió/visual/acquisition megmarad; budget gate zöld | catalog rollback | `combat/COMBAT-06/` |
+| [ ] | COMBAT-07 Rangtechnikák | Tesztelő | Normal→Boss reprezentatív archetype-ok | rank-kit, telegráf, recovery és interrupt működik | technique config tiltása | `combat/COMBAT-07/` |
+| [ ] | COMBAT-08 Folia régióhatár | Üzemeltető | két régió, több player, technique/herd/boss | nincs thread-warning; cleanup és cap helyes | rollout stop | `combat/COMBAT-08/` |
+| [ ] | COMBAT-09 Wildlife safety | Tesztelő | temperamentek, baby/tamed, projectile/environment, herd | bounded visszavágás; nincs chain/rank/extra reward | wildlife kapu kikapcsolása | `combat/COMBAT-09/` |
+| [ ] | COMBAT-10 TTK és terhelés | Balance owner | benchmark buildek, Normal/Veteran/Elite/Champion/Boss, 50–60 player | elfogadott TTK/TTL, olvasható telegráf, profiler és telemetry | balance rollout stop | `combat/COMBAT-10/` |
+
 ### Szakma-katalógus (rework)
 
 | Kész | Teszt | Felelős | Előkészítés | Elvárt eredmény | Hiba esetén | Bizonyíték |
@@ -1862,12 +1946,16 @@ runtime viselkedést fedik; staging-bizonyíték nélkül nem pipálhatók ki.
 7. Két egyidejű eventkeresés, harmadik keresés budget-elutasítása és timeout;
    egy 32 jelöltes világboss-/invázió-/meteor-keresés ne merítse ki idő előtt a
    96 chunkos keretet pusztán a footprint miatt.
-8. Már generált, de inaktív chunk visszatöltése; nem generált chunk fail-closed viselkedése.
+8. Már generált, de inaktív chunk visszatöltése; nem generált terepnél először fusson ki
+   a normál fázis, majd legfeljebb 24 chunkos, 768 blokkos aszinkron mentőfázis induljon.
+   A 25. új chunk fail-closed `SEARCH_BUDGET` elutasítás legyen.
 9. Plugin disable érkezési késleltetés és async chunk-future közben.
 10. Meteor lejárat, disable és mesterségesen bent hagyott `meteor-restore.yml` startup-recovery.
 11. Fix világboss-anchor chunkhatár közelében: az első érvényes pont vagy a
-    chunk-középre igazított fallback teljes ±7-es vizsgálata maradjon egy régióban.
-12. `/events debug spawn` eredményének összevetése a tényleges eventindítással.
+    chunk-középre igazított fallback mind a négy ±7-kompatibilis középoszlopa
+    maradjon ugyanabban a Folia-régióban.
+12. `/events debug spawn` eredményének összevetése a tényleges eventindítással; nagy
+    eventprofilnál a debug is ugyanazt a limitált terrain-expansion fázist használja.
 13. `/events worldboss`, `invasion`, `escort` és `meteor`: az első válasz csak a
     keresés indulását jelezze; tényleges sikerüzenet/broadcast csak valódi spawn után legyen.
 
@@ -1958,11 +2046,10 @@ A Party Frame minden tagot a saját frakciópalettájával renderel, nem a néz�
 vezetőjelzés, HP, class-resource és az offline/halott/távoli státusz kizárólag a HudManager
 immutable cache-eiből és a `PositionCache`-ből készül; nincs cross-region `Player`-olvasás.
 
-A `classes.yml` `health.enabled` kapuja továbbra is `false`: ez a változás a kijelzőt és a későbbi
-HP-scaling támogatását készíti elő, nem kapcsolja be élesben a teljes class-health/damage profilt.
-Aktiválás előtt stagingen kell ellenőrizni minden kaszt max HP-ját, direkt gyógyítását és fizikai
-sebzését. Az előkészített `health.display.normalize: false` miatt bekapcsolás után is a valódi
-current/max érték kerül a HUD-ra, nem tíz szívre visszaosztott szám.
+A `classes.yml` `health.enabled` kapuja csomagolt alapértéken `true`, ezért a teljes class-health,
+fizikai sebzés- és harcon kívüli regenerációs profil aktív. Stagingen minden kaszt max HP-ját,
+direkt gyógyítását és fizikai sebzését ellenőrizni kell. A `health.display.normalize: false` miatt
+a valódi current/max érték kerül a HUD-ra, nem tíz szívre visszaosztott szám.
 
 ### Személyes és globális layout-editor
 
@@ -2209,3 +2296,16 @@ Kézi elfogadási minimum:
 - külső HUD plugin nélküli indulás, két Folia-régió és több GUI scale/képernyőfelbontás;
 - a pack sikeres betöltéséig natív compact/class és vanilla survival fallback, utána pontosan egy
   class HUD és egy Player/Target/Party kompozíció ugyanabban a per-player bossbar-carrierben.
+
+## Professions 2.0 admin / economy
+- Effective recipe authority: `config/profession-recipes.yml` + később merge-elt `config/professions-2.yml` overlay; player progression továbbra is PlayerProfile v2.
+- Machine-readable migration: `docs/development/professions-2-recipe-migration.json`.
+- Producer/consumer, faucet/sink és dependency graph: `docs/development/professions-2-economy-graph.json`.
+- `./gradlew professions2ReportRegressionTest professions2EconomyRegressionTest professions2RegressionTest` futtatja a célzott source gate-eket.
+- `ProfessionEconomyTelemetry.global().snapshot()` bounded aggregátumot ad crafted/processed/Masterwork/high-tier/salvage számlálókról; nem tart végtelen operation historyt.
+- Material/recipe reload fail-closed: hiányzó unique ID, rossz level/amount, semantic duplicate vagy managed processing cycle esetén az új generáció nem publikálható.
+
+Balance-változtatást a seedelt harness után is stagingen kell igazolni. Ne állíts be NPC buy/sell hurkot, amely crafttal profitot termel; high-value komponens korlátlan vendorforrása tiltott policy.
+
+### Professions 2.0 hardening gate
+A `scripts/check_professions_2_reports.py` ellenőrzi a 392 baseline recept teljes kategorizálását, a 18 canonical recipe-t, a négy ArmorFamily craft-végpontot, a MAIL mixed dependencyt, a salvage scrap valódi sinkeket és a post-commit Masterwork advancement sorrendet.

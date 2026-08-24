@@ -391,11 +391,10 @@ képességeket, így harc közben nem feltétlenül kell külön tárgyra válta
 
 ### Kasztalapú életerő
 
-A kasztonként eltérő alapéleterő-rendszer jelenleg konfigurációból
-**kikapcsolt** állapotú. Ne számolj vele aktív előnyként: az életerőt most a
-vanília alap, a felszerelés és az aktív talentek módosítják. Az új túlélési HUD ettől
-függetlenül mindig a valódi jelenlegi/maximális értéket írja ki, ezért a későbbi HP-scaling
-bekapcsolásakor nem kell tíz szívre visszanormalizálnia a nagyobb életerőt.
+A kasztonként eltérő életerő- és fizikai sebzésprofil aktív. A maximális életerőt a kaszt,
+a kasztszint, a felszerelés és az aktív talentek együtt alakítják; harcon kívül a rendszer
+a konfigurált késleltetés után regenerál. A túlélési HUD mindig a valódi jelenlegi/maximális
+értéket írja ki, nem normalizálja vissza tíz szívre a nagyobb életerőt.
 
 ---
 
@@ -452,7 +451,12 @@ A **25. kasztszinttől** választhatsz specializációt. Összesen 35 irány lé
 de a menü csak a saját kasztodhoz és aktuális feltételeidhez tartozó
 lehetőségeket mutatja:
 
-`/profile` → **Specializáció**, vagy `/spec list`.
+`/profile` → **Kasztműhely**, vagy `/spec list`. A Kasztműhely egyszerre mutatja
+az I. és II. összeállítást, az aktív/tartalék/lepecsételt állapotot, valamint
+a váltás pontos tiltási okát. A szakmai specializációk külön lapot kaptak.
+Az egész karakterút ugyanazt az egyedi, frakciószínű felületcsaládot használja:
+Profil, kasztválasztó, Spellbook, képességfa, talentek, részletlapok és
+Társműhely. Minden kaszt és specializáció saját jelvényt kapott.
 
 A specializáció kijelölheti a fő szerepedet:
 
@@ -475,25 +479,43 @@ menüben, mert ott látod a jelenlegi feloldási szinteket és korlátokat.
   távol vált. Nem gyógyít, nem tölti vissza a kaszterőforrást, és nem nullázza
   a képességek várakozási idejét.
 - Egyes sötét irányok frakciót, bűnös állapotot vagy történeti kaput kérnek.
-- `/spec respec class` visszavonja a kasztspecializációt, általában
-  frakcióvalutáért.
+- A Kasztműhelyben az inaktív összeállításra kattintva válthatsz; harc vagy
+  közeli ellenség esetén a menü megmondja, miért nem engedi.
+- `/spec respec class`, illetve a Kasztműhely megerősítő képernyője visszavonja
+  az aktív kasztspecializációt, általában frakcióvalutáért.
 - A régi spechez kötött képességek lekerülnek, a hozzá kötött talentpontok
   visszatérnek.
 
 ### Doctrine, mesterség és záróképesség
 
 - A 30., 40. és 50. szinten specializációnként két doctrine közül választasz
-  a `/spec doctrine <30|40|50> <választás>` paranccsal. A doctrine a saját
+  a Kasztműhelyben vagy a `/spec doctrine <30|40|50> <választás>` paranccsal. A doctrine a saját
   mechanikádat módosítja — nem csak cím vagy kozmetika —, és az adott
   spec-slothoz tartozik.
 - Az 50. szinttől a spec-mesterség csak valódi harci használatból fejlődik;
-  céltalan vagy AFK spellspam nem számít mesterségnek.
+  céltalan vagy AFK spellspam nem számít mesterségnek. A menü külön mutatja a
+  0–10 rangot és az aktuális rangon belüli XP-haladást.
+- Az egyes képességek spell-mestersége a Spellbookban, az adott ikonon
+  **jobb kattintással** fejleszthető. A lore előre mutatja az árat és a
+  maximális rangot; a tartós mentés sikertelensége nem fogyasztja el a fejlesztést.
 - A záróképességhez előbb teljesítsd a kasztod mesterpróbáját. Ezután a
   küldetésnaplóban megjelenik a saját **specializációs csúcspróbád**: 18
   sikeres használatot kér a megadott, már ismert képességeidből.
 - A próba csak a megkövetelt aktív specializációval halad. Sikertelen,
   megszakított vagy másik spechez tartozó képesség nem növeli a számlálót.
   Teljesítéskor pontosan a saját szint-50-es záróképességed oldódik fel.
+  A Kasztműhely és a képesség-fa ezért szint helyett kifejezetten a hiányzó
+  végső próbát írja ki, ha ez tartja zárva a képességet.
+
+A Kasztműhely **Hogyan működik az utad?** lapja mind a 13 kaszt és mind a 35
+specializáció közös magját és tényleges producer→consumer harci ciklusát
+elmagyarázza. A kézi célkijelölések pontos irányítása is itt látható
+(Eskütárs, Fényjelző, Ködszál, Sárkányvér-fiola). Paplovagként az Eskü,
+Papként a Litánia három választása közvetlenül erről a lapról nyitható meg;
+nem szükséges hozzá a `/spec esku` vagy `/spec ima` parancs.
+A Doctrine-kódex mindhárom szint mindkét ágának tényleges hatását és
+rögzített állapotát megmutatja. A záróképesség- és Lélekkapocs-lap ugyanitt
+jelzi a hiányzó próbát, rezonanciát, Awakeninget vagy más pontos tiltási okot.
 
 ### Társak
 
@@ -507,9 +529,12 @@ menüben kezelheted őket:
 - `/pet name <név>` — elnevezés, szóközt tartalmazó névvel is;
 - `/pet stance <aktiv|passziv|marad>` — viselkedés (szerep: aktív vadász, passzív kísérő, őrhelyen maradó).
 
-A Vadmester Istállója alapból legfeljebb 3 befogott társat tart. A `/pet` menü
-felső sora mutatja a társlistát; egy társra kattintva tartósan kiválasztod és
-magad mellé hívod. Teli Istállóval új befogás csak elengedés után lehetséges.
+A Vadmester Istállója alapból legfeljebb 3 befogott társat tart. A custom
+**Társműhely** felső sora mutatja a társlistát; egy társra kattintva tartósan
+kiválasztod és magad mellé hívod. A fejlődési lap megmutatja a szintet, az
+XP-küszöböt, a harci erőszintet, a mutációt és a következő formát. Jobb kattal
+csak az elengedés megerősítőlapja nyílik meg; a társ a külön véglegesítő katt
+előtt nem törlődik. Teli Istállóval új befogás csak elengedés után lehetséges.
 
 A társ a te és a saját jogosult szörnyöléseiből is tapasztalatot szerezhet,
 megvédhet, és ritka Társvértet viselhet. Idézéskor a rendszer biztonságos,
@@ -529,7 +554,9 @@ Ha egy roster megtelt, az új tartós idézés még az erőforrás és a cooldow
 elköltése előtt visszautasítható; előbb engedj el vagy arass le egy régi tagot.
 A Szentségtelen Dögvész-burstje csak valóban meglévő saját ghúlt mutál: a
 fokozat korlátozott, ténylegesen erősíti a társat és újrabelépés után is
-megmarad. Ghúl nélkül nincs láthatatlan vagy elvesző mutáció.
+megmarad. A ghúl a társszint és a mutációs erő alapján automatikusan vált
+Ghúl → Csontszolga → Förtelem formára; ehhez nem kell újabb rituálé. Ghúl
+nélkül nincs láthatatlan vagy elvesző mutáció.
 
 ---
 
@@ -583,6 +610,31 @@ Az armor trim és rename canonical tárgyon jelenleg szintén blokkolt, mert a c
 változásnak is meg kell őriznie és journalolnia kell az UUID/PDC/checksum állapotot.
 Netherite továbbra is kiváló survival material, de önmagában nem IceSMP endgame rang.
 
+### Páncélcsaládok az authored felszerelésen
+
+A különleges IceSMP páncél tooltipje `Páncéltípus` sort mutat. Minden kaszt egyetlen
+családot visel:
+
+| Család | Kasztok | Fő karakter |
+|---|---|---|
+| Szövet (CLOTH) | Pap, Boszorkánymester, Varázsló | képesség, erőforrás, utility/support |
+| Bőr (LEATHER) | Szerzetes, Démonvadász, Druida, Orgyilkos | mobilitás, crit, sustain |
+| Sodrony (MAIL) | Íjász, Sámán, Sárkányidéző | hybrid támadás, ellenállás, sustain |
+| Lemez (PLATE) | Harcos, Paplovag, Halállovag | armor, életerő, mitigation |
+
+Ez kizárólag a canonical MMORPG felszerelés szabálya. Varázslóként továbbra is
+felvehetsz normál vanilla vas-, gyémánt- vagy netherite páncélt: a survival szabad.
+Másik family authored tárgyát is megtarthatod, fejlesztheted és eladhatod; felszerelni
+nem tudod. Sikertelen equipnél a tárgy nem fogy el, és rövid magyar actionbar jelzi az
+okot. Kasztválasztás előtt a canonical armor nem aktív.
+
+A canonical tárgy `Szintkövetelmény` sora valódi használati kapu. Ha a jelenlegi
+kasztszinted kisebb, a páncél, főkéz vagy mellékkéz nem ad statot, szett-, rúna- vagy
+Signature-hatást. A tárgy ettől a tiéd marad: tele inventorynál sem dobódik a földre,
+hanem inert/suppressed állapotban marad. A pontos szint elérésekor, belépéskor vagy
+profilfrissítéskor ugyanaz a példány újra aktiválható. A normál vanilla survival gearre
+ez a kapu nem vonatkozik.
+
 Két fő szakmai helyed van:
 
 - **egy gyűjtögető szakma:** Bányász, Gyógynövényész vagy Favágó;
@@ -619,9 +671,10 @@ tervrajz és mestermű jelző additív, plafonozott minimum-qualityt adhat. A t�
 megmarad a készítő UUID-ja, a név craftkori pillanatképe, a szakma, hely/idő és a
 Mestermű jelző; egy későbbi névváltás nem írja át az eredetét.
 
-A jelenlegi 48 tárgyas katalógus starter, mid-game és high-end felszerelést, három
-szettet, valamint mining/fishing/hunting/farming, profession, wilderness, event és
-boss forrásokat köt össze. A tíz rúna közül a Súly nagy célpont ellen, az Oltalom
+A jelenlegi combat katalógus 160 páncéldarabot — familynként 40-et — és 25 már
+létező fegyver/pajzs sablont köt starter, mid-game, high-end és endgame sávba.
+Nem került be új fegyverkatalógus; a meglévő azonosítók, kinézetek és források kaptak
+közös erőskálát. A tíz rúna közül a Súly nagy célpont ellen, az Oltalom
 alacsony életerőn, a Vadász pedig nem játékos célpontra lőve ad bounded előnyt.
 
 A főkézben tartott canonical tárggyal nyisd meg a `/profession forge` felületet:
@@ -782,12 +835,21 @@ Authored rom, dungeon vagy boss saját szintet írhat elő; 70 fölötti szint n
 végtelen távolsági skála, hanem külön boss/encounter tartalom. A HP gyorsabban,
 a sebzés óvatosabban nő, így a magas szint nem automatikus előjel nélküli one-shot.
 
-A **Veterán** erősebb alapellenfél, az **Elit** legfeljebb két, a neve mellett
-röviden jelzett affixet kaphat; a Bajnok/Miniboss/Boss saját mechanikákat használhat.
-Charge, slam, lövedéksorozat vagy zóna előtt vanilla kliensen is hang/részecske
-telegráf látható — ezt figyeld, ne csak a nametaget. A spawnerből származó mobok
+A **Veterán** már technikát hozhat, az **Elit** több technikát és legfeljebb két,
+a neve mellett röviden jelzett affixet kaphat; a Bajnok/Miniboss/Boss nagyobb
+mechanikai készletet használ. A rangok armorban és mozgáskarakterben is eltérhetnek,
+nem csak életerőben. Charge, slam, lövedéksorozat, cleave vagy zóna előtt vanilla
+kliensen is hang/részecske telegráf látható; egyes castok elég nagy sebzéssel
+megszakíthatók, végrehajtás után pedig recovery ablak következik. Ezt figyeld, ne csak
+a nametaget. A spawnerből származó mobok
 nem a vadon kihívásának pótlására valók, ezért nem kapják meg ugyanazt a skálázást
 és jutalmat.
+
+Néhány passzív vadállatnak stabil természete van: lehet félénk, védekező vagy
+agresszívebb. Közvetlen megütéskor rövid figyelmeztetés után visszavághat, és kis
+számban az azonos fajú közeli csorda is segíthet. A bébi és megszelídített állat nem
+vesz részt ebben, a reakció rövid és cooldownos, és nem jár érte elit rang vagy extra
+jutalom. Környezeti sebzés és más mob támadása sem teszi a farmot jutalomforrássá.
 
 Világbossnál nem csak a killing blow számít. Érdemi bosssebzés, tankolás és a
 támogatott encounter-célok contributiont adnak; AFK, önmagadon farmolt heal vagy
@@ -1200,6 +1262,11 @@ A **Kárhozat Kapuja** már a Prologue előtt is a világ része. Season 0 alatt
 a hozzá kötött felfedező- és lore-tartalom működhet, de a Kapun **nem lehet átjutni a Netherbe**.
 Saját Nether-portált továbbra sem lehet szabadon létrehozni. A Kapu állapotának romlását időnként
 a HUD vagy a fallback kijelzés stabilitásmérője és helyi események jelezhetik.
+Az aktív, még lezárt történeti kaput terület-bypass, parancsos vagy pluginből
+indított közvetlen teleport sem kerüli meg egy normál játékosnál. A valódi
+Minecraft OP-státusz explicit üzemeltetői bypass. Feloldás után a nem-OP belépésnek
+továbbra is a konfigurált Olethropyla kapukörzetből kell indulnia; a Netherből való
+visszatérés ettől függetlenül engedélyezett.
 
 A Prologue lezárása után a világ wipe nélkül lép tovább Season 1-be. A normál szezonliga ekkor
 indul el ténylegesen. Az új vagy lemaradó, 25. szint alatti karakterekhez configolható
@@ -1215,3 +1282,20 @@ A nyitó korszak végének történeti részleteit ez az útmutató szándékosa
 ---
 
 <sub>Dokumentált release: `4643ab53586f0c1ee7352df16dcd477013e6fad4`</sub>
+
+## Professions 2.0 — mit csináljak?
+A szakmád most gazdasági szerep. A nyersanyag továbbra is valódi Minecraft-tevékenységből jön: bányászol, vadászol, gyűjtesz, halászol és farmolsz. A receptkönyvben a **Feldolgozás** receptek nyers alapanyagból olyan komponenseket készítenek, amelyekre más játékosoknak is szükségük lehet.
+
+- **CLOTH:** rost/fonal → Szőtt Posztó → Rúnaszőtt Posztó → canonical szövet gear.
+- **LEATHER:** bőr → Cserzett Bőr → Erősített Bőr → canonical bőr gear.
+- **MAIL:** könnyű fémhuzal **és** cserzett bőr → Sodrott Láncszem → canonical sodrony gear. Ez szándékosan több szakmát köt össze.
+- **PLATE:** survival fém + meglévő ötvözet → Edzett Ötvözet → Kovácsolt Lemez → canonical lemez gear.
+
+A **Mestermű** nem külön rarity és nem garantált tökéletes roll. Magasabb szakmaszint javítja a quality floor-t, a kijelölt mestermű-recepteknél pedig ritka, korlátozott extra esélyt ad. A tárgy template-je ugyanaz marad, a készítő és a Mestermű-jelölés az ItemInstance eredetében látszik.
+
+Stackelhető feldolgozásnál normál kattintás 1 craft, **Shift+kattintás 5-ös batch**. Ha nincs hely az összes outputnak, semmi nem fogy el. Canonical gear nem batch-elődik.
+
+Salvage veszteséges visszaforgatás. CLOTH textilfoszlányt, LEATHER bőrhulladékot, MAIL lánctöredéket, PLATE fémhulladékot adhat; boss-komponenst nem kapsz automatikusan vissza. A rúnázás/reforge/ascension továbbra is az Itemization saját canonical rendszerét használja.
+
+### Hogyan lesz a feldolgozott anyagból páncél?
+A Kovács (Armorer) rakja össze a végső canonical páncélt, de nem önellátó: a CLOTH textilhez Bűvölő, a LEATHER kezelt bőrhöz Alkimista munka kell, a MAIL pedig kezelt bőrt és sodronyt is kér. A salvage maradék visszaforgatható, de mindig veszteséggel.
