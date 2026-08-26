@@ -1,5 +1,37 @@
 # Mi változott a július 12-i szerververzió óta?
 
+- Az Ócska leletek Phase A alaprétege 330 stable identityt, szigorú restartkori
+  katalógusvalidációt, stackelhető item factoryt és ugyanennyi saját AI-generált
+  64×64 sprite-ot ad. Loot-, régészeti, felismerési és relikvia-mechanika még nincs
+  bekapcsolva; a rejtett belső besorolás normál játékos/admin felületre nem kerülhet.
+- A gameplay-definíciók egyetlen kézzel authorolt `content/**` fába kerültek;
+  a korábbi három expansion overlay és a gameplayt író advancement/profession
+  generátorok megszűntek. A megmaradt tooling csak validál, evidence/reportot
+  vagy resource-pack artifactot készít. Az effective konfiguráció bitazonos a
+  #141 parenttel: a #140 160 armorja és a #141 89 enemy/61 technique tartalma
+  nem lett újratervezve.
+- Az `/icesmp` gyökér helpje, végrehajtása és tab completionje domainenként
+  ugyanazt a permissiont használja. Az operator reload atomikus rollbacket ad,
+  a canonical content reloadját explicit restart-required válasszal utasítja
+  el, az `inspect config` pedig megmutatja az authorityt és a reload policyt.
+
+- Az Enemy & World Boss Rework 2.0 a #140 combat-hardening branchre stackelve 89 stabil
+  `MobTemplate` identityre és 61 bounded technique-re dolgozza át az authored PvE rostert.
+  A natural világban 38 elérhető identity közül választ az EntityType mellett biome, dimenzió,
+  mélység, napszak, időjárás, meglévő territory és eseménycontext alapján; Zombie és Skeleton
+  carrierből hat-hat, Spiderből három eltérő viselkedésű változat létezik. A variant nem rank:
+  Veteran/Elite/Champion fokozaton a saját fantasyhoz illő utility és tactical problem nyílik meg.
+- A tíz világboss stable ID-ja és reward authorityja megmaradt, de új neveket, külön technique
+  kiteket, threshold-eszkalációt, positioning problémát, weakness/resistance párt és vanilla
+  kliensen is érthető particle/hang telegráfot kaptak. Az inváziók nyolc authored vegyes
+  kompozíciót, a Cultist, Corruption, Wild Hunt, Escort, Dungeon és Prologue producerek pedig
+  canonical template-hivatkozásokat használnak a nyers EntityType-spawn helyett.
+- A nappali felszíni authored undeadek template-specifikus, sisak nélküli napvédelmét az authored,
+  territory és event források OR-kompozíciója kezeli. A feature nem vezet be world progressiont,
+  local dangert, kill pressure-t, új combat/AI engine-t, geardizájnt vagy resource-pack scope-ot.
+  A forrás- és Paper CI-proof mellett a 30–60 perces több-biomos, multiplayer Folia gameplay pass
+  továbbra is `HUMAN_GAMEPLAY_STAGING_REQUIRED`.
+
 - A combat staging hardening 160 páncéldarabját kézzel tervezett katalógus váltja fel:
   minden darab fix armor/toughness értéket, family-azonos secondary rollt és két saját
   magyar lore-sort kapott. A PLATE már korai szinten Diamond fölötti armorral indul, az
@@ -630,6 +662,18 @@ tételek nem élő funkcióvesztések, hanem későbbi tervek tudatos határai.
 | LuckPerms | Permission backendként, illetve chat metadata miatt |
 | LibsDisguises | A kiterjesztett druida-vizuálokhoz és a `/kem` disguise útvonalához |
 
+### Külső dependency policy
+
+- **FancyNpcs:** kötelező production gameplay dependency; a canonical onboarding/quest NPC út.
+- **MythicMobs:** `NOT_PLANNED`; az IceSMP authored PvE stack marad canonical.
+- **PacketEvents:** `FUTURE_CANDIDATE / NOT_CURRENTLY_REQUIRED`; csak konkrét packet consumerrel térhet vissza.
+- **FancyDialogs:** `FUTURE_CANDIDATE / NOT_CURRENTLY_REQUIRED`; csak konkrét dialog consumerrel térhet vissza.
+
+A signature equipment identity most acquisition-úttól független: a canonical template rendereli
+a PDC-t, perk-ID-t és a kötelező bootstrap enchantot. Kallan és Napfogyatkozás canonical formája
+íj, a történelmi signature itemek idempotensen migrálódnak, a duplikált profession recept-ID-k
+pedig aliasból ugyanarra a canonical receptra oldódnak.
+
 ## Mi vár még stagingtesztre?
 
 1. **Moderáció:** restart és expiry, korrupt state, lemezhiba, PM
@@ -685,7 +729,7 @@ JAR nem tartalmaz Git SHA-t vagy megbízható build-időt.
 
 Az élő config, permissionkiosztás, világállapot és teljes pluginlista nincs
 a JAR-ban. Emiatt több rendszerről csak képességszintű következtetés adható.
-A teljes 68 root parancs, 286 route, 79 root alias, 93 routing alias,
+A teljes 69 root parancs, 287 route, 79 root alias, 93 routing alias,
 44 permission, 13 550 configútvonal és 545 production komponens gépi
 referenciáját a `Repository Docs Inventory` workflow artifactja tartalmazza.
 
