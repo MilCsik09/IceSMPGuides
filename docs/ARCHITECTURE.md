@@ -38,17 +38,19 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 |--------|-------:|--------|
 | `core/` | 4 | `IceSMPCore` — összeszerelés, életciklus, ütemezés — + az élő config-apply hidak (`ConfigRuntimeReloadBridge`, `AdvancedConfigRuntimeBridge`). |
 | `managers/` | 125 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
-| `listeners/` | 124 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem + esemény-spawn debug). |
+| `listeners/` | 123 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem + esemény-spawn debug); a procedural daily listenert az authored quest authority kiváltotta. |
 | `spells/` | 61 | Spell-rendszer: `Spell` SPI, `BaseSpell`, `ConfiguredSpell` builder, `SpellCatalog`, egyedi spellek. |
 | `commands/` | 95 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
 | `classrelic/` | 14 | Class Relic Framework: pure resolver/katalógus/jelzések + Paper homlokzat (`ClassRelicService`). |
-| `quest/` | 8 | Quest Framework v2 pure magja: forrás-policy + kontextus, kategória/láthatóság szótárak, gráf-validátor, választó-token registry, marker-paletta, valamint az első belépés üdvözlő-szövegének egyetlen szabálya (`OnboardingWelcomeCopy`: canonical copy + elavult stock-config felismerése, custom szöveg érintetlenül). |
+| `quest/` | 10 | Quest Framework v2 pure magja: forrás-policy + kontextus, kategória/láthatóság szótárak, gráf-validátor, választó-token registry, marker-paletta, közös quest-valuta resolver, az izolált content-integrity runtime probe, valamint az első belépés üdvözlő-szövegének egyetlen szabálya (`OnboardingWelcomeCopy`: canonical copy + elavult stock-config felismerése, custom szöveg érintetlenül). |
 | `gui/` | 72 | Inventory-menük + `GuiUtil` közös helperek + adat-vezérelt `CommandMenu` rendszer + staged config-editor lapok (root/kategória/operational/world/crate + reward-editor). |
 | `crates/` | 14 | Dependency-free crate domain: strict validáció, selector/key plan, atomi opening lifecycle, recovery/kompenzáció, scheduler gate, audit és thread-safe formázás. |
 | `factions/` | 13 | Immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és a központi frakció-névszín paletta (policy + Adventure-adapter); a tartós tagság-, történet- és adóállapot a PlayerProfile faction/economy szekcióiban él. |
 | `data/` | 15 | Enumok és értékobjektumok (`CurrencyType`, `FactionType`, `JobType`, `SpecializationType`, `Territory`/`TerritoryType`, `BlockCuboid`…). |
 | `relics/` | 12 (9 + `ability/`) | Relikvia-keret: `RelicRegistry`, `RelicDefinition`, triggerek, transfer-elvárás, immutable világ-pillanatkép + single-writer store. |
-| `items/` | 13 | Item-gyárak (katalizátor/Lélekkapocs, befogó item, tervrajz, egyedi alapanyag…) + viselhető prezentáció. |
+| `items/` | 14 | Item-gyárak (katalizátor/Lélekkapocs, befogó item, tervrajz, egyedi alapanyag…), viselhető és közös ritkaság-prezentáció. |
+| `trash/` | 5 | A 330 elemű Ócska katalógus szigorú loaderje, immutable definíciói, stackelhető item factoryja és rejtett Phase A diagnosztikája. |
+| `security/` | 1 | Immutable, permissiontől és OP-státusztól független fejlesztői authority a rejtett tartalomfelületekhez. |
 | `warrior/` | 2 | Harcos gameplay vertical slice: transiens harci állapot + konkrét runtime (Csatatempó, Berserker, Guardian). |
 | `evoker/` | 2 | Sárkányidéző gameplay vertical slice: transiens állapot + konkrét runtime (Felerősítés, Vörös–Kék Eszencia, Visszhang/Időlenyomat). |
 | `archer/` | 3 | Íjász gameplay vertical slice: transiens állapot + konkrét runtime (Szélolvasás, Pontossági lánc, Kötelék) + a repülő nyilak korlátos, magától lejáró fegyelem-nyilvántartása (`ArcherShotLedger`). |
@@ -145,7 +147,7 @@ a resource csak aktív kaszt-erőforrásnál, a party pedig tagonként bővül. 
 
 A `pve/` csomag dependency-free domainje az authority a mob ID, schema, rank,
 archetype, ability, affix, levelgörbe, encounter snapshot és contribution szabályokhoz.
-A `MobTemplateRegistry` a 18 elemű `mob-templates.yml` katalógust fail-fast tölti: invalid entity,
+A `MobTemplateRegistry` a `content/pve/enemies.yml` 89 elemű handcrafted katalógusát fail-fast tölti: invalid entity,
 rank/archetype, hiányzó ability/loot profile, Bestiary ID-ütközés vagy schemahiba nem
 eredményez részleges registryt. Természetes vanilla mobhoz nem kötelező template;
 `MobTemplateRegistry.naturalTemplate` biome-, dimension-, depth-, night- és weather-tag
@@ -179,7 +181,7 @@ language, általános scripting DSL vagy speciesenkénti Java mechanic. A target
 target külön typed mező. A registry hibás trigger/condition/action/ability referenciára fail-fast,
 a runtime pedig cooldown, telegraph, recovery, interrupt és cast epoch mellett hajt végre.
 
-A `CreatureSpeciesRegistry` a `mob-templates.yml` egyetlen `creature-species` matrixát atomikusan
+A `CreatureSpeciesRegistry` a `content/pve/enemies.yml` egyetlen `creature-species` matrixát atomikusan
 publikálja. Runtime teljességi authority a Paper 1.21.11 `EntityType.values()` azon halmaza, ahol
 `isAlive && isSpawnable`, player nélkül; minden típusnak pontosan egy explicit row kell. A 91 row
 közös level/rank/stat/ability authorityra vetít, és category, disposition, temperament,
@@ -413,7 +415,8 @@ meglévő tartós `SpellMasteryManager` tranzakciót hívja.
 A pontos runtime-verziók forrása a `class-spec-dependencies.lock.yml`. A külső content- és
 megjelenítési motorok nem kerülhetnek a domainbe: a `classspec/integration` portjai kizárólag stabil
 UUID-t, string ID-t, immutable snapshotot és saját handle-t engednek át. CraftEngine-,
-ModelEngine-, MythicMobs- vagy Fancy-típus csak későbbi adaptercsomagban jelenhet meg.
+MythicMobs nem tervezett: a saját authored PvE stack marad canonical. Új külső adapter csak külön,
+konkrét product consumerrel kerülhet a runtime surface-re.
 
 A class/spec integráció teljes helyi próbája a `runFolia` feladattal fut: ugyanazt a lockolt
 Folia 1.21.11 build 14-et és a lockolt pluginverziókat használja, mint a production cél, és előkészíti az egyetlen
@@ -740,7 +743,7 @@ registry.register(ConfiguredSpell.builder(mm, "spell_id", "Megjelenő Név", coo
         .target(6.0).damage(7.0).ignite(60).particle(Particle.FLAME, 30).sound(Sound.ENTITY_BLAZE_SHOOT, 1f, 1f)
         .build());
 ```
-Majd a feloldási szintet a `config/classes.yml` (`classes.<kaszt>.spell-unlocks`) vagy
+Majd a feloldási szintet a `content/progression/classes.yml` (`classes.<kaszt>.spell-unlocks`) vagy
 `config/spells.yml`/`specializations.*.spell-unlocks` alá. A `describe()` automatikus.
 
 ### 5.5 Új egyedi spell (ha a builder nem elég)
@@ -809,21 +812,30 @@ a `SimpleRelicDefinition` a deklaratív eset. A triggerek a `relics/RelicTrigger
 - **Bootstrap-szint (`IceSMPBootstrap`):** a registry-fagyás előtt fut — itt regisztráljuk a
   data-driven **signature-enchantokat** (`icesmp:jegfog` stb., kulcsok: `items/SignatureEnchantKeys`);
   a kliens a registry-szinkronnal kapja őket, a leírás-Component a tooltipben renderelődik. A
-  viselkedés NEM itt él (`SignatureItemListener`); a craft-stamp kulcsa `signature.custom-enchants`.
+  viselkedés NEM itt él (`SignatureItemListener`); a signature-enchant/glint projekciót minden
+  acquisition úthoz az `ItemIdentityService` canonical render/migration rétege bélyegzi.
+  A Kallan Szeletelő és a Napfogyatkozás source-evidence alapján íj; minden signature-recept
+  template-renderelést kér. A négy korábbi duplikált recept-ID (`fonix_tollkopeny`,
+  `sarkanycsont_ij`, `vasmuvek_csakanya`, `bokic_horgaszbot`) a `professions-2.yml`
+  aliasain át az egyetlen #140 canonical receptre oldódik, a régi PDC-itemek pedig
+  idempotens identity-migrációval őrzik meg enchantjukat és provenance-üket.
   Bővíthető: damage-type/banner-minta/trim regisztráció ugyanígy; MobEffect (bájital-effekt) NEM
   regisztrálható (kliens-hardcode) — arra szerver-oldali pszeudo-effekt a minta.
 - **Jarból szállított datapack (`DATAPACK_DISCOVERY`):** a bootstrap a jar `/datapack`
   könyvtárát rendes datapackként ismerteti meg a szerverrel (`autoEnableOnServerStart`), így
-  a 22 csomópontos IceSMP haladás-fa és a 3 fix toast-bejegyzés a KÓDDAL EGYÜTT verziózódik,
+  a 21 persistent csomópontos IceSMP haladás-fa és az 1 újrahasználható quest-toast a KÓDDAL
+  EGYÜTT verziózódik (22 authored advancement JSON összesen),
   futásidejű registry-mutáció nélkül. Az `AdvancementService` enable-időben csak ellenőriz;
   ha a felderítés elbukott, a régi (`@Deprecated Bukkit.getUnsafe()`) úton pótolja a hiányzó
-  bejegyzéseket, és WARNING-ot logol. A fa-bejegyzések `show_toast:false` +
+  bejegyzéseket, és WARNING-ot logol. A persistent fa hiányosan fail-closed; a toast hiánya
+  explicit degraded presentation állapot. A fa-bejegyzések `show_toast:false` +
   `announce_to_chat:false` (a visszajelzés a rendszerek saját chat-üzenete, az ünneplő toast a
-  külön `ToastUtil`-réteg) — a tartalék út JSON-generátora is ezt írja, hogy a két betöltési
-  út ugyanúgy viselkedjen. Új csomópont = NODES-bejegyzés + `python3 scripts/gen_advancements.py`
-  (a JSON-ok EGYETLEN forrása a Java NODES lista) + VALÓDI `AdvancementService.award(...)`
-  hívás — a `scripts/check_consistency.py` négyesével ellenőrzi: hiányzó JSON, árva JSON,
-  holt bejegyzés, tartalom-drift.
+  külön `ToastUtil`-réteg). A deprecated tartalék út ugyanazt a kézzel authorolt, jarban
+  szállított JSON resource-t olvassa, ezért nincs másodlagos Java gameplay-katalógus vagy
+  generátor. Új csomópont = új handcrafted datapack JSON + az `ADVANCEMENT_IDS` bounded runtime
+  index frissítése + VALÓDI `AdvancementService.award(...)` hívás. A
+  `scripts/check_consistency.py` ellenőrzi a hiányzó/árva JSON-t, parentet, display sémát,
+  `minecraft:impossible` triggert és a valódi award-hívást.
 - **Loader-szint (`IceSMPLoader`):** runtime Maven-függőségek helye (`MavenLibraryResolver`) —
   jelenleg üres, új külső lib igényekor ide, ne a shadowJar-ba.
 - **Méret:** 960 Java-fájl, ~85 000 sor; 94 `*Manager` osztály (a `managers/` csomag 125 fájl).
@@ -1121,6 +1133,38 @@ minden classnak pontosan egy relic és minden specializationnek pontosan egy res
 kötelező, különben a betöltés (és a CI) bukik. A class reworknek csak a gameplay-oldalt kell
 hoznia (mechanikák, szemantikus események, resource-hookok, ability-tagek): az ownership, a
 birtoklás-validáció, a binding-registry és a cooldown-perzisztencia ebből a keretből jön.
+
+## Configuration és content authority
+
+A `ConfigManager` két explicit allowlistből épít egy immutable
+`ConfigSnapshot`-ot. Az `OPERATOR_CONFIG_FILES` deployolt, schema-bounded
+`config/*.yml` beállításokat tölt; a `CONTENT_FILES` a JAR handcrafted
+`content/**` definícióit tölti, és ezeket soha nem másolja írható server
+configgá. A root `config.yml` is csak packaged operator leafeket fogad.
+
+| Authority | Forrás | Mutáció | Reload |
+|---|---|---|---|
+| `OPERATOR_TUNABLE` | `config/*.yml`, ismert root override | fájl, `/icesmp config`, Config GUI | live vagy reconciliation; kulcstól függően restart |
+| `LOCKED_CANONICAL_CONTENT` | `content/**` | csak Git/JAR authoring | restart required |
+| presentation | `messages/**` | lokalizációs fájl | `/icesmp reload messages` |
+| runtime/persistent state | manager-owned data/PDC | domain API | nem config reload |
+
+Az operator load minden fájlt a packaged sémára szűr; ismeretlen vagy content
+leaf nem kerül az effective fába. Parse/schema/validáció/reconciliation hiba
+esetén az új generáció nem publikálódik. Az `/icesmp reload operator` a teljes
+előző snapshotot visszaállítja és annak hookjait futtatja újra, tehát nincs
+félig alkalmazott generáció. A content domain explicit restart-required
+elutasítást kap.
+
+Upgrade-kor a korábbi deployolt gameplay- és expansion-YAML-okat a manager az
+aktiválás előtt SHA-jelölt migration backupba mozgatja. Ha az archiválás nem
+sikerül, a startup fail-closed; server-oldali módosítás nem veszhet el és nem
+írhatja felül némán a packaged handcrafted authorityt.
+
+A source-of-truth, migration, duplicate/dead-key, reload és command inventory
+gépi bizonyítéka a
+`docs/development/config-content-command-surface-2.json`. A szerzői workflow
+a [`CONTENT_AUTHORING.md`](CONTENT_AUTHORING.md) dokumentumban él.
 
 ## Config GUI coverage
 
@@ -1864,3 +1908,45 @@ The execution boundary is owner-thread inventory state: `ProfessionCraftTransact
 
 ### Professions 2.0 family closure
 A végső canonical páncél-összeállítás az Armorer gazdasági szerepe. CLOTH-hoz az Enchanter textil-feldolgozása, LEATHER-höz az Alchemist bőrkezelése kell; MAIL explicit bőr + könnyű fém dependency. Ez crafting expertise, nem class proficiency. A family scrap csak veszteséges reclamation útvonalon kerül vissza köztes anyagba.
+
+## Enemy & World Boss Rework 2.0
+
+### Enemy Design Philosophy
+
+Az authored enemy gameplay-identity, nem megnövelt vanilla statcsomag. Minden fontos template fantasyból levezetett szerepet, spacinget, rövid technique-kitet, counterplayt, weakness/resistance párt és vanilla-kliensen is olvasható hang/particle nyelvet kap. A teljes gépi evidence a `docs/development/enemy-worldboss-rework-2.json`; a generáló/fail gate a `scripts/audit_enemy_worldboss_rework.py`.
+
+### EntityType vs Enemy Identity
+
+Az `EntityType` csak vanilla carrier. A stable identity továbbra is a `MobTemplate`; egy Zombie, Skeleton vagy Spider több külön template-et hordozhat. Spawn után a template ID PDC-ben marad, ezért targetváltás, chunk reload és restart nem sorsol új variánst. A régi 49 ID megmaradt migrációs kulcsként, de mindegyik contentje design review-n és redesignon ment át.
+
+### Archetype Behavior
+
+A meglévő `MobArchetype` vocabulary változatlan. A `MobBehaviorProfile` ennek bounded spacing-projekciója: preferred/minimum range, pursuit cap, retreat/reposition/strafe hajlam, cadence és chase pressure. A `MobAbilityRuntime` 40 tickenként alkalmazza az olcsó pozicionálási döntést a vanilla AI fölött, és ugyanaz a profil súlyozza a contextual technique-választót. Ez nem behavior tree, GOAP vagy második AI engine.
+
+### Rank Complexity
+
+Variant és rank külön authority. A template `rank-abilities` mezője Veteran/Elite complexityt nyit; authored template-re nem kerül rá a globális generic rank-kit. Template nélküli vanilla fallback továbbra is használhatja a species/rank defaultot. Az EliteAffix plusz variáció, a template core kitjét a technique cap miatt nem írhatja felül.
+
+### Natural Variant Selection és Existing Context Inputs
+
+A `MobTemplateRegistry.naturalTemplate` pipeline-ja: eligibility → affinity score → UUID- és kontextus-seeded bounded weighted choice. Input kizárólag a meglévő biome, dimension, Y/depth, day/night, weather/thunder, Territory selector, Blood Moon és spawn reason környezet. `MobNaturalContext` required/excluded tagot, opcionális affinityt, relatív weightet és ±12 level offsetet tárol. Nincs koordináta-roster, world progression, local danger, kill heat vagy ecology memory.
+
+### Daylight Undead
+
+A nappali felszíni natural undead template explicit `no-daylight-burn` forrást kap; night/deep-only undead nem. A `DaylightProtectionPolicy` az authored, territory és event forrást OR-semantikával kompozálja. Az első védelem előtt rögzített carrier baseline csak az utolsó forrás megszűnésekor áll vissza; nincs helmet/equipment workaround.
+
+### Technique Design és Telegraph / FX Language
+
+A registry fizikai és mágikus technique-et ugyanabban a common runtime-ban kezel. A veszélyes cast anticipation/telegraph → execution → impact/recovery ciklust kap. Az authorolt `Presentation` particle- és sound cue-ja castonként legfeljebb 64 particle; hiányakor kind-default lép életbe. A vanilla cue gameplay-authority, az optional Client FX csak enhancement. Pontosan azonos full identity/kit fail gate-et kap.
+
+### World Boss Design
+
+A tíz stable boss ID teljesen új, egyedi kitet kapott. Minden boss kitje tartalmaz HEALTH_THRESHOLD fázist, positioning problémát és bestiary counterplayt. A Warden carrier különösen alacsony template HP-multiplierrel normalizálódik, így a vanilla Warden alapstat és a rank/encounter scaling nem robban össze. Phase graph vagy új encounter DSL nem készült.
+
+### Event Enemy Design
+
+Invasion, Prologue, Cultist, Corruption, Wild Hunt, Escort és dungeon producer `AuthoredCreatureSpawnService.Request.template` kérést ad le. Az invasion hullámok determinisztikusan váltanak frontline/ranged/control szerepeket; nincs raw compatible EntityType casino. Summoned add egyszerűbb marad a bossnál, de stable template identityt visel.
+
+### Future Boundaries
+
+Nem része ennek a rendszernek: persistent world progression, local pressure/heat/ecology, custom model vagy texture pack, új weapon/off-hand tartalom és economy rewrite. Ezek csak külön, a gameplay staging elfogadása utáni scope-ok lehetnek.

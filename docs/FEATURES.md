@@ -21,12 +21,12 @@ Ez az oldal az **egyetlen általános funkciótérkép**. A használat részlete
 - **Rollout-kapu alatt**: kódszinten és CI alapján jelen van, de productionközeli kézi próba kell.
 - **Tervezett**: lore- vagy kommunikációs irány; nem ígért, aktív gameplay.
 
-> **Leltár, nem olvasnivaló:** a 68 root parancs, 286 route, 79+93 alias,
+> **Leltár, nem olvasnivaló:** a 69 root parancs, 287 route, 79+93 alias,
 > 44 permission, 13 550 configútvonal és 545 production komponens teljes technikai
 > referenciáját a `Repository Docs Inventory` CI-artifact generálja. Itt csak az marad,
 > ami egy játékosnak vagy csapattagnak valóban segít megérteni a rendszert.
 
-A katalógus **48 implementált rendszercsoportot** és **1 tudatos planning-határt** ír le.
+A katalógus **49 implementált rendszercsoportot** és **1 tudatos planning-határt** ír le.
 A release forrásállapota `4643ab53586f0c1ee7352df16dcd477013e6fad4`; az üzemeltető által
 futóként átadott JAR nagy bizonyossággal a 2026. július 12-i `775d9e247…` állapothoz tartozik.
 
@@ -563,7 +563,7 @@ Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state ke
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
 Nyolc profession, szakmai specializációk, XP, heti cél, gyűjtési bónusz és szakmai GUI.
-A receptkatalógus 392 receptet tartalmaz, és minden recept kimondja a **fajtáját**
+A receptkatalógus 471 aktív receptet tartalmaz (plusz 4 történelmi signature recept-alias), és minden recept kimondja a **fajtáját**
 (gyakorló / hozam / egyedi / lánc / ritkaság); a fajta szabja meg, mit adhat a
 vanília fölé, és ezt gépi kapu tartja fenn.
 
@@ -733,6 +733,11 @@ Egyedi relikviák, ownership/transfer, triggerelt képességek, cooldown, soul s
 
 Mérföldkövek és jutalmak, datapack advancementek, harci statisztika és ranglisták.
 
+Az 50. kasztszint üzleti mérföldköve egyetlen durable achievement (`legend`): ez adja egyszer az
+economic rewardot. A korábbi külön `class_max` advancement-projekció megszűnt, így nincs második
+threshold vagy jutalmazási authority. A datapack jelenleg 21 persistent node-ot és 1 reusable
+quest-toastot szállít (22 authored JSON összesen).
+
 - **Így találkozol vele:** `/achievements`, `/stats`, `/leaderboard`; főmenü. Parancs: /achievements (alias: /ach, /eleresek); /leaderboard (alias: /lb, /rangsor, /top); /stats.
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
 - **Mitől mozdul meg:** Játékmeneti progress, harci esemény, jutalomátvétel és lekérdezés.
@@ -755,7 +760,7 @@ Mérföldkövek és jutalmak, datapack advancementek, harci statisztika és rang
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit forrás-keret (NPC / Megbízások-tábla / lánc / helyszín / tárgy / esemény / auto / admin), a felvétel és a leadás KIZÁRÓLAG a jogosult forrásnál történhet; NPC-forrású questnél a feladatok teljesítése után KÉSZ állapot jön, és a leadási pontnál (alapból az adó NPC-nél) zárul a küldetés. Kategóriák (story/mellék/kaszt/specializáció/frakció/napi/heti/titok…), kaszt-, specializáció- és szintkapuk, láthatóság (a rejtett quest felfedezésig sehol nem látszik), tartós felfedezés és küldetés-követés, öt-füles napló, objective progress — köztük sikeres, engedélyezett kasztolást számláló `CAST_SPELLS` —, napi feladatok és admin/builder questkészítő.
+Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit forrás-keret (NPC / Megbízások-tábla / lánc / helyszín / tárgy / esemény / auto / admin), a felvétel és a leadás KIZÁRÓLAG a jogosult forrásnál történhet; NPC-forrású questnél a feladatok teljesítése után KÉSZ állapot jön, és a leadási pontnál (alapból az adó NPC-nél) zárul a küldetés. Kategóriák (story/mellék/kaszt/specializáció/frakció/napi/heti/titok…), kaszt-, specializáció-, szakma-, szakmaszint- és karakterszint-kapuk, láthatóság (a rejtett quest felfedezésig sehol nem látszik), tartós felfedezés és küldetés-követés, öt-füles napló, felvétel előtti jutalom-előnézet és objective progress — köztük sikeres, engedélyezett kasztolást számláló `CAST_SPELLS` —, authored napi feladatok és admin/builder questkészítő. A `/daily` nem külön generátor: ugyanebbe a naplóba vezet.
 
 - **Így találkozol vele:** `/quest`, `/daily`; questlog (öt fül: Aktív/Kész/Megbízások/Elérhető/Teljesített) és quest builder GUI. Parancs: /quest (alias: /kuldetes, /quests); /daily. GUI: Küldetésnapló; Quest builder.
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
@@ -767,8 +772,8 @@ Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit for
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.quest` (a `/quest accept` és `/quest talk` is admin-parancs — a forrás-authority parancsból nem kerülhető meg).
-- Config: `quests.*` (start/turn-in/category/visibility séma), napi küldetés-, NPC- és rewarddefiníciók.
-- Tartós állapot: Aktív quest, objective progress, forrás-audit, felfedezés, követett quest, napi állapot és builder által mentett definíció tartós (PlayerProfile QuestSection az egyetlen player-authority).
+- Config: `quests.*` (start/turn-in/category/visibility/szakmakapu séma), authored napi küldetés-, NPC- és rewarddefiníciók.
+- Tartós állapot: Aktív quest, objective progress, forrás-audit, felfedezés, követett quest, reward receipt és builder által mentett definíció tartós (PlayerProfile QuestSection az egyetlen player-authority); a retired procedural streak csak történeti/achievement olvasási adat.
 - Reload: a quest-registry csere atomikus és teljes gráf-validációval kapuzott — érvénytelen candidate a korábbi definíciókat hagyja élőben; az admin-szerkesztő ugyanezen a validátoron megy át mentés előtt.
 
 </details>
@@ -921,17 +926,17 @@ Nyolc permission nélküli alapláda, fizikai crate-helyek, kulcsvásárlás/-fe
 
 </details>
 
-### Napi jutalmak, bounty és jutalomforrások
+### Megbízásjutalmak, bounty és jutalomforrások
 
 <!-- icesmp-doc-id: feature.economy.rewards_bounty -->
 
 > **Aktív, configgal engedélyezhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Napi átvétel, bounty, pénzeszsák, mobpénz, reward-budget és party-kompatibilis jutalomfeloldás.
+Authored napi/heti megbízásjutalom, bounty, pénzeszsák, mobpénz, reward-budget és party-kompatibilis jutalomfeloldás.
 
 - **Így találkozol vele:** `/daily`, `/bounty`; loot-, kill- és event-triggerek. Parancs: /bounty (alias: /fejvadasz, /korozes); /daily (alias: /napi).
 - **Kinek szól:** Játékos, Admin, Eventes, Tesztelő.
-- **Mitől mozdul meg:** Napi ciklus, kill, bounty teljesítés, itemhasználat és reward trigger.
+- **Mitől mozdul meg:** Authored quest objective/leadás, kill, bounty teljesítés, itemhasználat és reward trigger.
 - **Ami még kellhet hozzá:** Bounty/event célpontok és jutalomforrások biztonságát ellenőrizni kell.
 - **Fontos határ:** AFK-blokkolás, full inventory és economy-storage hiba esetén runtime teszt szükséges.
 
@@ -939,9 +944,9 @@ Napi átvétel, bounty, pénzeszsák, mobpénz, reward-budget és party-kompatib
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: Daily-, bounty-, loot-, money-pouch- és rewardbeállítások.
-- Tartós állapot: Napi átvétel, bounty és egyes budgetállapotok tartósak.
-- Reload: Jutalomtáblák reloadolhatók; periodikus reset task restarthoz kötött lehet.
+- Config: Authored `quests.*`, bounty-, loot-, money-pouch- és rewardbeállítások.
+- Tartós állapot: Quest reward receipt, bounty és egyes budgetállapotok tartósak.
+- Reload: Jutalomtáblák reloadolhatók; a quest-registry atomikusan, teljes gráfvalidáció után cserélődik.
 
 </details>
 
@@ -1199,8 +1204,9 @@ reconnectig függőben marad, nem esik a földre.
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: `world.yml` `mob-scaling.*` és `world-events.world-boss.*`,
-  `mob-templates.yml` `mob-abilities`, `creature-species`, `mob-templates`, `loot.*`,
+- Config/content: `config/world.yml` `mob-scaling.*` és `world-events.world-boss.*`,
+  `content/pve/enemies.yml` `mob-abilities`, `creature-species`, `mob-templates`,
+  valamint `content/pve/loot.yml` `loot.*`,
   `itemization.loot.*`, bestiary- (mérföldkövek,
   `bestiary.knowledge-tiers`, `bestiary.codex-notes.*`) és miniondefiníciók.
 - Tartós állapot: Bestiárium progress, bounded authored-loot előzmény és egyes
@@ -1246,7 +1252,7 @@ Komp/utazás, NPC-binding, Stranger NPC és FancyNpcs-quest/shop kapcsolatok.
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** NPC click/dialog, teleport/komp és binding adminművelet.
 - **Ami még kellhet hozzá:** Biztonságos célpontok, NPC-k, kompállomások és világnevek előkészítendők.
-- **Fontos határ:** A külső FancyNpcs és élő világ nélkül csak capability bizonyítható.
+- **Fontos határ:** FancyNpcs kötelező production dependency; az élő NPC snapshot és világ nélkül csak a bridge capability bizonyítható, a production readiness nem.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
@@ -1255,6 +1261,38 @@ Komp/utazás, NPC-binding, Stranger NPC és FancyNpcs-quest/shop kapcsolatok.
 - Config: `world.*`, NPC-, ferry-, teleport-, shop- és questdefiníciók.
 - Tartós állapot: NPC-kötések és egyes utazási állapotok tartósak.
 - Reload: Célpontok reloadolhatók; világátnevezés vagy NPC-ID csere migrációt igényel.
+
+</details>
+
+### Ócska leletek — katalógus- és vizuális alapréteg
+
+<!-- icesmp-doc-id: feature.world.trash-foundation -->
+
+> **Rollout-kapu alatt, Phase A** · A futó JAR-hoz képest: **Új alapréteg**
+
+A világ apró, kopott leleteinek 330 elemű, restartkor fail-closed módon validált
+katalógusa és ugyanennyi saját AI-generált inventory-sprite-ja elkészült. Minden
+fizikai alaptárgy játékosoldali ritkasága egységesen **Ócska**; a belső tartalmi
+besorolás nem jelenhet meg névben, lore-ban, normál adminfelületen vagy rutinlogban.
+
+- **Így találkozol vele:** ebben a fázisban még nincs bekapcsolt loot-, régészeti,
+  átalakulási vagy relikvia-szerzési út; a katalógus és az item factory staging-alap.
+- **Kinek szól:** Fejlesztő/üzemeltető és Tesztelő; játékoskommunikáció csak a későbbi
+  gameplay-fázis aktiválásakor szükséges.
+- **Mitől mozdul meg:** pluginindításkor a teljes csomagolt katalógus validálódik;
+  hibás elemszám, séma, duplikált modell/textúra vagy player-facing szivárgás leállítja az indítást.
+- **Ami még kellhet hozzá:** lootforrások, régészeti állapotgép, felismerési/mutasd-meg
+  folyamat, gyűjtemény és gazdasági sink külön stacked fázisokban érkeznek.
+- **Fontos határ:** ez a Phase A nem változtat vanilla lootot és nem kapcsol be
+  játékos által elérhető megszerzést; az elkészült sprite-okhoz valódi klienses vizuális QA kell.
+
+<details>
+<summary>Admin- és technikai jegyzet</summary>
+
+- Permission: nincs; a rejtett diagnosztikai út kizárólag immutable fejlesztői UUID-ről vagy konzolról érhető el, OP/permission nem ad hozzáférést.
+- Config: `content/trash/catalog.yml` (`LOCKED_CANONICAL_CONTENT`, 330 identity).
+- Tartós állapot: ebben a fázisban nincs játékos-progress vagy loot-state; az alaptárgy PDC-je csak az identityt és a fázist tartja.
+- Reload: nem reloadolható; katalógus- vagy assetváltozás kontrollált restartot és új resource-pack buildet igényel.
 
 </details>
 
@@ -1460,6 +1498,30 @@ a vanilla kliens + kötelező resource pack teljes értékű marad.
   `resource-pack-schema`, `limits.*`, `features.*` (mind alapból false), `debug`.
 - Tartós állapot: Nincs — a session-registry in-memory, quit/reconnect/disable eldobja.
 - Reload: Minden kulcs élő (use-site olvasás); `client.enabled: false` restart nélkül állítja le a hidat.
+
+</details>
+
+### Authored enemy roster és world boss 2.0
+
+<!-- icesmp-doc-id: feature.combat.enemy-roster-2 -->
+
+> **Rollout-kapu alatt** · Source/CI authority kész, emberi gameplay staging szükséges
+
+A vanilla mobmodell már nem egyenlő egyetlen ellenféllel. A jelenlegi build 89 stable authored template-et, 61 bounded technique-et és 38 natural template-et tartalmaz. Zombie és Skeleton carrierből legalább három, Spiderből több eltérő spacing/kit identity kerülhet ugyanabba a világba. A natural választás biome, dimension, mélység, időjárás, napszak, meglévő Territory és Blood Moon contextet használ.
+
+- **Így találkozol vele:** wilderness, barlang, Nether/End, invasion, corruption, Cultist, Wild Hunt, Escort, dungeon, Prologue és world boss esemény.
+- **Mitől más:** bruiser üldöz, skirmisher cikázik, ranged távolságot tart, defender pontot fog, controller teret zár, summoner add-prioritást teremt.
+- **Olvashatóság:** a major technique külön hangot, előjelet és recovery ablakot kap; vanilla kliensen is érthető.
+- **World boss:** mind a tíz boss egyedi kit + HEALTH_THRESHOLD fázis + explicit counterplay; nem azonos slam más particle-lel.
+- **Határ:** nincs új world progression, local danger, kill pressure, custom modell, gear vagy economy rendszer.
+
+<details>
+<summary>Admin- és technikai jegyzet</summary>
+
+- Content/config: `content/pve/enemies.yml`, `config/world.yml` event template-listák.
+- Authority: `MobTemplateRegistry`, `MobAbilityRuntime`, `AuthoredCreatureSpawnService`.
+- Evidence: `docs/development/enemy-worldboss-rework-2.json`.
+- Gate: `./gradlew enemyWorldBossReworkAudit`; Paper 1.21.11 exact-head és 30–60 perces több-biome/Folia multiplayer staging még kötelező.
 
 </details>
 
