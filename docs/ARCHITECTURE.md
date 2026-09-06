@@ -40,16 +40,16 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | `managers/` | 125 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
 | `listeners/` | 123 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem + esemény-spawn debug); a procedural daily listenert az authored quest authority kiváltotta. |
 | `spells/` | 61 | Spell-rendszer: `Spell` SPI, `BaseSpell`, `ConfiguredSpell` builder, `SpellCatalog`, egyedi spellek. |
-| `commands/` | 95 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
+| `commands/` | 96 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
 | `classrelic/` | 14 | Class Relic Framework: pure resolver/katalógus/jelzések + Paper homlokzat (`ClassRelicService`). |
 | `quest/` | 10 | Quest Framework v2 pure magja: forrás-policy + kontextus, kategória/láthatóság szótárak, gráf-validátor, választó-token registry, marker-paletta, közös quest-valuta resolver, az izolált content-integrity runtime probe, valamint az első belépés üdvözlő-szövegének egyetlen szabálya (`OnboardingWelcomeCopy`: canonical copy + elavult stock-config felismerése, custom szöveg érintetlenül). |
 | `gui/` | 72 | Inventory-menük + `GuiUtil` közös helperek + adat-vezérelt `CommandMenu` rendszer + staged config-editor lapok (root/kategória/operational/world/crate + reward-editor). |
 | `crates/` | 14 | Dependency-free crate domain: strict validáció, selector/key plan, atomi opening lifecycle, recovery/kompenzáció, scheduler gate, audit és thread-safe formázás. |
-| `factions/` | 13 | Immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és a központi frakció-névszín paletta (policy + Adventure-adapter); a tartós tagság-, történet- és adóállapot a PlayerProfile faction/economy szekcióiban él. |
+| `factions/` | 13 | Immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és a központi frakció-névszín paletta; a tartós tagság és bűnállapot a PlayerProfile faction szekciójában él. |
 | `data/` | 15 | Enumok és értékobjektumok (`CurrencyType`, `FactionType`, `JobType`, `SpecializationType`, `Territory`/`TerritoryType`, `BlockCuboid`…). |
 | `relics/` | 12 (9 + `ability/`) | Relikvia-keret: `RelicRegistry`, `RelicDefinition`, triggerek, transfer-elvárás, immutable világ-pillanatkép + single-writer store. |
 | `items/` | 14 | Item-gyárak (katalizátor/Lélekkapocs, befogó item, tervrajz, egyedi alapanyag…), viselhető és közös ritkaság-prezentáció. |
-| `trash/` | 22 | A 330 elemű Ócska katalógus és 27 lifecycle phase, item factory, kategória-első/context-súlyozott loot-választó, fishing/mob/ambient források, singleton history/state split, Felvásárló- és tartós recycle-integráció, valamint a rejtett diagnosztika. |
+| `trash/` | 41 | A 330 elemű Ócska katalógus és 27 lifecycle phase, item factory, kategória-első/context-súlyozott loot-választó, fishing/mob/ambient források, singleton history/state split, bounded delta-journalos history authority, a 42 zárt anomaly behavior és a 23 zárt consuming behavior bounded Folia runtime-ja, crash-safe spatial-fracture journal, a Profile v2-backed rejtett régészeti tudásrendszer és player-only tooltip bridge, identity-mentes aggregált runtime telemetry, opt-in Paper/Folia smoke probe, Felvásárló- és tartós recycle-integráció, valamint a rejtett diagnosztika. |
 | `security/` | 1 | Immutable, permissiontől és OP-státusztól független fejlesztői authority a rejtett tartalomfelületekhez. |
 | `warrior/` | 2 | Harcos gameplay vertical slice: transiens harci állapot + konkrét runtime (Csatatempó, Berserker, Guardian). |
 | `evoker/` | 2 | Sárkányidéző gameplay vertical slice: transiens állapot + konkrét runtime (Felerősítés, Vörös–Kék Eszencia, Visszhang/Időlenyomat). |
@@ -249,7 +249,7 @@ egyébként legacy. Sose feltételezd egyik formátumot sem; használd a generik
 ### 3.3 Perzisztencia — atomikus írás + életciklus SPI
 - **`storage/YamlStore.saveAtomic(file, yaml)`**: egyedi temp-fájl + atomikus rename (konkurens-biztos).
   **Minden** YAML-mentés ezen át megy — soha ne `yaml.save(file)` közvetlenül.
-- **`storage/PersistentStore { load(); save(); }`**: a 36 fájlt-író store implementálja. Az
+- **`storage/PersistentStore { load(); save(); }`**: a 38 fájlt-író store implementálja. Az
   `IceSMPCore` egy `List<PersistentStore>`-t iterál: `load()` az enable-ben, `save()` a disable-ben
   (a player-cleanup ELŐTT, hogy ne vesszen adat).
 - **`storage/PersistentStoreCoordinator`**: az enable során **fail-closed** tölti be a teljes
@@ -281,15 +281,21 @@ egyébként legacy. Sose feltételezd egyik formátumot sem; használd a generik
     full inventory nem dob tárgyat a földre, az exact markeres item reconnect után commitolható.
     A boss transient, ezért restart után a COMMITTED eligibility újrakézbesíthető, a csak
     PREPARED jelölt exact-before állapotként rollbackelhető.
-  - **Frakcióváltás- és adó-WAL** (`faction-switch-journal.yml`,
-    `faction-tax-journal.yml`): a `DurableTransactionProtocol` előbb tartós prepare rekordot ír,
-    majd exact wallet before/after snapshotot commitol, ezután írja a teljes membership- vagy
-    treasury/debt snapshotot. Domain-write hiba esetén tartós wallet-kompenzáció történik; ha a
-    kompenzáció sem írható, a journal megmarad és a globális critical-write circuit fail-closed
-    állapotot tart fenn. Sikeres domain commit utáni journal-cleanup hiba nem fordítja vissza a
-    már commitolt store-okat: boot recovery az all-before/all-after kombinációt idempotensen lezárja.
-    Ez kontrollált process-crash recovery, nem hardverhibára vagy elvesző fsync-re vonatkozó
-    elosztott exactly-once garancia.
+  - **Frakcióváltás**: a `PlayerProfileFactionStore` a tagságot, historyt, díjat és
+    szezonváltási számlálót egy PlayerProfile WAL-tranzakcióban rögzíti. A külön DARK-join
+    ugyanabban a faction-szekció commitban ellenőrzi az Exile/Oath előfeltételt és a szezonplafont.
+    Az adóproducer végleg üres; a régi outbox formátum kompatibilitási maradvány, nem új adóforrás.
+  - **Suttogó**: a `PlayerProfileWhisperStore` egyetlen faction-szekció mutációban váltja be
+    a tanú–gyanúsított bizonyítékot, lépteti a fokozatot és leleplezéskor rögzíti az Exile-t,
+    a szerep megszűnését és a 24 órás visszatérési határidőt. Logout csak a routing cache-t törli.
+    A rítus sorrendje: tartós intent → exact inventory/HP újraellenőrzés → owner-thread
+    item/HP + `player.saveData()` → role commit → sikerjelzés. A két inventory-pillanatkép
+    egyikével sem egyező helyreállítás zárolva marad, adminvizsgálattal; vak visszaadás nincs.
+  - **Személyes szezonrészvétel**: faction-profilbeli, szezonra és tagsági időpontra kötött
+    aktivitásnyugták. Kategóriánként és UTC-naponként egy minősített esemény számít. A
+    betöltött projekció offline tagokra is megmarad; a szezon nem zárul a betöltése előtt.
+    Létszám: az elmúlt hét minősített résztvevői; a pont-osztó `sqrt(max(1, aktív/reference))`,
+    egész pontokra kerekítve, pozitív pontforrásnál minimum egy ponttal.
 
   - **Szezon–community generation commit** (`season.yml` → `community-goals.yml`): a community store tartós `season.number` markerrel jelöli, melyik szezonhoz tartozik a progressz. A zárás a community monitor alatt előbb rendezi az outboxot, majd commitolja az új `season.yml` generációt, és csak ezután nullázza/menti a community progresszt. Crash a két commit között egyetlen generációnyi marker-lemaradást hagy; bootkor ez idempotens resetként reconciliálódik. Függő régi payout, előreszaladt vagy több generációt átugró marker fail-closed.
 
@@ -351,6 +357,36 @@ egyébként legacy. Sose feltételezd egyik formátumot sem; használd a generik
   prezentációját alkalmazza és `TRANSFORMED` eventtel lépteti az authorityt. Pickup csak új ownert,
   death/Nether transit/Mending csak jelentős eventet rögzít; nincs tickes inventory scan. Minden
   ItemMeta/PDC írás után újraalkalmazódik az `ITEM_MODEL`, így a data-component prezentáció nem vész el.
+- **Anomaly behavior authority:** a 42 catalog behavior egy zárt `TrashAnomalyBehavior` enumra
+  validálódik, ezért hiányzó vagy ismeretlen viselkedés startupkor fail-closed hibát ad. A fizikai
+  item továbbra sem hord kind- vagy behavior-markert; a runtime kizárólag az opaque base identityből
+  oldja fel a belső definíciót. A zárt enum 16 typed primitívsávot különít el; ezek a dobás/fizika,
+  contextual prezentáció, hang, konténer/inventory, redstone/mechanizmus, történeti felismerés és
+  pair/memory nagyobb szerződései köré rendeződnek.
+- **Bounded Phase D runtime:** világonként legfeljebb 256 anomaly item kap entity-scheduleres fizikát,
+  a seek sugár legfeljebb 12 blokk és iterációnként legfeljebb 24 entity; delayed echo-ból globálisan
+  legfeljebb 256 lehet. Nincs chunk load, globális entity/inventory scan vagy legacy Bukkit scheduler.
+  A mechanizmus-attachment claim- és territory-preflight után singleton instance-ként kerül a világba,
+  a következő authored rising edge-et egyszer nyeli el, majd a catalog success phase-ébe transzformálódik.
+  A stopper és a lokális death counter bounded, atomi `trash-anomaly-state.yml` authorityban él.
+- **Rejtett régészeti tudás:** a `HiddenDiscipline.ARCHAEOLOGY` nem `ProfessionType`, nem foglal
+  profession slotot és nem kapcsolódik combat/craft/loot/vendor bónuszhoz. A 30 tickes Brush-session
+  egy inspectable offhand snapshotot vizsgál; korai item-use release, kéz/slot/inventory változás,
+  drop, halál vagy session-teardown megszakítja. A family/domain/familiarity/insight és a bounded
+  knowledge-signature ledger a canonical Profile v2 `AchievementSection.extensions` CAS-írásán él.
+  Duplicate signature nem ad insightot, az unlock a már korábban teljesült breadth után érkező új,
+  magasabb rendű facthez kötött, a szint küszöbe `round(0.55*l² + 4.5*l)` és legfeljebb 50.
+- **Régészeti prezentáció:** a canonical item lore-ja nem változik. A verzió-pinnelt
+  `TooltipPacketBridge_1_21_11` kizárólag az offhand menüslot player-only display copyját küldi;
+  inventory transaction előtt canonical resync történik, runtime probe-hibánál pedig szöveges
+  fallback működik. Disconnect, reload és slot change takarítja az overlay/session állapotot.
+- **Hardening telemetry:** a runtime kizárólag összesített behavior-error, inspection
+  start/complete/cancel, unlock és text-fallback számlálókat tart. Item identityt, holdert,
+  hidden kindot vagy behavior-paramétert nem tárol és nem logol; a snapshot csak a hardcoded DEV
+  authority mögötti staging diagnosztikában jelenik meg.
+- **Secret surface:** a 42 belső identity, behavior és állapot nem kerül player/admin/feature/changelog/lore
+  dokumentációba, normál logba vagy chatre. A contextual mondatok kizárólag a jogosult item viselkedésének
+  pillanatnyi, player-only prezentációi; az item canonical neve/lore-ja és stack-equivalence-e nem változik.
 - **Nincs runtime gate:** a rendszer nem kap master vagy ambient enable kapcsolót és nem jelenik meg
   az admin config GUI-ban. A stack addig marad draft/unmerged, amíg a teljes implementáció elkészül;
   a runtime density limitek is a restart-only Git-authored catalog részei.
@@ -594,18 +630,13 @@ Menedék vendége, de nem `NEUTRAL` polgár. A `FactionManager` API-jának szere
   hozhat létre új ingyenes első választást, és nem kerülheti meg a szezonvégi
   lockoutot vagy a szezonális váltási limitet.
 
-Quest, community goal, season source, council, tax, raid/duel/spy, caravan,
+Quest, community goal, season source, council, raid/duel/spy, caravan,
 dungeon/world-boss jutalom és minden más frakciós jogosultság ugyanebből az
 explicit modellből indul. Az onboarding fix `NEUTRAL` Creutzér-jutalma
-vendég-útravaló; nem tesz állampolgárrá. A vendég nincs az aktuális periodikus
-adóbeszedési körben, de a hiányzó assignment nem törölheti egy korábbi polgár
-adóhátralékát vagy adócsalási strike-ját. A `PlayerProfileTaxStore` minden
-tartozást és strike-ot az owner profil ECONOMY szekciójában, eredet-frakció szerint tart nyilván:
-váltáskor a régi tétel nem konvertálódik, hanem az eredeti valutából az eredeti kasszába
-törlesztődik. A legacy `tax-arrears` / `tax-evasion-strikes` import eredet-frakciója a scalar
-sémából nem bizonyítható, ezért nem kerül automatikusan új frakcióhoz. A támogatott runtime
-nem tart fenn külön YAML- vagy UUID-map authority-t: a PlayerProfile-tól független régi
-ledger/journal implementáció nincs bekötve.
+vendég-útravaló; nem tesz állampolgárrá. A periodikus adóbeszedés megszűnt.
+A `PlayerProfileTaxStore` régi debt/outbox adatai és a protokollmezők csak
+kompatibilitási formátumként maradnak, scheduler, játékosparancs és új beszedés
+nélkül. A támogatott runtime nem tart fenn külön YAML- vagy UUID-map authority-t.
 
 A `FactionManager` a teljes assignment+history generációt írja lemezre, mielőtt
 volatile live state-et vagy lifecycle-hookot publikál. Fizetős váltásnál a
@@ -674,9 +705,10 @@ a vad truce-ot felülírja**; provokáció és markerelt harci content szintén 
 A rejtett Suttogó-státusz ugyanezt a resolver/retaliation infrastruktúrát
 használja, de nem DARK polgárjog: alapból csak éjjel, targetenként `0.35`
 cancel-esélyt kap, Vérhold alatt leáll, provokációra `60 s`-re megtörik. A
-markerelt harci content itt is megelőzi. A truce tanúja külön
-`factions.whisper.truce-witness-*` gyanúágat indíthat; ez a rejtett státusz ára,
-nem faction-benefit assignment.
+markerelt harci content itt is megelőzi. A truce közeli tanúja a
+`WhisperEvidenceLedger` mulandó tanú–cél bejegyzését kapja. Egy bejegyzés csak a
+konkrét cél ellen és egyszer használható; három érvényes vád a tartós `CLEAN →
+OBSERVED → SUSPECTED → EXPOSED` állapotgépet lépteti. Nincs gyanúpont vagy decay.
 
 Minden `factions.passives.*` gameplay-érték reloadkor egyetlen config-generationből
 épülő új snapshotba kerül; `/icesmp reload` után restart nem szükséges. A
@@ -721,7 +753,7 @@ proximity/reward és más több-régiós hívási láncok valódi Folia tesztet 
 minták, amelyeket új kódnál is tartani kell:
 - **Nincs** legacy `Bukkit.getScheduler()` / `BukkitRunnable` / `runTask*` / nyers `Thread`/`Timer`/`Executor`.
 - **Nincs** szinkron `teleport(...)` — mindenhol `teleportAsync(...)`.
-- **Globális ismétlődő tickek** (`IceSMPCore`: world-events, HUD, pet, adó, gazdaság-esemény) csak
+- **Globális ismétlődő tickek** (`IceSMPCore`: world-events, HUD, pet, gazdaság-esemény) csak
   kockát dobnak / memóriabeli állapotot olvasnak; minden játékos-/entitás-munkára **hoppolnak**:
   `player.getScheduler().run(...)` (HUD, vér-hold), `pet.getScheduler().run(...)` (pet-mutáció),
   `anchor.getScheduler()` → `getRegionScheduler(location)` (world-boss / invázió mob-spawn).
@@ -876,9 +908,9 @@ a `SimpleRelicDefinition` a deklaratív eset. A triggerek a `relics/RelicTrigger
   `minecraft:impossible` triggert és a valódi award-hívást.
 - **Loader-szint (`IceSMPLoader`):** runtime Maven-függőségek helye (`MavenLibraryResolver`) —
   jelenleg üres, új külső lib igényekor ide, ne a shadowJar-ba.
-- **Méret:** 990 Java-fájl, ~174 000 sor; 95 `*Manager` osztály (a `managers/` csomag 125 fájl).
+- **Méret:** 1009 Java-fájl, ~180 000 sor; 95 `*Manager` osztály (a `managers/` csomag 125 fájl).
   Csomag-megoszlás: listeners 123, managers 125, commands 95, spells 61, gui 72, crates 14, utils 28, data 15, classrelic 14,
-  items 14, relics 12, quest 10, trash 22, integration 6.
+  items 14, relics 12, quest 10, trash 31, integration 6.
 - **Build:** `./gradlew clean build --no-daemon --stacktrace` futtatja a fordítást, a
   a perzisztencia-, DEV-item-, moderáció-, MOTD-, sit-, crate-, config-startup-, AFK-, HUD- és territory-capital-regressziós suite-okat.
 - **Kiegészítő ellenőrzés:** `python3 scripts/test_dev_item_state.py` és
@@ -1228,8 +1260,8 @@ Clicks only modify an in-memory per-admin session. **Save** performs one asynchr
 inventory or disconnecting writes nothing. Middle-click removes the override and restores the packaged default.
 A second admin save or external file edit makes an older session stale; stale sessions are rejected without overwriting data.
 
-Entries display whether their effect is live, applied by a reload hook, or requires a restart. In particular the faction-tax
-scheduler toggle/interval is restart-required; event safety and vanish capabilities are live/reload-safe.
+Entries display whether their effect is live, applied by a reload hook, or requires a restart. The former faction-tax
+scheduler controls are no longer exposed because the scheduler was removed; event safety and vanish capabilities are live/reload-safe.
 
 ## Frakcióhoz kötött játékosnév-színek
 
@@ -1881,8 +1913,8 @@ presentation).
 A `FACTION_STATE` a saját frakció display-projekciója a `FACTION_SCREEN` capability +
 `client.features.faction-screen` kapu mögött — az az adatkör, amit a /menu
 frakció-fejléce, a /faction king|treasury|raid status|war és az /events szezon-állása
-mutat: tagság (Menedék-vendégnél üres frakció-blokk), kincstár-egyenleg formázva +
-adókulcs, király + szavazat-tally (a menü-úttal azonos névfeloldással), szezon-állás
+mutat: tagság (Menedék-vendégnél üres frakció-blokk), kincstár-egyenleg formázva,
+király + szavazat-tally (a menü-úttal azonos névfeloldással), szezon-állás
 mind a négy frakcióra (publikus broadcast-adat — vendégnek is utazik), az élő raid
 teljes státusza és a hadi-ablak. A PlayerProfile-internals (membership-history,
 receipts, váltás-számlálók) nem kerülnek a vezetékre. Frakció-mutáció (join/leave)
@@ -1890,7 +1922,8 @@ szándékosan NEM protokoll-action: a csatlakozás forrás-kötött (a FactionSw
 csak a Menedék fővárosában validálja), egy kliens-csomag hely-authority bypass lenne
 — a váltás-folyamat a /faction és /menu validált útján marad. A perc-felbontású
 visszaszámlálók miatt a bájt-dedupe percenként legfeljebb egyszer enged ki friss
-state-et.
+state-et. A korábban kiadott kliensprotokoll adómezője bináris kompatibilitás miatt
+megmarad, de a szerver mindig `0` értéket küld és a natív UI nem jeleníti meg.
 
 ### FX-esemény csatorna (FX_EVENT, Phase 8b)
 
