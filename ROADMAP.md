@@ -204,6 +204,20 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
 
 ## 3. Runtime- és balanszkapuk
 
+- ◇ A plugin által kezdeményezett védelmi leállítás új parancsbelépést elutasít,
+  a HUD/pack takarítását aktív tulajdonosi ütemezőn kéri, és csak ezután tiltja le
+  a plugint. A két külön Folia-régiós klienssel, más plugin packjával, kilépéssel
+  és külső azonnali letiltással végzett átvételi próba még szükséges
+  (`docs/ADMIN_GUIDE.md`, „Readiness és fallback”). A kliens nélküli smoke nem
+  bizonyítja a vanilla HUD tényleges visszaállását.
+- ◇ A 18 hiányzó canonical quest-NPC miatti readiness-hiba builder-kapu marad;
+  a pontos belső nevekkel authorált NPC-k és a valódi world-kötések nélkül a
+  plugin védelmi letiltása szándékos. Playerdata törlése ezt nem pótolja.
+- ◇ A beküldött `Missing packaged authority: content/progression/classes.yml`
+  reload-hibához a ténylegesen futtatott JAR hashének és bejegyzésének vizsgálata
+  szükséges. A letiltott példány új parancsot már nem fogad; a hiányzó packaged
+  authority továbbra is elutasítást és snapshot-visszaállítást okoz.
+
 - ◇ Az A17 kaszt-HP rendszer alapból aktív. Kiadás előtt egységes
   pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
 - ◇ A 2026-08-16-i caravan/world-boss spawnkifutás forrásoldali oka javítva: a guard
