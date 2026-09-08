@@ -168,6 +168,17 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
   guild-tagság tárolása is a profilrétegen kívül él — az authority-mátrix alá
   vonásuk (szekció vagy dokumentált kivétel) tulajdonosi döntés.
 
+### Ócska-ökoszisztéma — G fázisú kiadási kapu
+
+- ✅ **Automatizált forráskapuk:** a teljes stacked regresszió, a 30 milliós
+  eloszlásszimuláció, az asset-validáció, valamint a külön Paper/Folia startup-
+  és shutdown-smoke az exact PR HEAD kötelező CI-feladata.
+- ◇ **Production acceptance:** a `docs/development/trash-production-staging.json`
+  evidencia-mátrix szerinti 2–4 órás többjátékos próba, valós kliens-UX és
+  50–60 játékosos terhelési profil továbbra is kézi kapu. Ezek átnézett
+  bizonyítékáig a deklarált `production_ready` érték helyesen `false`; CI nem
+  helyettesítheti és nem jelölheti késznek ezt a pontot.
+
 ## 2. Builderkapuk
 
 A kód és a csomagolt config önmagában nem építi meg a szezont. A következő
@@ -213,10 +224,11 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
   mobnál, provokációval és nélküle, régióhatáron át; a játékos–mob retaliation
   lease-ek target-függetlenségét, scheduler rejectiont, retired callbacket és
   state-cleanupot loggal kell bizonyítani.
-- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás és az
-  adóbeszedés WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
+- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás
+  WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
   sikertelen kompenzáció, journal-cleanup hiba, circuit-open és kontrollált
-  restart utáni idempotens folytatás.
+  restart utáni idempotens folytatás. Adóbeszedés nincs; régi adóadatok
+  migrációja nem átvételi követelmény a tiszta indulásnál.
 - ◇ Az Íjász és az Orgyilkos tényleges DPS-ét célbábun és valódi
   harchelyzetben is mérni kell; a DoT és a vanília sebzésréteg miatt a
   papírérték nem elég.
@@ -634,3 +646,28 @@ magyarázata és a Néma Királynő végjátéka; ezek nem #121 hiányosságok.
 - Economy graph/dead-content authority: `docs/development/professions-2-economy-graph.json`.
 - Runtime staging remains required for multiplayer throughput, real market prices, disconnect/packet-sync and 50–60-player balance.
 - Equipment Resource Pack 2.0 and crafting-order escrow marketplace remain future stacked scopes.
+
+## Frakció–bűn–Suttogó rework átvételi kapui
+
+- ✅ 2026-09-07: a tulajdonos szerint nem futott korábbi szerver. Régi profil-/adó-
+  migráció nincs a scope-ban; új rendszer saját WAL/restart adatbiztonsága megmarad.
+- ✅ W3–W5/W7: misztikus meghívó, percenként legfeljebb egy privát hint, normál
+  világ éjszakája, valódi szemtanú esetén áldozat nélküli megszakítás és 60 mp várakozás.
+- ✅ W8–W9: esemény-UUID/típus/idő, tartós egyszeri nyom; láthatatlanság, moderation
+  vanish, halott/spectator és 10 mp belépési/respawn nyugalom kizárva. A sugár blokkjai
+  a saját Folia-régiójukon ellenőrződnek; régióhatár önmagában nem búvóhely.
+- ✅ W28: kétszer megerősített `/suttogas megtagadás`, tiszta állapot és lejárt nyomok
+  mellett; szerepvesztés és 24 óra, jogi reset nélkül.
+- ✅ Jogi útmutató és `civil_penance`: civil feloldozás DARK-belépés nélkül;
+  választási küszöb aktív létszám szerint, élő mandátum védelme.
+- ◇ Folia staging: két régiót érintő tanúzás, láthatatlan/vanish szereplők, rítus
+  disconnect/restart/lemezhiba, három vád, kilépés, civil jóvátétel, Eskü és DARK-tagság.
+  Ismeretlen, kevert rítusmentést admin ellenőriz; automatikus kompenzáció nem állítható.
+- ◇ Builder: civil CAPITAL-zónák, biztonságos DARK-spawn, feketepiac, kultista rítus/hírvivő.
+- ◇ Balance: azonos szint/felszerelés mellett RED/BLUE/NEUTRAL/DARK PvP és PvE,
+  Vérhold/dungeon gyógyítás; túlélés, jutalom, frakcióválasztás és eltérő létszámú szezon.
+  A „nincs legjobb frakció” mérendő cél; kódteszt önmagában nem bizonyítja.
+- ◇ Az aktuális build, CI és inventory eredményét a publikált commit átvételi jelentése
+  rögzíti; korábbi commit zöld jelzése nem igazolja az új HEAD-et.
+- A teljes titkos küldetéshálózat és forgó boltkészlet nem kötelező: W18 minimumát
+  a kultista ametisztátadás teljesíti.
