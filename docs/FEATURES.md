@@ -820,20 +820,21 @@ a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós p
 - **Így találkozol vele:** `/kronika`, `/emlek`, `/lore`; dialógus- és történeti triggerek. Parancs: /emlek (alias: /emlekek, /memory); /kronika (alias: /chronicle); /lore (alias: /kodex).
 - **Kinek szól:** Játékos, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** Felfedezés, konfigurált történeti esemény, illetve sikeres leülés egy `szék → 1 üres blokk → égő campfire` elrendezésben; a campfire közvetlen kattintása nem trigger.
-- **Tábortűzi mesék:** 135 authored alaptörténet × `common/RED/BLUE/NEUTRAL/DARK` perspektíva, összesen 675 hallgatható változat. A perspektívák ugyanazokat a kánontényeket tartják meg, de más hangsúllyal, elfogultsággal és szóhasználattal.
+- **Tábortűzi mesék:** 135 alaptörténet × `common/RED/BLUE/NEUTRAL/DARK` perspektíva, összesen 675 hallgatható változat. Ebből 20 **Krónika** a kódexhez szorosan kötött feljegyzésszerű elbeszélés, 115 pedig explicit **Szájhagyomány**: lore-horgonyos helyi népmonda/utólagos értelmezés, amely nem hoz létre új kánontényt. A perspektívák az ismert lore-horgonyokat nem írják át, de más hangsúllyal, elfogultsággal és szóhasználattal adják tovább.
 - **Közös session:** a futó meséhez később leülő játékos a következő beatnél csatlakozik; nem kap saját random történetet. A collectionbe viszont csak az a változat kerül, amelyet a játékos a session elejétől a végéig végighallgatott.
 - **Fair választás:** a saját frakció és a common hang súlyozottan gyakoribb, de minden authored perspektíva hallható. A még nem hallott story/variáns erős súlybónuszt kap, a közelmúlt exact ismétlése kiesik, ugyanazon story rövid időn belüli újrajátszása pedig büntetett. 80% collection fölött külön completion-assist simítja az utolsó hiányzó variánsok RNG-jét.
 - **Collection és elérések:** a PlayerProfile tartósan őrzi a hallott story→perspektíva párokat. Mérföldkövek: 1 / 10 / 50 külön story, minden alaptörténet legalább egy nézőpontból, egy story összes nézőpontja, végül **A világ emlékezete** minden story minden változatáért. Ezek presztízs-elérések; nem adnak harci vagy gazdasági erőbónuszt, és egy már megszerzett elérés későbbi katalógusbővítéskor sem kerül visszavonásra.
+- **Krónikák GUI:** az `/achievements` felület külön, lapozható collection nézetet nyit. A hallott storyk címét és perspektíva-progressét megmutatja, a még ismeretlen storyk címét/tartalmát spoilermentesen elrejti. A GUI ugyanazt az egyszer, startupkor felépített immutable `CampfireStoryCatalog` példányt használja, mint a runtime selector; nincs GUI-megnyitásonkénti content-újraparszolás.
 - **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A kis XP-jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
 - **Ami még kellhet hozzá:** Történeti helyszínek, NPC-k és aktiváló blokkok/területek előkészítendők.
-- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a LORE.md/TEASER.md önmagában nem implementáció. A rejtett rendszerek és a világ legmélyebb megfejtései nem kerülnek a nyílt campfire poolba.
+- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a `LORE.md` a kánon authority, a `tradition: folklore` tábortűzi mesék nem írhatják felül. A rejtett rendszerek és a világ legmélyebb megfejtései nem kerülnek a nyílt campfire poolba.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
 - Operator config: `campfire-story.*` a `config/general.yml` fájlban (start delay, listener radius, pacing, session/reward cooldown, repeat window és collection-aware selection súlyok).
-- Authored content: `content/lore/campfire-stories.yml` — 135 weighted alaptörténet, öt perspektíva és időzített beat-ek; locked canonical content, módosításához restart kell. A runtime alapértelmezett pacingje 45 s minimum story-idővel, 5.5–14 s beat-ablakkal és szöveghossz-alapú olvasási idővel dolgozik.
+- Authored content: `content/lore/campfire-stories.yml` — 135 weighted alaptörténet, öt perspektíva és időzített beat-ek; Git-authored, restart-required tartalom. A `tradition: folklore` explicit jelöli azokat a szájhagyományos történeteket, amelyek lore-horgonyosak, de részleteik nem válnak ettől kánonná; a kánon authority továbbra is `docs/LORE.md`. A runtime alapértelmezett pacingje 45 s minimum story-idővel, 5.5–14 s beat-ablakkal és szöveghossz-alapú olvasási idővel dolgozik.
 - Tartós állapot: maga a campfire session runtime-only; a hallott story/perspektíva collection, a bounded recent-variant history, a prestige achievementek és az XP-jutalom cooldownja PlayerProfile-ban tartós.
 - Folia: a session a campfire régióján ütemez, a hallgatókhoz saját entity scheduleren lép át; collection credit csak végighallgatás után íródik.
 - Reload: operator pacing/selection tuning reloadolható; authored campfire story tartalom restart-required.
