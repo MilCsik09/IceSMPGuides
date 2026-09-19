@@ -2524,11 +2524,15 @@ A special-item profile átvételekor valódi factory-itemeket használj, ne kéz
 - **Rejtett developer artifact:** csak a belső development acceptance szerint ellenőrizhető; a nyilvános/admin dokumentáció nem publikálja a használati surface-ét.
 
 Vizuális gate: egyik special profilnál sem jelenhet meg magenta missing-texture blokk vagy tofu
-négyzet. A Tooltip V2 háttere legyen láthatóan félig áttetsző, a frame pedig vékony és visszafogott;
-a rarity/family szín accent maradjon, ne uralja a panelt. A production tooltip olvashatósága nem
-függhet private-use font glyphoktól; a safe szimbólumoknak pack-hiba esetén is érthetőnek kell
-maradniuk. A canonical gear azonos statja ne jelenjen meg fix+roll duplikációként, a classification
-ne ismételje redundánsan a generikus páncél-típust, a rúnaállapot egy sorban maradjon, és legyen
-finom stat/követelmény elválasztó. Az archaeology megfigyelés ne nyújtsa képernyőszélesre a
-tooltipet és ne mutassa mellette a vanilla attribute blokkot. Minden ItemMeta refresh után
-meg kell maradnia a category/rarity frame-nek.
+négyzet. A Tooltip V2 háttere legyen félig áttetsző, de az inventory-slotok ne versenyezzenek a
+body texttel; a jelenlegi contract kb. 84–88% háttér-alfát használ. A frame maradjon vékony és
+visszafogott; a rarity/family szín accent maradjon, ne uralja a panelt. A production tooltip
+olvashatósága nem függhet private-use font glyphoktól; a safe szimbólumoknak pack-hiba esetén is
+érthetőnek kell maradniuk. A canonical gear azonos statja ne jelenjen meg fix+roll duplikációként.
+A viewer-specifikus kliens projectionben az alacsony kasztszint, rossz armor family, explicit
+class restriction és specialization restriction külön zöld/piros requirement-sorként jelenjen meg;
+több hiba egyszerre is látszódhat. A projection nem írhat player-specifikus lore-t vagy PDC-t a
+szerveroldali canonical ItemStackba. A classification ne ismételje redundánsan a generikus
+páncél-típust, a rúnaállapot egy sorban maradjon, és legyen finom stat/követelmény elválasztó.
+Az archaeology megfigyelés ne nyújtsa képernyőszélesre a tooltipet és ne mutassa mellette a vanilla
+attribute blokkot. Minden ItemMeta refresh után meg kell maradnia a category/rarity frame-nek.
