@@ -2506,9 +2506,9 @@ A managed GUI-k minden top-inventory interakciót szerveroldalon tiltják, majd 
 
 A special-item profile átvételekor valódi factory-itemeket használj, ne kézzel szerkesztett lore-t.
 
-- **Blueprint:** `/iceitem tervrajz netherit_csakany 1` → TERVRAJZ badge, Bányász, recept, 48-as szakmaszint és jobb kattos tanulás.
+- **Blueprint:** `/iceitem tervrajz netherit_csakany 1` → TERVRAJZ badge, Bányász, kategória, 48-as szakmaszint és jobb kattos tanulás; a tárgynév ne ismétlődjön külön recept-sorban.
 - **Profession material:** `/iceitem unique vad_esszencia 1` → SZAKMAI ALAPANYAG + authored lore; economy-managed itemnél source/process/sink sorok.
-- **Profession result:** `/iceitem recept netherit_csakany 1` vagy egy potion/utility recipe → SZAKMAI TÁRGY profil; rollolt gear esetén a rarity frame maradjon elsődleges.
+- **Profession result:** `/iceitem recept netherit_csakany 1` vagy egy potion/utility recipe → SZAKMAI TÁRGY profil; csak a játékosnak hasznos kategória/szint jelenjen meg, a belső recipe-kind taxonomy ne; rollolt gear esetén a rarity frame maradjon elsődleges.
 - **Fizikai valuta:** fővárosban `/bank withdraw neutral 1` → `VALUTA • Ryanora & Caldestera`, rövid lore és frakciószínű accent; nincs redundáns érték/bank/forgalom magyarázó blokk.
 - **Erszény:** `/iceitem erszeny 25 1` → `ERSZÉNY`; a konkrét valuta/összeg ne szivárogjon ki bontás előtt, a nyitás egy rövid interakciós sor.
 - **Relikvia:** `/iceitem relikvia metelytepo 1` → RELIKVIA, rövid authored rendeltetés + rövid lore; a valódi kezelési mechanika külön kompakt használati blokkban marad.
@@ -2524,9 +2524,12 @@ A special-item profile átvételekor valódi factory-itemeket használj, ne kéz
 - **Rejtett developer artifact:** csak a belső development acceptance szerint ellenőrizhető; a nyilvános/admin dokumentáció nem publikálja a használati surface-ét.
 
 Vizuális gate: egyik special profilnál sem jelenhet meg magenta missing-texture blokk vagy tofu
-négyzet. A production tooltip olvashatósága nem függhet private-use font glyphoktól; a safe
-szimbólumoknak pack-hiba esetén is érthetőnek kell maradniuk. A canonical gear azonos statja ne
-jelenjen meg fix+roll duplikációként, az archaeology megfigyelés ne nyújtsa képernyőszélesre a
+négyzet. A Tooltip V2 háttere legyen láthatóan félig áttetsző, a frame pedig vékony és visszafogott;
+a rarity/family szín accent maradjon, ne uralja a panelt. A production tooltip olvashatósága nem
+függhet private-use font glyphoktól; a safe szimbólumoknak pack-hiba esetén is érthetőnek kell
+maradniuk. A canonical gear azonos statja ne jelenjen meg fix+roll duplikációként, a classification
+ne ismételje redundánsan a generikus páncél-típust, a rúnaállapot egy sorban maradjon, és legyen
+finom stat/követelmény elválasztó. Az archaeology megfigyelés ne nyújtsa képernyőszélesre a
 tooltipet és ne mutassa mellette a vanilla attribute blokkot. Minden ItemMeta refresh után
 meg kell maradnia a category/rarity frame-nek.
 
