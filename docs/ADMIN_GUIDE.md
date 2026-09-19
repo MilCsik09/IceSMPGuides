@@ -2532,4 +2532,3 @@ ne ismételje redundánsan a generikus páncél-típust, a rúnaállapot egy sor
 finom stat/követelmény elválasztó. Az archaeology megfigyelés ne nyújtsa képernyőszélesre a
 tooltipet és ne mutassa mellette a vanilla attribute blokkot. Minden ItemMeta refresh után
 meg kell maradnia a category/rarity frame-nek.
-
