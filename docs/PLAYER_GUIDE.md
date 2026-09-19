@@ -986,6 +986,13 @@ A különböző változatok a kánontényeket nem írják át, de azt már igen,
 hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény több közösség
 szájhagyományában egészen másnak érződhet.
 
+A tűz a cím mellett azt is kiírja, hogy **Krónika** vagy **Szájhagyomány** következik.
+A Krónika a kódexben rögzített események feljegyzésszerű elbeszélése. A Szájhagyomány
+szintén a világ ismert lore-jából indul ki, de helyi népmondát, utólagos magyarázatot
+vagy bizonytalan részletet is tartalmazhat — ezeket ne kezeld új kánontényként csak
+azért, mert egy tábortűznél elhangzottak. A `LORE.md`-ben rögzített világkép marad a
+kánon authorityja.
+
 Nem kell a saját frakciódba zárva maradnod: annak hangja és a common változat gyakoribb,
 de idővel más közösségek verzióit is hallhatod. A rendszer előnyben részesíti a még
 nem hallott történeteket és nézőpontokat, és kerüli a közelmúlt ismétléseit. Ahogy
@@ -999,9 +1006,12 @@ következő résznél, de az a változat még nem kerül be a saját collection�
 A tábortűzi gyűjteményhez külön presztízs-elérések tartoznak. Az első történettől a
 10 és 50 különböző mesén át eljuthatsz a **Krónikás** című mérföldkőig, majd egy
 történet minden nézőpontjának meghallgatásáig. A végső **A világ emlékezete** eléréshez
-minden történetet minden authored nézőpontból végig kell hallgatnod. Ezek nem adnak
+minden történetet minden ismert nézőpontból végig kell hallgatnod. Ezek nem adnak
 harci vagy gazdasági erőbónuszt, és a már megszerzett elérésedet egy későbbi
-story-bővítés sem veszi el. Az állapotot az `/achievements` felületén látod.
+story-bővítés sem veszi el. Az `/achievements` felületén a **Krónikák** csempével
+külön collection nézetet nyithatsz: a már meghallgatott történetek címe és az öt
+nézőpont állapota látszik, az ismeretlen történetek címe és tartalma viszont addig
+rejtve marad. A 135 történet négy oldalon lapozható.
 
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
