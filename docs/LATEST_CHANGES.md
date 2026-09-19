@@ -14,10 +14,14 @@ A belső fejlesztői artifactok külön, a normál debug/probe tárgyaktól elk�
 A második live visual kör után maga a chrome is V2-re váltott: a korábbi közel-opaque fekete panel
 helyett félig áttetsző, enyhén textúrázott/family-tintelt háttér készült; a rarity-keretek két fő
 pixelre vékonyodtak, a glow csak halvány kiegészítés, a sarkok rövid accent-bracketet kaptak.
-A canonical gear classificationje rövidebb, a rúnaállapot egy soros és finom divider választja
-el a fő statokat a követelményektől. A blueprint nem ismétli külön a tárgynevét receptként, a
-profession output nem mutat belső recipe-kind taxonómiát, a fejlesztői artifactok és a Mételytépő
-mechanikai sorai pedig kompakt label/value formára váltottak.
+A következő screenshot-kör alapján a panel sötétebb lett (kb. 84–88% háttér-alfa), hogy a mögöttes
+inventory ne versenyezzen a body texttel. A canonical gear classificationje rövidebb, a rúnaállapot
+egy soros és finom divider választja el a fő statokat a követelményektől. A canonical felszerelés
+követelménysorai most kliensoldali, játékos-specifikus projectionben zöld/piros állapotot is mutatnak:
+alacsony szint, rossz armor family, explicit class és specialization restriction külön okként
+megjelenhet, miközben a szerveroldali canonical ItemStack változatlan marad. A blueprint nem ismétli
+külön a tárgynevét receptként, a profession output nem mutat belső recipe-kind taxonómiát, a
+fejlesztői artifactok és a Mételytépő mechanikai sorai pedig kompakt label/value formára váltottak.
 
 A fejlesztői eszköz eltétele vagy fegyverre váltás nem zárja le többé a
 rávetítések munkamenetét. A munkamenethez kötött harci változtatások így
