@@ -812,21 +812,29 @@ Adatvezérelt küldetések MMO-életciklussal (Quest Framework v2): explicit for
 
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-A forrásban ténylegesen bekötött krónika, emlék, lore-parancs, párbeszéd és tábortűzi történet; nem azonos a teljes tervezett lore-ral.
+A forrásban ténylegesen bekötött krónika, emlék, lore-parancs, párbeszéd és közös tábortűzi
+szájhagyomány-rendszer; nem azonos a teljes tervezett lore-ral. A campfire-réteg már nem egysoros
+flavor-proc: egy konkrét égő tűz egyetlen időzített történet-sessiont birtokol, ezért az ugyanahhoz
+a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós perspektívát hallják.
 
 - **Így találkozol vele:** `/kronika`, `/emlek`, `/lore`; dialógus- és történeti triggerek. Parancs: /emlek (alias: /emlekek, /memory); /kronika (alias: /chronicle); /lore (alias: /kodex).
 - **Kinek szól:** Játékos, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** Felfedezés, konfigurált történeti esemény, illetve sikeres leülés egy `szék → 1 üres blokk → égő campfire` elrendezésben; a campfire közvetlen kattintása nem trigger.
+- **Tábortűzi mesék:** 9 hosszabb authored story × `common/RED/BLUE/NEUTRAL/DARK` perspektíva. A frakciós változat ugyanazokat a kánontényeket tartja meg, de más hangsúllyal, elfogultsággal és szóhasználattal.
+- **Közös session:** a futó meséhez később leülő játékos a következő beatnél csatlakozik; nem kap saját random történetet.
+- **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
 - **Ami még kellhet hozzá:** Történeti helyszínek, NPC-k és aktiváló blokkok/területek előkészítendők.
-- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a LORE.md/TEASER.md önmagában nem implementáció.
+- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a LORE.md/TEASER.md önmagában nem implementáció. A rejtett rendszerek és a világ legmélyebb megfejtései nem kerülnek a nyílt campfire poolba.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Config: Story-, chronicle-, memory-, dialogue-, quest- és message-definíciók.
-- Tartós állapot: Felfedezett emlékek és krónikaállapot tartós.
-- Reload: Szövegek reloadolhatók; aktív folyamat és helyszíncsere külön tesztelendő.
+- Operator config: `campfire-story.*` a `config/general.yml` fájlban (start delay, listener radius, session/reward cooldown, faction-perspective chance).
+- Authored content: `content/lore/campfire-stories.yml` — weighted storyk, perspektívák és időzített beat-ek; locked canonical content, módosításához restart kell.
+- Tartós állapot: a campfire session runtime-only; a játékos XP-jutalom cooldownja PlayerProfile-ban tartós. Felfedezett emlékek és krónikaállapot külön tartós.
+- Folia: a session a campfire régióján ütemez, a hallgatókhoz saját entity scheduleren lép át.
+- Reload: operator tuning reloadolható; authored campfire story tartalom restart-required.
 
 </details>
 
@@ -1692,3 +1700,29 @@ Közös, Folia-biztos presentation foundation a semantic tooltip-szakaszokhoz, j
 - **Staging gate:** két párhuzamos dialogue session, quit/death/world-change cleanup, GUI inventory-exploit mátrix, resource-pack sound event és tooltip visual QA még kézi ellenőrzést igényel.
 
 <!-- icesmp-ux-foundation-doc -->
+
+### Tárgy-tooltip presentation profilok
+
+<!-- icesmp-doc-id: feature.immersive-ux.item-tooltips -->
+
+> **Implementáció elkészült, vizuális staging-átvétel szükséges**
+
+Az IceSMP tárgytooltipjai közös, félig áttetsző, de olvashatóságra sötétített füstös háttérre
+és vékony nine-slice keretre épülnek. A vanilla tárgyak is megkapják az alap IceSMP chrome-ot; a
+canonical felszerelés visszafogott rarity-accentet, a special-purpose tárgyak pedig kompakt
+kategória-sort, rövid mechanikai sorokat és másodlagos authored lore-t kapnak. A canonical gear
+követelményei kliensoldali, játékos-specifikus projectionben zöld/piros állapotot mutatnak:
+szint, armor family, explicit class és specialization hibák külön-külön látszanak, canonical
+ItemStack módosítása nélkül.
+A canonical gear azonos statjainak fix és rollolt része egy sorban jelenik meg, nem duplikáltan.
+
+- **Blueprint:** TERVRAJZ + szakma, kategória, szakmaszint és jobb kattos feloldás; a tárgynév nem ismétlődik külön recept-sorban.
+- **Profession item:** kompakt szakmai kategória, forrás/feldolgozó/felhasználás; a nem-canonical crafted outputok is profilt kapnak, belső recept-taxonomy nélkül.
+- **Fizikai valuta / erszény:** `VALUTA • <kanonikus kibocsátó>` vagy `ERSZÉNY`; a valuta rövid lore-t kap, az erszény tartalma bontásig rejtett marad.
+- **Relikvia:** rövid authored rendeltetés + tömör lore, szükség esetén külön használati sorokkal, Ereklye-accenttel.
+- **Küldetési / haladási tárgy:** authored rendeltetés és használati hint, külön quest/token profillal.
+- **Ládakulcs:** cél-láda, nyitási instrukció és legfontosabb jutalomesélyek.
+- **Fejlesztés / utility:** rúnák és speciális használati tárgyak nem keverednek többé a szakmai alapanyagokkal.
+- **Társ-kellék / Ostromeszköz / Lélekkapocs:** a capture-idéző tárgyak, az Ostromágyú és a személyes class artifact is saját, funkciót magyarázó profilt kap.
+- **Belső fejlesztői artifact:** a debug/probe itemektől elkülönített, production-minőségű presentation profilt kap; részletei nem részei a nyilvános feature-katalógusnak.
+- **Fontos határ:** a profile renderer csak presentationt épít; PDC identity, ownership, recept, valuta, relic és DEV-artifact authority nem költözik át a tooltip-rétegbe.

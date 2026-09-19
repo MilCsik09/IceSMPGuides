@@ -1831,7 +1831,11 @@ ellenőrizd; normál beszedési útvonal nincs.
 | [ ] | SIT-14 Seat entity sweep | Admin | szándékosan árva marker tesztvilágban | indulási/disable sweep eltakarítja | kézi entity cleanup | `sit/SIT-14/` |
 | [ ] | SIT-15 GSit nélkül | Üzemeltető | GSit jar/adat nélkül, backup mellett | `/sit` és click-to-sit működik | GSit vissza, rollout stop | `sit/SIT-15/` |
 | [ ] | SIT-16 Nem támogatott pózok | Tesztelő | lay/crawl/stack/player/NPC próbák | IceSMP nem kínál ilyen útvonalat | command/plugin ütközés vizsgálata | `sit/SIT-16/` |
-| [ ] | SIT-17 Campfire story | Builder/tesztelő | `campfire → 1 levegőblokk → ülőblokk` mind a négy főirányban; click és `/sit`; majd felállás/köztes blokk kitöltése/tűz eloltása | csak sikeres ülés indít; a jutalom előtt ugyanaz a szék, üres köz és égő tűz kell | story trigger kikapcsolása, sit megtartása | `sit/SIT-17/` |
+| [ ] | SIT-17 Campfire geometria | Builder/tesztelő | `campfire → 1 levegőblokk → ülőblokk` mind a négy főirányban; click és `/sit`; majd felállás/köztes blokk kitöltése/tűz eloltása | csak sikeres ülés indít; az érintett hallgatóhoz ugyanaz a szék, üres köz és égő tűz kell | story trigger kikapcsolása, sit megtartása | `sit/SIT-17/` |
+| [ ] | SIT-18 Közös story session | 3–4 tesztelő | több ülőblokk ugyanahhoz az égő tűzhöz; közel egyszerre üljetek le | egyetlen story+perspective választás történik; minden résztvevő ugyanazokat a beat-eket ugyanabban a sorrendben kapja | campfire-story kikapcsolása | `sit/SIT-18/` |
+| [ ] | SIT-19 Join/leave közben | 3 tesztelő | ketten indítsanak sessiont; harmadik a mese közepén üljön le; egyik korábbi hallgató álljon fel | későn érkező a következő beatnél csatlakozik, felálló egyedül kiesik, a többiek története folytatódik | join-in-progress false vagy story trigger stop | `sit/SIT-19/` |
+| [ ] | SIT-20 Perspektíva-torzulás | Tesztelő/admin | `faction-perspective-chance-percent: 100`; starterrel RED/BLUE/NEUTRAL/DARK külön próbák | sessionenként egy frakciós változat; minden hallgató ugyanazt hallja; kánontény nem változik, csak hangsúly/értelmezés | állítsd 0-ra a faction chance-et | `sit/SIT-20/` |
+| [ ] | SIT-21 Cooldown-szétválasztás | Tesztelő/admin | jutalom-cooldownos játékos csatlakozzon új sessionhöz; ugyanazt a tüzet próbáld azonnal újra | a játékos jutalom nélkül is hallgathat; player reward cooldown és fire session cooldown egymástól független | XP 0 / session cooldown emelés | `sit/SIT-21/` |
 
 ### Natív crate
 
@@ -2501,3 +2505,38 @@ A foundation acceptance ellenőrzésekor különítsd el a következő állapoto
 A managed GUI-k minden top-inventory interakciót szerveroldalon tiltják, majd csak a session saját komponensének engedélyezett callbackjét hívják. A meglévő GUI-k fokozatos migrációja a komponens seam-en történik; a nem migrált menük saját jelenlegi holder/listener életciklusát tartják meg. A konkrét migrációs inventory jelenleg: a `src/main/java/hu/taliann/icesmp/gui/` alatti specializált GUI-k a `GuiUtil` kivételével még a saját holder/listener párjukat használják; ebben a PR-ban nem állítjuk késznek ezek teljes átállítását.
 
 <!-- icesmp-ux-foundation-doc -->
+
+### Special-item tooltip acceptance
+
+A special-item profile átvételekor valódi factory-itemeket használj, ne kézzel szerkesztett lore-t.
+
+- **Blueprint:** `/iceitem tervrajz netherit_csakany 1` → TERVRAJZ badge, Bányász, kategória, 48-as szakmaszint és jobb kattos tanulás; a tárgynév ne ismétlődjön külön recept-sorban.
+- **Profession material:** `/iceitem unique vad_esszencia 1` → SZAKMAI ALAPANYAG + authored lore; economy-managed itemnél source/process/sink sorok.
+- **Profession result:** `/iceitem recept netherit_csakany 1` vagy egy potion/utility recipe → SZAKMAI TÁRGY profil; csak a játékosnak hasznos kategória/szint jelenjen meg, a belső recipe-kind taxonomy ne; rollolt gear esetén a rarity frame maradjon elsődleges.
+- **Fizikai valuta:** fővárosban `/bank withdraw neutral 1` → `VALUTA • Ryanora & Caldestera`, rövid lore és frakciószínű accent; nincs redundáns érték/bank/forgalom magyarázó blokk.
+- **Erszény:** `/iceitem erszeny 25 1` → `ERSZÉNY`; a konkrét valuta/összeg ne szivárogjon ki bontás előtt, a nyitás egy rövid interakciós sor.
+- **Relikvia:** `/iceitem relikvia metelytepo 1` → RELIKVIA, rövid authored rendeltetés + rövid lore; a valódi kezelési mechanika külön kompakt használati blokkban marad.
+- **Küldetési item:** `/iceitem unique suttogas_meghivo 1` → KÜLDETÉSI TÁRGY + authored rendeltetés/használat.
+- **Haladási token:** `/iceitem unique emlekszilank 1` → HALADÁSI TÁRGY + beváltási hint.
+- **Rúna:** `/iceitem unique runa_elek 1` → FEJLESZTÉS profil, upgrade-accent és meglévő mechanikai lore.
+- **Utility:** `/iceitem unique ures_kupa 1` → SEGÉDESZKÖZ profil.
+- **Ládakulcs:** `/crate give <játékos> <láda-id> 1` → LÁDAKULCS, cél-láda, nyitás és legfeljebb három jutalomesély.
+- **Társ-kellék:** a megfelelő spec mellett `/pet item` → TÁRSKÖTŐ/IDÉZŐ/TÁRSFELSZERELÉS profil és capture-accent.
+- **Lélekkapocs:** a normál `/profile` igénylési útvonal → LÉLEKKAPOCS, aktuális forma/spec és catalyst-accent.
+- **Ostromágyú:** a meglévő craft/raid útvonal → OSTROMESZKÖZ, csak-ostrom feltétel és siege-accent.
+- **Bingulus:** `/iceitem dev csodalatos_bingulus 1` csak a kijelölt tulajdonosnak → FEJLESZTŐI EREKLYE, passzív jutalomgenerátor és auto-restore jelzés.
+- **Rejtett developer artifact:** csak a belső development acceptance szerint ellenőrizhető; a nyilvános/admin dokumentáció nem publikálja a használati surface-ét.
+
+Vizuális gate: egyik special profilnál sem jelenhet meg magenta missing-texture blokk vagy tofu
+négyzet. A Tooltip V2 háttere legyen félig áttetsző, de az inventory-slotok ne versenyezzenek a
+body texttel; a jelenlegi contract kb. 84–88% háttér-alfát használ. A frame maradjon vékony és
+visszafogott; a rarity/family szín accent maradjon, ne uralja a panelt. A production tooltip
+olvashatósága nem függhet private-use font glyphoktól; a safe szimbólumoknak pack-hiba esetén is
+érthetőnek kell maradniuk. A canonical gear azonos statja ne jelenjen meg fix+roll duplikációként.
+A viewer-specifikus kliens projectionben az alacsony kasztszint, rossz armor family, explicit
+class restriction és specialization restriction külön zöld/piros requirement-sorként jelenjen meg;
+több hiba egyszerre is látszódhat. A projection nem írhat player-specifikus lore-t vagy PDC-t a
+szerveroldali canonical ItemStackba. A classification ne ismételje redundánsan a generikus
+páncél-típust, a rúnaállapot egy sorban maradjon, és legyen finom stat/követelmény elválasztó.
+Az archaeology megfigyelés ne nyújtsa képernyőszélesre a tooltipet és ne mutassa mellette a vanilla
+attribute blokkot. Minden ItemMeta refresh után meg kell maradnia a category/rarity frame-nek.
