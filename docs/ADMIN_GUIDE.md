@@ -1831,7 +1831,11 @@ ellenőrizd; normál beszedési útvonal nincs.
 | [ ] | SIT-14 Seat entity sweep | Admin | szándékosan árva marker tesztvilágban | indulási/disable sweep eltakarítja | kézi entity cleanup | `sit/SIT-14/` |
 | [ ] | SIT-15 GSit nélkül | Üzemeltető | GSit jar/adat nélkül, backup mellett | `/sit` és click-to-sit működik | GSit vissza, rollout stop | `sit/SIT-15/` |
 | [ ] | SIT-16 Nem támogatott pózok | Tesztelő | lay/crawl/stack/player/NPC próbák | IceSMP nem kínál ilyen útvonalat | command/plugin ütközés vizsgálata | `sit/SIT-16/` |
-| [ ] | SIT-17 Campfire story | Builder/tesztelő | `campfire → 1 levegőblokk → ülőblokk` mind a négy főirányban; click és `/sit`; majd felállás/köztes blokk kitöltése/tűz eloltása | csak sikeres ülés indít; a jutalom előtt ugyanaz a szék, üres köz és égő tűz kell | story trigger kikapcsolása, sit megtartása | `sit/SIT-17/` |
+| [ ] | SIT-17 Campfire geometria | Builder/tesztelő | `campfire → 1 levegőblokk → ülőblokk` mind a négy főirányban; click és `/sit`; majd felállás/köztes blokk kitöltése/tűz eloltása | csak sikeres ülés indít; az érintett hallgatóhoz ugyanaz a szék, üres köz és égő tűz kell | story trigger kikapcsolása, sit megtartása | `sit/SIT-17/` |
+| [ ] | SIT-18 Közös story session | 3–4 tesztelő | több ülőblokk ugyanahhoz az égő tűzhöz; közel egyszerre üljetek le | egyetlen story+perspective választás történik; minden résztvevő ugyanazokat a beat-eket ugyanabban a sorrendben kapja | campfire-story kikapcsolása | `sit/SIT-18/` |
+| [ ] | SIT-19 Join/leave közben | 3 tesztelő | ketten indítsanak sessiont; harmadik a mese közepén üljön le; egyik korábbi hallgató álljon fel | későn érkező a következő beatnél csatlakozik, felálló egyedül kiesik, a többiek története folytatódik | join-in-progress false vagy story trigger stop | `sit/SIT-19/` |
+| [ ] | SIT-20 Perspektíva-torzulás | Tesztelő/admin | `faction-perspective-chance-percent: 100`; starterrel RED/BLUE/NEUTRAL/DARK külön próbák | sessionenként egy frakciós változat; minden hallgató ugyanazt hallja; kánontény nem változik, csak hangsúly/értelmezés | állítsd 0-ra a faction chance-et | `sit/SIT-20/` |
+| [ ] | SIT-21 Cooldown-szétválasztás | Tesztelő/admin | jutalom-cooldownos játékos csatlakozzon új sessionhöz; ugyanazt a tüzet próbáld azonnal újra | a játékos jutalom nélkül is hallgathat; player reward cooldown és fire session cooldown egymástól független | XP 0 / session cooldown emelés | `sit/SIT-21/` |
 
 ### Natív crate
 
