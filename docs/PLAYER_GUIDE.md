@@ -681,14 +681,15 @@ ez a kapu nem vonatkozik.
 
 ### Hogyan olvasd az IceSMP tárgytooltipokat?
 
-A resource pack mellett **minden tárgy** ugyanazt az IceSMP tooltip-alapformát használja. Egy
-vanilla tárgy semleges keretet kap; a saját felszerelések kerete a rarityt követi. A saját item
-neve marad a főcím, alatta egy kompakt kategória-sor következik; a mechanikai adatok rövid
-label/value sorok, a lore pedig másodlagos, rövid és tördelve jelenik meg. A canonical gear
-azonos statjának fix és rollolt része egyetlen összesített sor.
+A resource pack mellett **minden tárgy** ugyanazt az IceSMP tooltip-alapformát használja. A
+Tooltip V2 háttere félig áttetsző és füstös, ezért az inventory vagy a világ finoman átsejlik rajta;
+a keret vékonyabb és a rarity/family szín csak accentként szolgál. A saját item neve marad a főcím,
+alatta egy kompakt kategória-sor következik; a mechanikai adatok rövid label/value sorok, a lore
+pedig másodlagos, rövid és tördelve jelenik meg. A canonical gear azonos statjának fix és rollolt
+része egyetlen összesített sor.
 
-- **TERVRAJZ • szakma:** feloldott recept, kategória, szükséges szakmaszint és jobb kattos tanulás;
-- **SZAKMAI ALAPANYAG / SZAKMAI TÁRGY:** forrás, feldolgozó szakma, felhasználás vagy crafted szerep;
+- **TERVRAJZ • szakma:** kategória, szükséges szakmaszint és jobb kattos tanulás; a tárgy neve nem ismétlődik külön recept-sorban;
+- **SZAKMAI ALAPANYAG / SZAKMAI TÁRGY:** forrás, feldolgozó szakma, felhasználás vagy crafted szerep; belső recept-típus nem jelenik meg csak azért, mert a configban létezik;
 - **VALUTA • kanonikus kibocsátó:** a fizikai pénz rövid világépítő lore-ral; egy item eleve egy egység, ezért nincs külön értéksor;
 - **ERSZÉNY:** jobb kattal bontható; a benne lévő valuta és mennyiség addig szándékosan rejtett;
 - **LÁDAKULCS • cél-láda:** nyitási interakció és a fő jutalomesélyek;
