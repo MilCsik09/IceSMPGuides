@@ -1699,10 +1699,13 @@ Közös, Folia-biztos presentation foundation a semantic tooltip-szakaszokhoz, j
 
 > **Implementáció elkészült, vizuális staging-átvétel szükséges**
 
-Az IceSMP tárgytooltipjai közös, félig áttetsző füstös háttérre és vékony nine-slice keretre
-épülnek. A vanilla tárgyak is megkapják az alap IceSMP chrome-ot; a canonical felszerelés
-visszafogott rarity-accentet, a special-purpose tárgyak pedig kompakt kategória-sort, rövid
-mechanikai sorokat és másodlagos authored lore-t kapnak.
+Az IceSMP tárgytooltipjai közös, félig áttetsző, de olvashatóságra sötétített füstös háttérre
+és vékony nine-slice keretre épülnek. A vanilla tárgyak is megkapják az alap IceSMP chrome-ot; a
+canonical felszerelés visszafogott rarity-accentet, a special-purpose tárgyak pedig kompakt
+kategória-sort, rövid mechanikai sorokat és másodlagos authored lore-t kapnak. A canonical gear
+követelményei kliensoldali, játékos-specifikus projectionben zöld/piros állapotot mutatnak:
+szint, armor family, explicit class és specialization hibák külön-külön látszanak, canonical
+ItemStack módosítása nélkül.
 A canonical gear azonos statjainak fix és rollolt része egy sorban jelenik meg, nem duplikáltan.
 
 - **Blueprint:** TERVRAJZ + szakma, kategória, szakmaszint és jobb kattos feloldás; a tárgynév nem ismétlődik külön recept-sorban.
