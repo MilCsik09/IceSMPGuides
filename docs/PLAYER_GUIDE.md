@@ -682,11 +682,16 @@ ez a kapu nem vonatkozik.
 ### Hogyan olvasd az IceSMP tárgytooltipokat?
 
 A resource pack mellett **minden tárgy** ugyanazt az IceSMP tooltip-alapformát használja. A
-Tooltip V2 háttere félig áttetsző és füstös, ezért az inventory vagy a világ finoman átsejlik rajta;
-a keret vékonyabb és a rarity/family szín csak accentként szolgál. A saját item neve marad a főcím,
-alatta egy kompakt kategória-sor következik; a mechanikai adatok rövid label/value sorok, a lore
-pedig másodlagos, rövid és tördelve jelenik meg. A canonical gear azonos statjának fix és rollolt
-része egyetlen összesített sor.
+Tooltip V2 háttere félig áttetsző és füstös, de elég sötét ahhoz, hogy a mögöttes inventory ne
+versenyezzen a szöveggel; a keret vékonyabb és a rarity/family szín csak accentként szolgál. A
+saját item neve marad a főcím, alatta egy kompakt kategória-sor következik; a mechanikai adatok
+rövid label/value sorok, a lore pedig másodlagos, rövid és tördelve jelenik meg. A canonical gear
+azonos statjának fix és rollolt része egyetlen összesített sor.
+
+A canonical felszerelés követelménysorai **a saját karakteredhez igazodnak**. Teljesített feltétel
+zöld pipát kap, nem teljesített feltétel piros X-et és konkrét okot. Például alacsony szintnél
+`Harci szint 19 / 23`, rossz armor familynél pedig a tárgy által kért és a kasztod által viselhető
+páncéltípus is látszik. Ha egyszerre több feltétel hibás, mindegyik külön sorban megjelenhet.
 
 - **TERVRAJZ • szakma:** kategória, szükséges szakmaszint és jobb kattos tanulás; a tárgy neve nem ismétlődik külön recept-sorban;
 - **SZAKMAI ALAPANYAG / SZAKMAI TÁRGY:** forrás, feldolgozó szakma, felhasználás vagy crafted szerep; belső recept-típus nem jelenik meg csak azért, mert a configban létezik;
