@@ -1699,13 +1699,14 @@ Közös, Folia-biztos presentation foundation a semantic tooltip-szakaszokhoz, j
 
 > **Implementáció elkészült, vizuális staging-átvétel szükséges**
 
-Az IceSMP tárgytooltipjai közös sötét háttérre és nine-slice keretre épülnek. A vanilla tárgyak is
-megkapják az alap IceSMP chrome-ot; a canonical felszerelés rarity-accentet, a special-purpose
-tárgyak pedig kompakt kategória-sort, rövid mechanikai sorokat és másodlagos authored lore-t kapnak.
+Az IceSMP tárgytooltipjai közös, félig áttetsző füstös háttérre és vékony nine-slice keretre
+épülnek. A vanilla tárgyak is megkapják az alap IceSMP chrome-ot; a canonical felszerelés
+visszafogott rarity-accentet, a special-purpose tárgyak pedig kompakt kategória-sort, rövid
+mechanikai sorokat és másodlagos authored lore-t kapnak.
 A canonical gear azonos statjainak fix és rollolt része egy sorban jelenik meg, nem duplikáltan.
 
-- **Blueprint:** TERVRAJZ + szakma, recept, szakmaszint és jobb kattos feloldás.
-- **Profession item:** kompakt szakmai kategória, forrás/feldolgozó/felhasználás; a nem-canonical crafted outputok is profilt kapnak.
+- **Blueprint:** TERVRAJZ + szakma, kategória, szakmaszint és jobb kattos feloldás; a tárgynév nem ismétlődik külön recept-sorban.
+- **Profession item:** kompakt szakmai kategória, forrás/feldolgozó/felhasználás; a nem-canonical crafted outputok is profilt kapnak, belső recept-taxonomy nélkül.
 - **Fizikai valuta / erszény:** `VALUTA • <kanonikus kibocsátó>` vagy `ERSZÉNY`; a valuta rövid lore-t kap, az erszény tartalma bontásig rejtett marad.
 - **Relikvia:** rövid authored rendeltetés + tömör lore, szükség esetén külön használati sorokkal, Ereklye-accenttel.
 - **Küldetési / haladási tárgy:** authored rendeltetés és használati hint, külön quest/token profillal.
