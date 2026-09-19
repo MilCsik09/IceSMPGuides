@@ -12,8 +12,9 @@ tördelt és a kliensoldali inspection copy nem mutatja a vanilla attribute blok
 semantic jelölések nem függnek private-use font glyphoktól, így nem válhatnak tofu négyzetté.
 A belső fejlesztői artifactok külön, a normál debug/probe tárgyaktól elkülönített profilt kaptak.
 A második live visual kör után maga a chrome is V2-re váltott: a korábbi közel-opaque fekete panel
-helyett félig áttetsző, enyhén textúrázott/family-tintelt háttér készült; a rarity-keretek két fő
-pixelre vékonyodtak, a glow csak halvány kiegészítés, a sarkok rövid accent-bracketet kaptak.
+helyett félig áttetsző, enyhén textúrázott/family-tintelt háttér készült. A reference-kör után a
+frame új hierarchiát kapott: a felső rail és a sarkok viszik a rarity/family színt, az oldalsó és
+alsó perem sokkal halkabb, a glow minimális; a panel finom grain/weave textúrát használ.
 A következő screenshot-kör alapján a panel sötétebb lett (kb. 84–88% háttér-alfa), hogy a mögöttes
 inventory ne versenyezzen a body texttel. A canonical gear classificationje rövidebb, a rúnaállapot
 egy soros és finom divider választja el a fő statokat a követelményektől. A canonical felszerelés
