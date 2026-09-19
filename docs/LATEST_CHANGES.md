@@ -1,5 +1,23 @@
 # Mi változott a július 12-i szerververzió óta?
 
+## Campfire Story v2
+
+A korábbi egysoros tábortűz-flavor helyét közös, időzített szájhagyomány-session vette át.
+Egy konkrét égő campfire egyszerre egy történetet és egy perspektívát választ; minden,
+ugyanahhoz a tűzhöz leült játékos ugyanazokat a beat-eket ugyanabban a sorrendben hallja.
+A futó meséhez később is lehet csatlakozni, a felálló hallgató pedig egyedül esik ki.
+
+A teljes authored tartalom külön canonical YAML-ban él:
+`content/lore/campfire-stories.yml`. Jelenleg 9 hosszabb történet szerepel benne, mindegyik
+`common/RED/BLUE/NEUTRAL/DARK` változattal. A frakciós szájhagyomány nem írhatja át a
+kánontényeket, de másképp oszthat felelősséget, dicsőséget és szégyent. A nyílt történetek
+nem fedik fel a világ rejtett mechanikáit, az Első Csend valódi természetét vagy a harmadik mondat
+tartalmát.
+
+A session anti-spam és a játékos jutalom-cooldown külön működik: aki már nem jogosult új XP-re,
+attól még hallgathat új történetet. A campfire-session a tűz régióján fut, a játékosüzenetekhez
+Folia-kompatibilisen az adott játékos entity schedulerére lép át.
+
 A tárgytooltip-rendszer külön profilokat kapott a tervrajzokhoz, szakmai alapanyagokhoz és
 craftolt profession tárgyakhoz, fizikai valutákhoz, erszényekhez, relikviákhoz,
 küldetési/progression tárgyakhoz, ládakulcsokhoz, rúnákhoz és utility itemekhez, valamint a belső
