@@ -1715,4 +1715,3 @@ A canonical gear azonos statjainak fix és rollolt része egy sorban jelenik meg
 - **Társ-kellék / Ostromeszköz / Lélekkapocs:** a capture-idéző tárgyak, az Ostromágyú és a személyes class artifact is saját, funkciót magyarázó profilt kap.
 - **Belső fejlesztői artifact:** a debug/probe itemektől elkülönített, production-minőségű presentation profilt kap; részletei nem részei a nyilvános feature-katalógusnak.
 - **Fontos határ:** a profile renderer csak presentationt épít; PDC identity, ownership, recept, valuta, relic és DEV-artifact authority nem költözik át a tooltip-rétegbe.
-
