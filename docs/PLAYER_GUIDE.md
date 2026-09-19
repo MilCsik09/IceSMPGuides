@@ -972,12 +972,28 @@ A szezon végén jutalom és új pontverseny jön.
 
 Tábortűzi történethez ülj le egy olyan székre vagy ülőblokkra, amelytől egy főirányban
 pontosan egy üres blokk, majd egy égő normál vagy lélektűz-campfire áll. A közvetlen
-tábortűz-kattintás nem indít mesét; a kivárás és a jutalom pillanatában is ugyanazon
-a széken kell ülnöd, és az elrendezésnek változatlannak kell maradnia. A krónikák
-megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt. Egyes világhelyek vagy
-NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat már
-aktiválta őket. Ha nem találod őket, az nem feltétlenül rejtvény: kérdezz rá
-az adminoknál vagy nézd meg a szerver közleményeit.
+tábortűz-kattintás nem indít mesét.
+
+A tűz most valódi **közös történet-sessiont** indít. Néhány másodperces gyülekezés után
+egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél minden leült
+játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. Ha később ülsz le,
+a futó történet következő részénél csatlakozol; nem indul neked külön random mese.
+
+A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
+Van semleges krónikás változat, illetve Láng-, Fagy-, Menedék- és Thanaopolis-nézőpont.
+A frakciós változatok a tényeket nem írják át, de azt már igen, hogy kit tartanak
+hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény több közösség
+szájhagyományában egészen másnak érződhet.
+
+A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
+játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
+sessiont. Ha felállsz, túl messz mész, elalszik a tűz vagy megszűnik a szükséges
+`szék → levegő → campfire` elrendezés, kikerülsz a hallgatók közül.
+
+A krónikák megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt.
+Egyes világhelyek vagy NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat
+már aktiválta őket. Ha nem találod őket, az nem feltétlenül rejtvény: kérdezz rá az
+adminoknál vagy nézd meg a szerver közleményeit.
 
 ---
 
