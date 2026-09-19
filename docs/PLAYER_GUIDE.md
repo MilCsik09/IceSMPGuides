@@ -980,15 +980,35 @@ játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. Ha későb
 a futó történet következő részénél csatlakozol; nem indul neked külön random mese.
 
 A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
-Van semleges krónikás változat, illetve Láng-, Fagy-, Menedék- és Thanaopolis-nézőpont.
-A frakciós változatok a tényeket nem írják át, de azt már igen, hogy kit tartanak
+A jelenlegi gyűjtemény **135 alaptörténetet és 675 hallgatható változatot** tartalmaz:
+minden történetnek van common, Láng-, Fagy-, Menedék- és Thanaopolis-nézőpontja.
+A különböző változatok a kánontényeket nem írják át, de azt már igen, hogy kit tartanak
 hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény több közösség
 szájhagyományában egészen másnak érződhet.
 
+Nem kell a saját frakciódba zárva maradnod: annak hangja és a common változat gyakoribb,
+de idővel más közösségek verzióit is hallhatod. A rendszer előnyben részesíti a még
+nem hallott történeteket és nézőpontokat, és kerüli a közelmúlt ismétléseit. Ahogy
+közeledsz a teljes gyűjteményhez, az utolsó hiányzó változatok is egyre kedvezőbb
+súlyozást kapnak.
+
+Csak az számít összegyűjtött történetnek, amelyet a session elejétől a végéig
+végighallgattál. Ha egy már futó meséhez később ülsz le, ugyan bekapcsolódhatsz a
+következő résznél, de az a változat még nem kerül be a saját collectionödbe.
+
+A tábortűzi gyűjteményhez külön presztízs-elérések tartoznak. Az első történettől a
+10 és 50 különböző mesén át eljuthatsz a **Krónikás** című mérföldkőig, majd egy
+történet minden nézőpontjának meghallgatásáig. A végső **A világ emlékezete** eléréshez
+minden történetet minden authored nézőpontból végig kell hallgatnod. Ezek nem adnak
+harci vagy gazdasági erőbónuszt, és a már megszerzett elérésedet egy későbbi
+story-bővítés sem veszi el. Az állapotot az `/achievements` felületén látod.
+
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
-sessiont. Ha felállsz, túl messz mész, elalszik a tűz vagy megszűnik a szükséges
-`szék → levegő → campfire` elrendezés, kikerülsz a hallgatók közül.
+sessiont. A mesék több ütemben, olvasható tempóban futnak; a legtöbb nagyjából egy
+perc körüli élmény, nem többperces chatfal. Ha felállsz, túl messz mész, elalszik a
+tűz vagy megszűnik a szükséges `szék → levegő → campfire` elrendezés, kikerülsz a
+hallgatók közül.
 
 A krónikák megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt.
 Egyes világhelyek vagy NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat
