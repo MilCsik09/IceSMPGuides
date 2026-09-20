@@ -2065,6 +2065,18 @@ runtime viselkedést fedik; staging-bizonyíték nélkül nem pipálhatók ki.
     eventprofilnál a debug is ugyanazt a limitált terrain-expansion fázist használja.
 13. `/events worldboss`, `invasion`, `escort` és `meteor`: az első válasz csak a
     keresés indulását jelezze; tényleges sikerüzenet/broadcast csak valódi spawn után legyen.
+14. Treasure 80 blokkos, régészet 250 blokkos és rontás 96 blokkos rough anchorral:
+    a közös guard több jelöltet próbáljon, ne egyetlen random X/Z ponton bukjon el; az
+    állatvándorlás maradjon a lokális announce-sugáron belül.
+15. Invázió-hullám és rontás-hullám: a játékosok eventhez érkezése ne tiltsa le a belső
+    mobspawnokat; minden mob saját régióján exact safe standing Y-t kapjon.
+16. Világboss + invázió egyazon world-event tick ablakban: az első folyamatban lévő
+    spawnkeresés már foglalja a MajorEventGate-et, a második természetes event ne induljon el.
+17. Meteor chunk-középen és chunkhatár közelében: a kráter footprintje legfeljebb ±7 blokk,
+    így egyetlen Folia-régióból ne mutáljon szomszédos chunkot.
+18. `/events caravan|treasure|wild-hunt|cultists|stranger|corruption|archeology` adminindítás:
+    az első üzenet csak a keresés/indítás sorba állítását jelezze; siker csak a tényleges
+    event callback/broadcast legyen.
 
 #### Frakció-névszínek
 

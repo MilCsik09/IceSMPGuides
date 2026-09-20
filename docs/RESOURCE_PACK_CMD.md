@@ -525,6 +525,12 @@ A frakció-akcentek angol fordítása a prompthoz: RED = „glowing ember orange
 - **Színvilág:** sötét ibolya; akcent: hideg lila derengés
 - **Hangulat / lore:** Démon-pecsét — a Boszorkánymester paktum-tokenje; egy név a szilánkban, egy démon a hívásra.
 
+### `capture_pet_armor` — Társvért
+- **Fájl:** nincs külön IceSMP PNG; a modell a vanilla `minecraft:item/leather_horse_armor` textúrát használja &nbsp;|&nbsp; **Alap-item:** `LEATHER_HORSE_ARMOR`
+- **Ábrázolás:** stabil vanilla bőrlóvért fallback, amíg külön Társvért-ikon nem készül
+- **Színvilág:** barna bőr; akcent: arany név és companion-tooltip
+- **Hangulat / lore:** Mesterien szabott társ-felszerelés; jobb katt a saját aktív companionon, és tartós armor/HP bónuszt ad.
+
 ## Spell-reagensek
 
 ### `spell_demonic_circle` — Démoni Só
