@@ -345,6 +345,7 @@ Központi játékosmenük, karakteradatok, tematikus navigáció és jogosultsá
 - **Így találkozol vele:** `/menu`, `/profile` és több tematikus parancs GUI-megnyitása. Parancs: /menu (alias: /hub, /m); /profile (alias: /char, /karakter, /status). GUI: Főmenü és tematikus parancsmenük; Karakterlap; Specializációk; Szakmaválasztó; Talent-fa.
 - **Kinek szól:** Játékos, Admin, Tesztelő.
 - **Mitől mozdul meg:** Kizárólag parancs vagy GUI-kattintás.
+- **Egységes first-party keret:** a `/profile`, a `/menu` főhub és minden tematikus `/menu` almenü frakciószínezett resource-pack shell családot használ. A command-menu shell sorhelyesen 27/36/45/54 slotos, ezért az almenük eredeti mérete és slotkiosztása nem változik. A háttér-, spacing- és badge-glyphök saját fontkomponensben maradnak; a látható címek és tooltip-szövegek explicit vanilla fontot kapnak, így custom bitmap font nem öröklődhet normál karakterekre.
 - **Ami még kellhet hozzá:** Nincs kötelező világépítési feladat; resource-pack modellek megjelenését ellenőrizni kell.
 - **Fontos határ:** Egyes csempék csak akkor aktívak, ha a kapcsolódó rendszer és permission elérhető.
 
@@ -566,7 +567,7 @@ Pontelosztás, követelmények, attribútumhatások, skill-tree GUI és respec.
 
 > **Aktív és játékosok számára elérhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state kezelés, kedvencek, mastery és varázskönyv.
+Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state kezelés, opcionális aktív spell-lista, mastery és varázskönyv. Üres saját lista mellett minden feloldott spell használható; ★ jelölésekkel legfeljebb hét spellből álló custom lista aktiválható. A Lélekkapocs item-cooldown overlaye mindig a kiválasztott spell hátralévő cooldownját követi.
 
 - **Így találkozol vele:** `/spell`, `/spellbook`, kasztparancs spellágai és Spellbook GUI. Parancs: /spell (alias: /mastery, /mesterseg, /spells); /spellbook (alias: /konyv, /sb, /varazskonyv). GUI: Varázskönyv.
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
@@ -579,7 +580,7 @@ Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state ke
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.job`
 - Config: `spells.*`, `spell-balance.*`, VFX- és ability-beállítások.
-- Tartós állapot: Unlock, kedvenc és mastery játékosonként tartós; aktív cast/state runtime.
+- Tartós állapot: Unlock, aktívlista-jelölések (a meglévő favorites mezőben) és mastery játékosonként tartós; aktív cast/state runtime.
 - Reload: Balance castkor olvasható; registry/új spell struktúraváltása restartot igényel.
 
 </details>
@@ -682,7 +683,7 @@ mobility/crit/sustain, Mail hybrid/resistance, Plate armor/HP/mitigation budgete
 hangsúlyoz. Csak a katalógusban tényleges consumerrel rendelkező stat használható.
 
 Wrong-family vagy túl magas szintű authored gear birtokolható, rúnázható, listázható
-és megvehető; csak az aktív használata tiltott. A kapu minden canonical armor-,
+és megvehető; csak az aktív használata tiltott. Egy armor-family tárgy main/offhandben csak hordozott tárgy: nem számít equipped duplicate-nak, nem tilthatja le és nem vetetheti le a saját slotjában viselt másik példányt. A kapu minden canonical armor-,
 mainhand- és offhand-úton a jelenlegi kasztszintet hasonlítja az adott ascension-stage
 `level-requirement` értékéhez. Tiltott, no-class vagy underlevel equip nem ad fixed/rolled statot, setet,
 Signature-t, rúnahatást vagy CombatPowert. A market ArmorFamily szerint szűrhető
@@ -817,28 +818,33 @@ szájhagyomány-rendszer; nem azonos a teljes tervezett lore-ral. A campfire-ré
 flavor-proc: egy konkrét égő tűz egyetlen időzített történet-sessiont birtokol, ezért az ugyanahhoz
 a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós perspektívát hallják.
 
-- **Így találkozol vele:** `/kronika`, `/emlek`, `/lore`; dialógus- és történeti triggerek. Parancs: /emlek (alias: /emlekek, /memory); /kronika (alias: /chronicle); /lore (alias: /kodex).
+- **Így találkozol vele:** `/kronika`, `/emlek`, `/lore`; dialógus- és történeti triggerek. Parancs: /emlek (alias: /emlekek, /memory); /kronika (alias: /chronicle); /lore (alias: /kodex). A `/lore` argumentum nélkül a canonical `content/lore/codex-topics.yml` publikus lapjait kategóriákban listázza; a szócikkek és aliasok nem Java-konstansok.
 - **Kinek szól:** Játékos, Builder, Eventes, Tesztelő.
 - **Mitől mozdul meg:** Felfedezés, konfigurált történeti esemény, illetve sikeres leülés egy `szék → 1 üres blokk → égő campfire` elrendezésben; a campfire közvetlen kattintása nem trigger.
-- **Tábortűzi mesék:** 9 hosszabb authored story × `common/RED/BLUE/NEUTRAL/DARK` perspektíva. A frakciós változat ugyanazokat a kánontényeket tartja meg, de más hangsúllyal, elfogultsággal és szóhasználattal.
-- **Közös session:** a futó meséhez később leülő játékos a következő beatnél csatlakozik; nem kap saját random történetet.
-- **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
+- **Tábortűzi mesék:** 135 alaptörténet × `common/RED/BLUE/NEUTRAL/DARK` perspektíva, összesen 675 hallgatható változat. Ebből 20 **Krónika** a kódexhez szorosan kötött feljegyzésszerű elbeszélés, 115 pedig explicit **Szájhagyomány**: lore-horgonyos helyi népmonda/utólagos értelmezés, amely nem hoz létre új kánontényt. Minden story saját `shared-beats` narratív gerincet kap, amelyet a runtime a kiválasztott perspektíva közepébe illeszt: így a közös történeti esemény hosszabb és koherens marad, miközben a frakciós torzítás továbbra is a saját variant beatjeiben él. A jelenlegi corpus minden Szájhagyomány-változata legalább 100 szavas / 7 beates, minden Krónika legalább 150 szavas / 9 beates; a medián kb. 117, illetve 186 szó.
+- **Közös session:** a futó meséhez később leülő játékos a következő beatnél csatlakozik; nem kap saját random történetet. A collectionbe viszont csak az a változat kerül, amelyet a játékos a session elejétől a végéig végighallgatott.
+- **Fair választás:** a saját frakció és a common hang súlyozottan gyakoribb, de minden authored perspektíva hallható. A még nem hallott story/variáns erős súlybónuszt kap, a közelmúlt exact ismétlése kiesik, ugyanazon story rövid időn belüli újrajátszása pedig büntetett. 80% collection fölött külön completion-assist simítja az utolsó hiányzó variánsok RNG-jét.
+- **Collection és elérések:** a PlayerProfile tartósan őrzi a hallott story→perspektíva párokat. Mérföldkövek: 1 / 10 / 50 külön story, minden alaptörténet legalább egy nézőpontból, egy story összes nézőpontja, végül **A világ emlékezete** minden story minden változatáért. Ezek presztízs-elérések; nem adnak harci vagy gazdasági erőbónuszt, és egy már megszerzett elérés későbbi katalógusbővítéskor sem kerül visszavonásra. Mind a hat mérföldkő a JAR-datapack natív Minecraft advancement-fáján is megjelenik és toastot ad; a durable PlayerProfile unlock az authority, a natív advancement ennek idempotens projekciója/backfillje.
+- **Krónikák GUI és visszaolvasás:** az `/achievements` felület és a `/lore tortenetek` ugyanazt a lapozható collection nézetet nyitja. A hallott storyk címét, `lore-anchor` fejezetét és perspektíva-progressét megmutatja, a még ismeretlen storyk címét/tartalmát spoilermentesen elrejti. Ismert storyra kattintva csak a ténylegesen végighallgatott perspektívák nyithatók meg teljes Minecraft könyvként. A GUI ugyanazt az egyszer, startupkor felépített immutable `CampfireStoryCatalog` példányt használja, mint a runtime selector; nincs GUI-megnyitásonkénti content-újraparszolás.
+- **Prezentáció:** alapból a story címe/típusa/nézőpontja **és minden teljes beat** bekerül a chatbe, így a teljes mese visszaolvasható transcriptként megmarad. Ezzel párhuzamosan az aktuális beat action baron fut: a hosszabb szöveget a runtime természetes írásjeleknél próbálja törni (mondatvég → pontosvessző/kettőspont → vessző/gondolatjel → szóhatár), alapból legfeljebb 88 karakteres részekre. A szegmensek saját olvasási idejük után, sorban lépnek tovább, és a következő beat csak a teljes actionbar-sorozat után indulhat. A story cím/típus/nézőpont alapból chatben **és actionbaron** megjelenik a felolvasás elején. A presentation flag-ek (`title-chat`, `title-actionbar`, `transcript-chat`, `beat-chat`, `beat-actionbar`, `actionbar-max-characters`) reloadolhatók. A `transcript-chat` külön új default, ezért régi deployed `beat-chat: false` mellett is megmarad a visszaolvasható chatmásolat.
+- **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A kis XP-jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
 - **Ami még kellhet hozzá:** Történeti helyszínek, NPC-k és aktiváló blokkok/területek előkészítendők.
-- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a LORE.md/TEASER.md önmagában nem implementáció. A rejtett rendszerek és a világ legmélyebb megfejtései nem kerülnek a nyílt campfire poolba.
+- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a `LORE.md` a kánon authority, a `tradition: folklore` tábortűzi mesék nem írhatják felül. A campfire oral history szándékosan **nem Prologue-gated**: Season 0 alatt is mind a 135 authored story hallható. A rejtett rendszerek és a világ legmélyebb megfejtései nem későbbi flag mögött várnak, hanem eleve nem kerülnek a nyílt campfire poolba.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
 
 - Permission: —
-- Operator config: `campfire-story.*` a `config/general.yml` fájlban (start delay, listener radius, session/reward cooldown, faction-perspective chance).
-- Authored content: `content/lore/campfire-stories.yml` — weighted storyk, perspektívák és időzített beat-ek; locked canonical content, módosításához restart kell.
-- Tartós állapot: a campfire session runtime-only; a játékos XP-jutalom cooldownja PlayerProfile-ban tartós. Felfedezett emlékek és krónikaállapot külön tartós.
-- Folia: a session a campfire régióján ütemez, a hallgatókhoz saját entity scheduleren lép át.
-- Reload: operator tuning reloadolható; authored campfire story tartalom restart-required.
+- Operator config: `campfire-story.*` a `config/general.yml` fájlban (start delay, listener radius, pacing, session/reward cooldown, repeat window és collection-aware selection súlyok).
+- Authored content: `content/lore/codex-topics.yml` — a `/lore` publikus, spoiler-safe kódexlapjai és aliasai; csak a `docs/LORE.md` kánontényeit rövidítheti, nem hozhat létre folklórt vagy rejtett megfejtést. `content/lore/campfire-stories.yml` — 135 weighted alaptörténet, öt perspektíva, story-szintű `shared-beats` narratív gerinc és időzített variant beat-ek; mindkettő Git-authored, restart-required tartalom. Minden story kötelező `lore-anchor` mezővel kötődik a Kódex I–VIII. fejezetének egyikéhez. A `tradition: folklore` explicit jelöli azokat a szájhagyományos történeteket, amelyek lore-horgonyosak, de részleteik nem válnak ettől kánonná; a kánon authority továbbra is `docs/LORE.md`. A runtime alapértelmezett pacingje 90 s minimum story-idővel, 6–22 s beat-ablakkal, 10.5 karakter/s alap olvasási tempóval és szöveghossz-alapú skálázással dolgozik.
+- Tartós állapot: maga a campfire session runtime-only; a hallott story/perspektíva collection, a bounded recent-variant history, a prestige achievementek és az XP-jutalom cooldownja PlayerProfile-ban tartós.
+- Folia: a session a campfire régióján ütemez, a hallgatókhoz saját entity scheduleren lép át; collection credit csak végighallgatás után íródik.
+- Reload: operator pacing/selection tuning reloadolható; authored campfire story tartalom restart-required.
 
 </details>
 
 ### Társak és befogás
+- A durable társ **csak akkor kap XP-t, amikor ténylegesen meg van idézve**. Dismisskor az aktuális HP Profile v2 állapotba kerül, újraidézéskor ugyanarról az abszolút HP-ról folytatja; halálkor ez a mentett HP törlődik, ezért a death cooldown utáni revive max HP-val tér vissza. Harcon kívül a társ konfigurálható késleltetés után lassan regenerál.
 
 <!-- icesmp-doc-id: feature.progression.pets -->
 
@@ -1106,10 +1112,37 @@ footprint- és partvizsgálatot pedig legfeljebb 7 blokkos, egy Folia-régión
 belüli körre korlátozza. Így egy jelölt csak egy chunkot fogyaszt a keresési
 keretből. A guard ugyanabban a chunkban több biztonságos oszlopot is kipróbál;
 ha a már generált terepen nincs megfelelő hely, a nagy események külön,
-24 chunkra és 768 blokkra korlátozott aszinkron terepbővítő mentőfázist kapnak. Az escort
-útvonala és az invázió külső hulláma saját, egyoszlopos belső profilt használ.
-Adminindításkor a parancs először csak a keresés
-elindulását igazolja, tényleges sikert az esemény spawn utáni broadcastja jelez.
+24 chunkra és 768 blokkra korlátozott aszinkron terepbővítő mentőfázist kapnak.
+A treasure, régészet, rontás és állatvándorlás saját, kisebb léptékű profilból keres,
+így nem öröklik tévesen a nagy world-eventek 192+ blokkos távolságkapuját. Az escort
+útvonala, az invázió külső hulláma és a rontás belső mobhulláma külön egyoszlopos
+profilt használ. A major-event orchestrator már a folyamatban lévő spawnkeresést is
+aktív foglalásnak tekinti, ezért két nagy esemény nem tud ugyanabban az ablakban
+egyszerre átcsúszni a kapun; a természetes Blood Moon trigger is tiszteletben
+tartja ezt a kaput, míg az admin force továbbra is explicit felülbírálás.
+A kultista rítusból nyíló rontás külön `corruption-scripted` profilt használ:
+a jelen lévő résztvevők nem tolják el a gócot a rítushelytől, miközben a claim-,
+WorldGuard-, víz-, terep- és border-védelem tovább él.
+A blokkot módosító események restart-határa is védett: a meteor többblokkos recovery
+journalja mellett az elrejtett kincs is write-ahead `treasure-restore.yml` naplót és
+egyedi chest-markert használ. Crash/restart után csak a saját eventládáját állítja
+vissza; idegenül lecserélt blokkot nem ír felül.
+A játékos-indított frakciókaraván gazdasági lifecycle-ja is durable: a kasszalevonás
+idempotens treasury-receipttel, a teljes pending/aktív művelet
+`player-caravan-recovery.yml` journallal fut. Crash/restart esetén a rendszer a receipt
+alapján pontosan egyszer rendezi a refund/success/robbery/loss kimenetet; stale spawn
+callback nem vehet át egy újabb karavánműveletet.
+A lifecycle lezárás minden eventnél explicit: az invázió champion-spawn nélkül nem indul,
+a pending wave-ek kifutása után csak az utolsó élő inváziós mob eltűnésével zárul; a
+kultista event nulla spawn esetén nem broadcastol sikert. A vándorcsorda transient és
+alapból 300 másodperc után eltűnik, jutalom csak tényleges csordaspawn után jár. A
+Stranger és DARK ambient population disable közben is cleanupol, a már elindított async
+spawn callbackek pedig a master toggle-ot újraellenőrzik materializálás előtt. A Season Finale boss sem guard-bypass többé: külön,
+fővárosfal-közeli profillal lazítja a territory/player-distance szabályt, miközben
+a víz-, terep-, border- és Folia-footprint ellenőrzés megmarad; a tartós
+„már spawnolt” receipt csak valódi entity-spawn után íródik. Adminindításkor a
+parancs először csak a keresés elindulását igazolja, tényleges sikert az esemény
+spawn utáni broadcastja jelzi.
 
 - **Így találkozol vele:** `/events`; admin eventindítók és automatikus eseménytriggerek. Parancs: /events (alias: /esemeny, /event).
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
@@ -1186,6 +1219,7 @@ Szezonállapot, jutalmak, történetmesélés, finálé, monumentum, holiday, am
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
 Mobskálázás, loot table, dungeon/mob jutalom, minionvédelem, bestiárium és undead
+- A spellből idézett ideiglenes minionok nem ragadnak az első célponton: ACTIVE állásban átveszik a gazda új combat célpontját, amikor a gazda megtámad valakit vagy valaki a gazdát támadja. A durable pet külön PetManager authorityn marad.
 segédszabályok. A combat gear-sor releváns forrásnál authored Itemization 2.0
 template-et választ: level/class/spec/build/üres slot/forrás legfeljebb 1,5× súlyt
 adhat, az utolsó legfeljebb 32 drop pedig csak enyhe, nem garantált diverzitási

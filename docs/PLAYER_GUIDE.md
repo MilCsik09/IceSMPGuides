@@ -474,8 +474,12 @@ A játékbeli spellkönyv mindig a tényleges, jelenlegi árat írja ki.
   ismételd.
 - Egyes képességek egymás után használva **kombót** vagy kombóláncot nyitnak.
 - Játékosok ellen az ismételt kemény kontroll rövid időn belül gyengülhet.
-- A kedvenceket a spellkönyvben megjelölve a váltás csak a fontos
-  képességeiden lépkedhet.
+- **Alapból minden feloldott képességed használható és ciklázható**; nincs kötelező hétspelles alaplimit.
+- Shift-kattal legfeljebb hét spellből saját **aktív listát** állíthatsz össze. Amíg van legalább
+  egy ★ jelölésed, a váltás és a gyors slotok ezen a listán dolgoznak; ha minden ★ jelölést leveszel,
+  automatikusan visszaáll a „minden feloldott spell” mód.
+- A Lélekkapocs cooldown-sötétítése mindig az **éppen kiválasztott spell** hátralévő cooldownját
+  mutatja, akkor is, ha a kliens gyors slotjából közben másik spellt sütöttél el.
 
 ### Spell-mesterség
 
@@ -976,19 +980,74 @@ tábortűz-kattintás nem indít mesét.
 
 A tűz most valódi **közös történet-sessiont** indít. Néhány másodperces gyülekezés után
 egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél minden leült
-játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. Ha később ülsz le,
-a futó történet következő részénél csatlakozol; nem indul neked külön random mese.
+játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. A cím, a
+Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben. **Minden teljes
+történetrész is bekerül a chatbe**, ezért később vissza tudod görgetni a teljes mesét.
+Ez külön transcript-beállítás, így egy régebbi szerverkonfigban maradt actionbar-only
+`beat-chat` érték sem kapcsolja ki véletlenül.
+Ezzel párhuzamosan az aktuális rész az action baron is megjelenik; a hosszabb mondatokat
+a rendszer rövidebb, egymást követő actionbar-részletekre bontja, hogy kisebb GUI-skálán
+se lógjanak le a képernyőről. A következő történetrész csak az előző actionbar-szegmenseinek
+végigolvasása után indul.
+Ha később ülsz le, a futó történet
+következő részénél csatlakozol; nem indul neked külön random mese.
 
 A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
-Van semleges krónikás változat, illetve Láng-, Fagy-, Menedék- és Thanaopolis-nézőpont.
-A frakciós változatok a tényeket nem írják át, de azt már igen, hogy kit tartanak
-hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény több közösség
-szájhagyományában egészen másnak érződhet.
+A jelenlegi gyűjtemény **135 alaptörténetet és 675 hallgatható változatot** tartalmaz:
+minden történetnek van common, Láng-, Fagy-, Menedék- és Thanaopolis-nézőpontja.
+A mesék már nem rövid lore-villanások: minden történet kap egy hosszabb, közös narratív
+gerincet, amely köré a választott nézőpont saját értelmezése épül. A Szájhagyományok
+legalább 100 szavasak, a nagyobb Krónikák legalább 150 szavasak; utóbbiak jellemzően
+jóval hosszabbak. A különböző változatok a kánontényeket nem írják át, de azt már igen,
+hogy kit tartanak hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény
+több közösség szájhagyományában egészen másnak érződhet.
+
+A tűz a cím mellett azt is kiírja, hogy **Krónika** vagy **Szájhagyomány** következik.
+A Krónika a kódexben rögzített események feljegyzésszerű elbeszélése. A Szájhagyomány
+szintén a világ ismert lore-jából indul ki, de helyi népmondát, utólagos magyarázatot
+vagy bizonytalan részletet is tartalmazhat — ezeket ne kezeld új kánontényként csak
+azért, mert egy tábortűznél elhangzottak. A `LORE.md`-ben rögzített világkép marad a
+kánon authorityja.
+
+Nem kell a saját frakciódba zárva maradnod: annak hangja és a common változat gyakoribb,
+de idővel más közösségek verzióit is hallhatod. A rendszer előnyben részesíti a még
+nem hallott történeteket és nézőpontokat, és kerüli a közelmúlt ismétléseit. Ahogy
+közeledsz a teljes gyűjteményhez, az utolsó hiányzó változatok is egyre kedvezőbb
+súlyozást kapnak.
+
+Csak az számít összegyűjtött történetnek, amelyet a session elejétől a végéig
+végighallgattál. Ha egy már futó meséhez később ülsz le, ugyan bekapcsolódhatsz a
+következő résznél, de az a változat még nem kerül be a saját collectionödbe.
+
+A tábortűzi gyűjteményhez külön presztízs-elérések tartoznak. Az első történettől a
+10 és 50 különböző mesén át eljuthatsz a **Krónikás** című mérföldkőig, majd egy
+történet minden nézőpontjának meghallgatásáig. A végső **A világ emlékezete** eléréshez
+minden történetet minden ismert nézőpontból végig kell hallgatnod. Ezek nem adnak
+harci vagy gazdasági erőbónuszt, és a már megszerzett elérésedet egy későbbi
+story-bővítés sem veszi el. Ugyanez a hat mérföldkő az IceSMP saját Minecraft
+advancement-fáján is megjelenik és natív advancement toastot ad.
+
+Az `/achievements` felületén a **Krónikák** csempével, illetve közvetlenül a
+**`/lore tortenetek`** paranccsal külön collection nézetet nyithatsz: a már meghallgatott történetek címe, Kódex-fejezete és az öt nézőpont
+állapota látszik, az ismeretlen történetek címe és tartalma viszont addig rejtve
+marad. A 135 történet négy oldalon lapozható. Ha egy ismert történetre kattintasz,
+a már végighallgatott nézőpontjait teljes Minecraft könyvként bármikor újraolvashatod;
+ismeretlen perspektívát innen sem lehet előre megnyitni.
+
+A tábortűzi történetek **Season 0 / Prologue alatt sincsenek külön lezárva**. Ezek a világ
+múltjáról és ismert jelenéről szóló történetek, ezért már a prológus alatt is segítenek
+megérteni, milyen világba érkeztél. Ami valódi későbbi titok vagy rejtett rendszer, az nem
+egy láthatatlan Prologue-lock mögött vár: egyszerűen nincs benne a nyílt tábortűzi poolban.
 
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
-sessiont. Ha felállsz, túl messz mész, elalszik a tűz vagy megszűnik a szükséges
-`szék → levegő → campfire` elrendezés, kikerülsz a hallgatók közül.
+sessiont. A mesék több ütemben, olvasható tempóban futnak: a default pacing legalább
+kb. másfél percet hagy egy teljes történetre, a hosszabb Krónikák pedig jellemzően
+két perc körüli vagy hosszabb élményt adnak. A chatben minden beat egyszer kerül ki
+visszaolvasható transcriptként, az action bar pedig ugyanennek az aktuális részét rövid
+szegmensekben „felolvassa”. Ha felállsz, túl messz
+mész, elalszik a tűz vagy megszűnik a szükséges `szék → levegő → campfire`
+elrendezés, kikerülsz a hallgatók közül.
 
 A krónikák megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt.
 Egyes világhelyek vagy NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat
@@ -1239,11 +1298,21 @@ legtöbb művelet a `/menu` felületéről is elérhető.
 | `/bounty` | körözöttek |
 | `/events status` | aktív események |
 | `/kronika` | legutóbbi krónika |
-| `/lore <téma>` | nyilvános kódexlapok |
+| `/lore [téma]` | publikus kódexlapok; `/lore tortenetek` a már hallott campfire storyk visszaolvasásához |
 | `/komp [útvonal]` | kompjáratok |
 | `/parkour list` | pályák |
 | `/daily` | authored napi/heti megbízások a Küldetésnaplóban |
 | `/crate info <id>` | láda és kulcsinformáció |
+
+A **`/lore`** (alias: `/kodex`) a publikus, kánoni összefoglaló. A
+`/lore tortenetek` / `/lore mesek` / `/lore kronikak` ugyanakkor a saját,
+durable tábortűzi collectionödet nyitja meg; ott csak a már végighallgatott
+nézőpontokat tudod újraolvasni könyvként. Argumentum nélkül
+kategóriákban kilistázza a ténylegesen elérhető lapokat; például `/lore teremtes`,
+`/lore hasadas`, `/lore verhaboruk`, `/lore felsok`, illetve a birodalmak és
+fontos helyek saját lapjait. Ez nem ugyanaz, mint a tábortűzi Szájhagyomány: a
+`/lore` nem tesz helyi mendemondát kánonná, és nem fed fel rejtett Suttogó-/late-lore
+magyarázatot.
 
 ### Gazdaság és birtok
 

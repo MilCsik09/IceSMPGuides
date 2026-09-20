@@ -1005,8 +1005,8 @@ A release bundled `config/crates.yml` fájljában a `koznapi` crate permissionje
 
 | GUI | Megnyitás | Közönség / jog | Méret | Deployed státusz |
 |---|---|---|---|---|
-| Főmenü és tematikus parancsmenük | /menu, /achievements, /leaderboard; belső MENU/LB navigáció | Játékos; Admin panel jogosultság szerint / `Nincs a megnyitáshoz; minden célparancs saját jogát ellenőrzi` | 27/36/45/54, nézettől függően | Megváltozott |
-| Karakterlap | /profile | Játékos / `—` | 36 | Megváltozott |
+| Főmenü és tematikus parancsmenük | /menu, /achievements, /leaderboard; belső MENU/LB navigáció | Játékos; Admin panel jogosultság szerint / `Nincs a megnyitáshoz; minden célparancs saját jogát ellenőrzi` | főhub 54; almenü 27/36/45/54, nézettől függően | Megváltozott |
+| Karakterlap | /profile | Játékos / `—` | 54 | Megváltozott |
 | Kasztválasztó | Karakterlap /class kontextusból | Játékos / `—` | 54 | Megváltozott |
 | Szakmaválasztó | Karakterlap | Játékos / `—` | 45 | Megváltozott |
 | Specializációk | Karakterlap vagy /spec folyamat | Játékos / `—` | 54 | Megváltozott |
@@ -1030,6 +1030,8 @@ A release bundled `config/crates.yml` fájljában a `koznapi` crate permissionje
 
 ### GUI-biztonság
 
+- A first-party RP GUI-k title/background/badge bitmap-fontja kizárólag a privát glyph komponensre kerülhet; a látható cím, spec-/class-név és státusz explicit `minecraft:default` fontot használ. Tofu/négyzetes karakter = font-inheritance regresszió.
+- A `/menu` főhub és minden tematikus almenü a saját 27/36/45/54-slotos magasságához illeszkedő, frakciószínezett command-shellt használ; nincs kényszerített 54-slotra nagyítás. A command-shell glyphök append-only módon az eddigi class/progression private-use tartomány után kerülnek, ezért a már kiadott glyph ID-k nem mozdulnak el.
 - Kattintáskor mindig újra történjen permission- és célállapot-ellenőrzés.
 - Inventory edit, config, crate admin és gazdasági mutáció előtt rögzíts bizonyítékot.
 - GUI bezárása, célpont kilépése, reload vagy disable után ne maradjon függő session.
@@ -1221,7 +1223,7 @@ szerkesztendők és restart-required authorityk. Részletes authoring workflow:
 
 ### Itemization 2.0 Phase 4–5 üzemeltetés
 
-- Admin authored itemadás: `/iceitem template <template-id> [darab] [játékos]`.
+- Admin itemadás: `/iceitem` minden first-party item-producert lefed. Típusok: `unique`, `template`, `recept`, `relikvia`, `tervrajz`, `erszeny`, `kulcs`, `befogo`, `katalizator`, `valuta`, `ostrom`, `dev`. A `template` az összes canonical ItemTemplate-et, a speciális típusok pedig a saját factoryjukat használják; nincs kézzel barkácsolt admin item-stack.
   Az `admin:give` provenance miatt ez a példány salvage tiltott; ne használd production
   economy input előállítására.
 - A balance-kulcsok a `content/equipment/equipment.yml` `itemization.crafting`, `reroll`, `runes`,
@@ -1647,7 +1649,8 @@ mind külön staging-bizonyítékot kérnek.
 | [ ] | CLS-03 Capstone-próbák | Tesztelő | 50-es szint, teljesített kaszt-mesterpróba; megfelelő és eltérő spec kontroll | mind a 35 próba csak a megkövetelt aktív speccel vehető fel és csak a felsorolt sikeres castokat számolja; 18 után pontosan a saját capstone oldódik | quest/capstone rollout stop | `classes/CLS-03/` |
 | [ ] | CLS-04 Producer→consumer ciklus | Tesztelő | minden spec alap mechanikája feltöltve, majd fogyasztó és capstone külön | a HUD/state felépül, a fogyasztó egyszer és a megfelelő erővel költi el; nincs ingyenes vagy soha el nem fogyó mérő | érintett class tiltása vagy build rollback | `classes/CLS-04/` |
 | [ ] | CLS-05 Specváltás és lifecycle | Tesztelő | aktív mérő/töltet, combat grace, közeli ellenség, quit/kick/restart | tiltott váltás fail-closed; jogszerű váltás nem gyógyít és nem resetel erőforrást/cooldownt; spec-local transient állapot kitisztul | profil/log mentése, relog, rollout stop | `classes/CLS-05/` |
-| [ ] | CLS-06 Durable társ/roster | Tesztelő | Vadmester, Demonológus, Nekromanta és Szentségtelen; teli roster, dismiss, halál, relog | roster-limit cast előtt blokkol; egy képesség egy durable társat hoz létre, nem marad ideiglenes duplikátum; relog után ugyanaz az authority épül újra | live entity cleanup, profil megőrzése | `classes/CLS-06/` |
+| [ ] | CLS-05 Spell-minion assist/defend | Tesztelő | idézz több ideiglenes miniont, majd válts célpontot saját támadással; utána hagyd, hogy egy másik mob téged támadjon | az ACTIVE spell-minionok átveszik az új célpontot mindkét irányban; durable pet nem kerül a shared minion-retarget authority alá; PASSIVE/STAY minion nem retargetel | summon rollout stop | `classes/CLS-05/` |
+| [ ] | CLS-06 Durable társ/roster | Tesztelő | Vadmester, Demonológus, Nekromanta és Szentségtelen; teli roster, sérült pet dismiss→summon, halál→cooldown→summon, gazda-kill aktív és dismisselt pet mellett | roster-limit cast előtt blokkol; dismisselt/offline pet nem kap XP-t; dismiss→summon ugyanazt a HP-t állítja vissza; halál utáni revive max HP-s; harcon kívül a konfigurált késleltetés után regen indul; relog után ugyanaz az authority épül újra | live entity cleanup, profil megőrzése | `classes/CLS-06/` |
 | [ ] | CLS-07 Szentségtelen ghúlmutáció | Tesztelő | tartós ghúl és ghúl nélküli kontroll, Dögvész-burstök, relog | ghúl nélkül nincs hamis fejlődés; ghúllal a bounded mutation stage Profile v2-ben nő, tényleges buffot ad és relog után megmarad | társprofil/log mentése, rollout stop | `classes/CLS-07/` |
 
 ### Frakciótagság és frakciópasszívok
@@ -1833,9 +1836,19 @@ ellenőrizd; normál beszedési útvonal nincs.
 | [ ] | SIT-16 Nem támogatott pózok | Tesztelő | lay/crawl/stack/player/NPC próbák | IceSMP nem kínál ilyen útvonalat | command/plugin ütközés vizsgálata | `sit/SIT-16/` |
 | [ ] | SIT-17 Campfire geometria | Builder/tesztelő | `campfire → 1 levegőblokk → ülőblokk` mind a négy főirányban; click és `/sit`; majd felállás/köztes blokk kitöltése/tűz eloltása | csak sikeres ülés indít; az érintett hallgatóhoz ugyanaz a szék, üres köz és égő tűz kell | story trigger kikapcsolása, sit megtartása | `sit/SIT-17/` |
 | [ ] | SIT-18 Közös story session | 3–4 tesztelő | több ülőblokk ugyanahhoz az égő tűzhöz; közel egyszerre üljetek le | egyetlen story+perspective választás történik; minden résztvevő ugyanazokat a beat-eket ugyanabban a sorrendben kapja | campfire-story kikapcsolása | `sit/SIT-18/` |
-| [ ] | SIT-19 Join/leave közben | 3 tesztelő | ketten indítsanak sessiont; harmadik a mese közepén üljön le; egyik korábbi hallgató álljon fel | későn érkező a következő beatnél csatlakozik, felálló egyedül kiesik, a többiek története folytatódik | join-in-progress false vagy story trigger stop | `sit/SIT-19/` |
-| [ ] | SIT-20 Perspektíva-torzulás | Tesztelő/admin | `faction-perspective-chance-percent: 100`; starterrel RED/BLUE/NEUTRAL/DARK külön próbák | sessionenként egy frakciós változat; minden hallgató ugyanazt hallja; kánontény nem változik, csak hangsúly/értelmezés | állítsd 0-ra a faction chance-et | `sit/SIT-20/` |
+| [ ] | SIT-19 Join/leave és collection credit | 3 tesztelő | ketten a start előtt üljetek le; harmadik a mese közepén csatlakozzon; egyik teljes hallgató álljon fel a vége előtt | későn érkező a következő beatnél csatlakozik, de nem kap collection creditet; a felálló sem kap; aki elejétől végéig marad, pontosan egy story+perspective bejegyzést kap | `join-in-progress: false` vagy story trigger stop | `sit/SIT-19/` |
+| [ ] | SIT-20 Perspektíva-súlyozás | Tesztelő/admin | külön tesztprofilokkal RED/BLUE/NEUTRAL/DARK starter; ideiglenesen emeld az `own-faction-multiplier`, majd a `foreign-multiplier` értékét | a session minden hallgatónak egy közös perspektívát ad; saját/common gyakoribb lehet, de foreign perspektíva sem válik elérhetetlenné; kánontény nem változik | selection tuning visszaállítása, `/icesmp reload` | `sit/SIT-20/` |
 | [ ] | SIT-21 Cooldown-szétválasztás | Tesztelő/admin | jutalom-cooldownos játékos csatlakozzon új sessionhöz; ugyanazt a tüzet próbáld azonnal újra | a játékos jutalom nélkül is hallgathat; player reward cooldown és fire session cooldown egymástól független | XP 0 / session cooldown emelés | `sit/SIT-21/` |
+| [ ] | SIT-22 Tartós story collection | Tesztelő/admin | hallgass végig egy ismert story/perspective párt, majd reconnect és szerver-restart; ellenőrizd a PlayerProfile achievement sectiont | a `campfire_story_heard` story→perspektíva pár és a bounded `campfire_story_recent` history tartós; ugyanaz a variáns újrahallgatva nem növeli kétszer a collectiont | profil-backup, campfire rollout stop | `sit/SIT-22/` |
+| [ ] | SIT-23 Fair RNG és ismétlésvédelem | Tesztelő/admin | kis kontrollált tesztpool; `recent-variant-window: 24`, magas `unseen-variant-multiplier`; több egymás utáni session | amíg van más eligible variáns, a recent exact variáns nem ismétlődik; unseen story/variáns nagyobb súlyt kap; ugyanazon event más perspektívája később továbbra is hallható | selection tuning visszaállítása | `sit/SIT-23/` |
+| [ ] | SIT-24 Completion assist | Tesztelő/admin | tesztprofilon töltsd 80% fölé az eligible variáns-collectiont; hagyj néhány ismert hiányt | a hiányzó variánsok további súlybónuszt kapnak, de nincs determinisztikus kényszerpick és nincs phase-ceiling megkerülés | `completion-assist-multiplier: 1.0` | `sit/SIT-24/` |
+| [ ] | SIT-25 Campfire achievement lánc | Tesztelő/admin | külön profilokkal teljesíts 1/10/50 storyt, minden alaptörténetet legalább egyszer, egy story öt perspektíváját, végül a teljes aktuális 135×5 collectiont | a hat prestige achievement egyszer oldódik fel és megjelenik az `/achievements` GUI-ban; mind a hat megfelelő `icesmp:campfire_*` datapack advancementet is kiadja natív toasttal; nincs erő-/valutajutalom; már durable unlockkal rendelkező profil reconnect/tick után visszatöltve is megkapja a hiányzó natív advancementet; későbbi story-hozzáadás nem vonja vissza a badge-et | achievement/profile backup, advancement datapack rollback | `sit/SIT-25/` |
+| [ ] | SIT-26 Katalógus, lore-típus és Prologue-függetlenség | Admin/tesztelő | restart után ellenőrizd a `content/lore/campfire-stories.yml` betöltését DORMANT, aktív Season 0 és lezárt Prologue állapotban | mindhárom állapotban ugyanaz a 135 story / 675 variáns választható; minden story öt perspektívás; 20 `chronicle`, 115 explicit `tradition: folklore`; nincs `available-during-prologue` mező és a campfire runtime nem hivatkozik `PrologueContentPolicy`-ra; a rejtett lore továbbra sem szerepel a poolban | content rollback, rollout stop | `sit/SIT-26/` |
+| [ ] | SIT-27 Krónikák collection GUI + visszaolvasás | Tesztelő | `/achievements → Krónikák`, majd `/lore tortenetek`; profilon legyen 0, részleges és 5/5 perspektívás story; lapozz végig mind a 4 oldalon; ismert storyra, majd ismert/ismeretlen perspektívára kattints | ismert story címe + `Krónika`/`Szájhagyomány` típus + `Kódex N. fejezet` + perspektíva-checkek látszanak; ismert perspektíva teljes Minecraft könyvként megnyílik; ismeretlen perspektíva nem nyitható; ismeretlen entry csak `Ismeretlen történet #N`, title/lore/típus spoiler nélkül; GUI ugyanazt a startup-katalógust használja | GUI rollout stop, profil változatlan | `sit/SIT-27/` |
+| [ ] | SIT-28 Story prezentáció | 2–3 tesztelő | default presentation configgal indíts közös sessiont, legyen benne >88 karakteres beat és hosszú Krónika is; majd próbáld külön a presentation flag-eket és az `actionbar-max-characters` értékét reload után | defaulton a cím/típus/nézőpont chatbe és actionbarra is kimegy, és minden teljes beat egyszer chatbe kerül visszaolvasható transcriptként; ugyanaz a beat action baron rövidebb szegmensekben fut; minden szegmens saját olvasási idejét megkapja, és a következő beat csak a teljes szegmenssor után indul; late joiner megkapja a címet és a következő beatet; `transcript-chat: false`, `beat-chat: true` és `title-actionbar: true` külön reloadolható | presentation flag rollback + reload | `sit/SIT-28/` |
+| [ ] | SIT-29 Lore-anchor audit | Admin/lore writer | validáld a teljes `campfire-stories.yml`-t a `docs/LORE.md` ellen | pontosan 135 `lore-anchor` és 135 story-szintű `shared-beats` gerinc van; minden anchor I–VIII/APPENDIX; 20 Krónika nem mond ellent a Kódexnek; 115 Szájhagyomány csak horgonyzott helyi/torzított részletet adhat; az első hat Vérháború storyi a Kódex töredékes kánoni vázán belül maradnak; rejtett Suttogó/3. mondat leak nincs | content rollback, lore review stop | `sit/SIT-29/` |
+| [ ] | SIT-30 Long-form corpus | Admin/lore writer | futtasd a Campfire Story regressiont, majd kézzel hallgass végig legalább egy Szájhagyományt és egy Krónikát | minden Szájhagyomány-variáns ≥100 szó és ≥7 beat; minden Krónika-variáns ≥150 szó és ≥9 beat; egyik sem haladja meg a 14 beatet; a shared narratív gerinc után a frakciós értelmezés továbbra is felismerhető; default runtime minimum 90 s/story | content/pacing rollback | `sit/SIT-30/` |
+| [ ] | SIT-31 Publikus `/lore` kódex | Admin/lore writer | `/lore`, majd legalább `teremtes`, `hasadas`, `lang`, `fagy`, `menedek`, `kapu`, `suttogok`, `felsok`; próbálj aliasokat és ismeretlen témát | lista a `content/lore/codex-topics.yml` tényleges témáiból épül; aliasok ugyanarra a lapra vezetnek; a szöveg a `LORE.md` publikus kánonjával egyezik; nincs Java DEFAULTS lore-authority, nincs Első Csend/3. mondat spoiler | codex content rollback, restart | `sit/SIT-31/` |
 
 ### Natív crate
 
@@ -1875,7 +1888,7 @@ ellenőrizd; normál beszedési útvonal nincs.
 | [ ] | COMBAT-01 Valódi Paper benchmark | Fejlesztő | exact-head Paper 1.21.11 probe, 38 vanilla ItemStack | runtime attribute modifier értékek és SHA-256 csomagban | rollout stop | `combat/COMBAT-01/` |
 | [ ] | COMBAT-02 BASIC kontroll | Tesztelő | vanilla armor/fegyver minden kaszt- és szintállapotban | nincs canonical level/family gate | equipment rollback | `combat/COMBAT-02/` |
 | [ ] | COMBAT-03 Szint-határ minden sloton | Tesztelő | armor/main/offhand req−1, req, req+1 | req−1 inert, req és fölötte aktív | equipment rollout stop | `combat/COMBAT-03/` |
-| [ ] | COMBAT-04 Precedencia és tele inventory | Admin/tesztelő | invalid/duplicate/classless/wrong-family/underlevel, tele inventory | determinisztikus denial, nincs drop/loss/clone | érintett producer tiltása | `combat/COMBAT-04/` |
+| [ ] | COMBAT-04 Precedencia és tele inventory | Admin/tesztelő | invalid/duplicate/classless/wrong-family/underlevel, tele inventory; külön: viselj egy canonical mellvértet, majd görgess ugyanazon template másik példányára a hotbaron/main handben | determinisztikus denial, nincs drop/loss/clone; a kézben hordott armor nem számít equipped duplicate-nak, nem suppresseli és nem veteti le a valóban viselt mellvértet | érintett producer tiltása | `combat/COMBAT-04/` |
 | [ ] | COMBAT-05 Reaktiváció | Tesztelő | level-up, relog, respawn és reload suppressed itemmel | ugyanaz az UUID pontosan egyszer aktívvá válik | reconcile rollback | `combat/COMBAT-05/` |
 | [ ] | COMBAT-06 Katalógus integritás | Fejlesztő | 160 armor + 25 jelenlegi combat item report | ID/verzió/visual/acquisition megmarad; budget gate zöld | catalog rollback | `combat/COMBAT-06/` |
 | [ ] | COMBAT-07 Rangtechnikák | Tesztelő | Normal→Boss reprezentatív archetype-ok | rank-kit, telegráf, recovery és interrupt működik | technique config tiltása | `combat/COMBAT-07/` |
@@ -1929,7 +1942,7 @@ ellenőrizd; normál beszedési útvonal nincs.
 | [ ] | CLIENT-05 Rollback-kapcsoló | Admin | élő session mellett `/icesmp config set client.enabled false` | a híd restart nélkül minden üzenetet eldob, gameplay és vanilla kliens érintetlen | restart + hibajegy | `client/CLIENT-05/` |
 | [ ] | CLIENT-06 Natív HUD routing | Fejlesztő | NATIVE_HUD-ot hirdető kliens + `/icesmp config set client.features.native-hud true` | a kliens HUD_STATE-et kap (join után azonnal, majd csak változáskor); a routolt játékosnál sidebar/first-party class panel/compact fallback eltűnik, a Player Frame megmarad, vanilla társánál változatlan; `/icesmp client resync` teljes state-et küld BEGIN/END között; a kapu false-ra állítva a vanilla class HUD restart nélkül visszatér | `client.features.native-hud: false` | `client/CLIENT-06/` |
 | [ ] | CLIENT-07 Keybind cast parity | Fejlesztő | KEYBIND_CAST+ABILITY_BAR kliens, `client.features.keybind-cast` és `ability-bar` kapuk nyitva | a keybind-cast és a katalizátor-cast azonos eredményt ad (cooldown, költség, üzenetek); Lélekkapocs nélkül a főkézben a CAST_SLOT NOT_ALLOWED-dal elutasítva; cooldown alatt NOT_READY; gyors dupla input (katalizátor+keybind) nem okoz dupla castot (közös debounce); a kit-state csak változáskor megy ki, a bar timer kliensoldalon interpolál | `client.features.keybind-cast: false` | `client/CLIENT-07/` |
-| [ ] | CLIENT-08 Natív spellbook parity | Fejlesztő | NATIVE_SPELLBOOK kliens + `client.features.native-spellbook` kapu nyitva | a kliens SPELLBOOK_STATE-et kap (kézfogáskor és unlock/kedvenc/kiválasztás-változáskor); SELECT_SPELL csak aktív-kit-tagot fogad el, TOGGLE_FAVORITE a kit-limitre cappel — mindkettő azonos eredményt ad a vanilla GUI-val és a katalizátor-ciklázással; a durable kedvenc-mentés hibája SERVER_ERROR választ ad, optimista commit nélkül | `client.features.native-spellbook: false` | `client/CLIENT-08/` |
+| [ ] | CLIENT-08 Natív spellbook parity | Fejlesztő | NATIVE_SPELLBOOK kliens + `client.features.native-spellbook` kapu nyitva | a kliens SPELLBOOK_STATE-et kap (kézfogáskor és unlock/kedvenc/kiválasztás-változáskor); üres ★-lista mellett minden feloldott spell aktív-kit-tagot kap; saját listánál SELECT_SPELL csak kit-tagot fogad el, TOGGLE_FAVORITE a 7-es custom-list limitre cappel — mindkettő azonos eredményt ad a vanilla GUI-val és a katalizátor-ciklázással; a durable kedvenc-mentés hibája SERVER_ERROR választ ad, optimista commit nélkül | `client.features.native-spellbook: false` | `client/CLIENT-08/` |
 | [ ] | CLIENT-09 Natív profil parity | Fejlesztő | NATIVE_PROFILE kliens + `client.features.native-profile` kapu nyitva | a kliens PROFILE_STATE-et kap, tartalma soronként azonos a /profile GUI fejlécével és egyenlegeivel (frakció, kaszt+szint, specek, szakmák, Bűnös/Tiszta, talentpontok, egyenlegek, statok, achievement-összegzés); revision/CAS, receipt vagy moderációs adat nem jelenik meg a payloadban (debug-naplóból ellenőrizve); a state csak változáskor megy ki | `client.features.native-profile: false` | `client/CLIENT-09/` |
 | [ ] | CLIENT-10 Relic-state routing | Fejlesztő | RELIC_RENDER_V1 kliens + `client.features.relic-render-v1` kapu nyitva, Evoker teszt-karakter a sarkany_tojas kötéssel | a kliens RELIC_STATE-et kap (relicId, display-név, basePower/resonance/awakening-flagek, dormant-ok); a relic elvesztése/visszaszerzése a dormantReason-váltással state-frissítést vált ki; kötés nélküli kasztnál üres relic-state megy ki | `client.features.relic-render-v1: false` | `client/CLIENT-10/` |
 | [ ] | CLIENT-11 Natív talent parity | Fejlesztő | NATIVE_TALENTS kliens + `client.features.native-talents` kapu nyitva | a kliens TALENT_STATE-et kap (csak a saját kaszt/szakma isAvailable-szűrt talentjei — más kaszt fája nem szivárog); PURCHASE_TALENT azonos eredményt ad a vanilla GUI-val és a /talent spend paranccsal (requirement/pont-hiány REJECTED, durable hiba SERVER_ERROR); sikeres vásárlás után a talent- és profil-state frissül, az attribútum-hatás (pl. max-élet) a vanilla úton is látszik | `client.features.native-talents: false` | `client/CLIENT-11/` |
@@ -2052,6 +2065,53 @@ runtime viselkedést fedik; staging-bizonyíték nélkül nem pipálhatók ki.
     eventprofilnál a debug is ugyanazt a limitált terrain-expansion fázist használja.
 13. `/events worldboss`, `invasion`, `escort` és `meteor`: az első válasz csak a
     keresés indulását jelezze; tényleges sikerüzenet/broadcast csak valódi spawn után legyen.
+14. Treasure 80 blokkos, régészet 250 blokkos és rontás 96 blokkos rough anchorral:
+    a közös guard több jelöltet próbáljon, ne egyetlen random X/Z ponton bukjon el; az
+    állatvándorlás maradjon a lokális announce-sugáron belül.
+15. Invázió-hullám és rontás-hullám: a játékosok eventhez érkezése ne tiltsa le a belső
+    mobspawnokat; minden mob saját régióján exact safe standing Y-t kapjon.
+16. Világboss + invázió egyazon world-event tick ablakban: az első folyamatban lévő
+    spawnkeresés már foglalja a MajorEventGate-et, a második természetes event ne induljon el.
+17. Meteor chunk-középen és chunkhatár közelében: a kráter footprintje legfeljebb ±7 blokk,
+    így egyetlen Folia-régióból ne mutáljon szomszédos chunkot.
+18. `/events caravan|treasure|wild-hunt|cultists|stranger|corruption|archeology` adminindítás:
+    az első üzenet csak a keresés/indítás sorba állítását jelezze; siker csak a tényleges
+    event callback/broadcast legyen.
+19. Season Finale utolsó nap: a NEUTRAL fővárosfal melletti boss a
+    `season-finale-boss` profilon menjen át; víz/rossz terrain esetén keressen másik
+    oszlopot, és a `boss-spawned-season` receipt csak a tényleges boss entity sikeres
+    létrejötte után kerüljön a `season-finale.yml` fájlba.
+20. Főváros nélküli finale fallback: a normál távoli `world-boss` profilt használja,
+    de továbbra is finale variánst hozzon létre; sikertelen keresés után maradjon újrapróbálható.
+21. Természetes Blood Moon WorldBoss/Invázió/Vad Hajsza/Escort/Kultisták aktív vagy
+    éppen spawnhelyet kereső állapota alatt ne induljon; az admin `bloodmoon start`
+    továbbra is explicit force és átmehet a természetes orchestrációs kapun.
+22. Kultista rítus sikeres befejezésekor a rontás a `corruption-scripted` profilt használja:
+    jelen lévő játékosok ne tolják el a gócot 96–256 blokkra, de claim/WG/víz/rossz felszín
+    továbbra is kényszerítsen közeli biztonságos alternatívára.
+23. Treasure crash-recovery: spawn után legyen `treasure-restore.yml`; kényszerített
+    leállás/restart után a markerelt eventláda álljon vissza az eredeti blockdatára és a
+    journal tűnjön el. Ha a helyet közben idegen blokk váltotta fel, azt őrizze meg.
+24. Treasure journal írási hiba esetén a chest blokk egyáltalán ne kerüljön lehelyezésre;
+    recovery alatt új természetes/admin kincs ne indulhasson.
+25. Player caravan crash a kasszalevonás előtt, közvetlenül utána, spawnkeresés közben,
+    aktív őrzési ablakban és settlement közben: `player-caravan-recovery.yml` + treasury
+    receipt alapján ne vesszen és ne duplázódjon pénz. Az el nem rendezett aktív művelet
+    restartkor pontosan egyszer refundolódjon.
+26. Player caravan stale spawn callback: egy korábbi operation-ID callbackje ne hozhasson létre
+    lámát és ne módosíthassa egy később indított, azonos frakciójú/összegű karaván állapotát.
+27. Konvoj unload/eltűnés normál halálesemény nélkül: ne kapjon sikerjutalmat; a rendszer
+    fail-closed refund settlementet készítsen, és a láma legyen non-persistent/transient.
+28. Invázió: a champion kötelező; ha nem spawnol, ne legyen `invasion-started` broadcast.
+    A hullámok region-scheduler pending számlálója fusson nullára, majd csak az összes élő mob
+    kiesése után legyen `invasion-ended` és szabaduljon fel a major-event slot.
+29. Cultists: nullás spawn (minden jelölt blokkolt/authority hiba) ne hirdessen rítust,
+    futárt vagy portyát; a supporters/variant/rite transient state ürüljön.
+30. Ambient animal migration: sikertelen herd spawn ne adjon jutalmat; sikeres csorda
+    `ambient-events.migration-lifespan-seconds` után tűnjön el és ne maradjon tartós mob.
+31. Runtime config-disable aktív keresés közben: WorldBoss/Invasion/Wild Hunt/Escort/Cultists,
+    Meteor/Treasure/Archeology/Stranger/Corruption/Ambient és player-caravan callbackje ne
+    materializáljon új eventet a kikapcsolás után.
 
 #### Frakció-névszínek
 

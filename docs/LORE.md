@@ -111,8 +111,9 @@ várost emeltek**: ez a mai **Caldestera**, a kereskedelem és a tudás ragyogó
 komp hordja az utazót a vízen át. A Fa tövében pedig ott maradtak az **igaz követők** — akik
 úgy tartják, a Fa hallgatása nem közöny volt, hanem bölcsesség. Az ő szerény, vénséges
 településük **Radicora** — „a gyökerek városa", ahogy a régiek nyelvén mondják; a nép ajkán
-egyszerűen csak Ó-Caldestera. A régi főváros megkopott, de el nem múló magja ez, ahol ma is minden
-újonnan érkező Felső először nyitja a szemét a világra. A két város egyazon nép két arca —
+egyszerűen csak Ó-Caldestera. A régi főváros megkopott, de el nem múló magja ez: a Felsők
+**Aetrinita alatti Szent Zónában ébrednek**, majd első zarándokútjuk Radicorába vezet. A két város
+egyazon nép két arca —
 az egyik a jövőt építi, a másik a gyökeret őrzi.
 
 ## IV. A Hetedik Vérháború és a Káosz Kora
@@ -120,6 +121,19 @@ az egyik a jövőt építi, a másik a gyökeret őrzi.
 A Hasadás után a két száműzött birodalom — a tüzes **Perinfernicitas** és a jeges **Cryghaliris** —
 engesztelhetetlen gyűlölettel fordult egymás ellen. Haragjuk **hét vérháborúban** lángolt fel a
 századok során, s minden összecsapás vért és hamut hagyott a világ két sarkában.
+
+**Az első hat Vérháború — töredékes emlékezet.** A korai háborúk pontos csatanevei, évszámai és
+hadvezéri lajstromai nem maradtak fenn egységesen: a két birodalom krónikái gyakran ugyanazt az
+eseményt egymásnak ellentmondó módon őrzik. A nagy ív azonban közös. Az **első Vérháború** kisebb
+határharcokból és a száműzetés sérelmeiből nőtt ki. A **második** idejére mindkét ország állandóbb
+hadsereget és tartós ellenségképet épített. A **harmadik** korszakában a jégsárkányok és a
+főnixlovasok összecsapásai már a népi balladák részei lettek, miközben a civil települések is súlyos
+árat fizettek. A **negyedik** háború a kereskedelmi útvonalakat, hidakat és raktárakat is hadszíntérré
+tette, ezért a Menedék közvetítő szerepe megerősödött. Az **ötödik** elhúzódó kimerítő háború volt,
+amelyben egyik fél sem tudott tartós fölényt kiharcolni, s mindkét oldalon megerősödtek a békehangok.
+A **hatodik Vérháború** pusztítása és menekülthulláma végül közvetlenül hozzájárult ahhoz, hogy
+Caldestera Hu. 547-ben kimondja az Armageddon-ultimátumot. E váz kánoni; a tábortűzi mesékben
+felbukkanó konkrét hősök, párbeszédek és kisebb incidensek továbbra is lehetnek helyi szájhagyományok.
 
 De a béke mindig törékenynek bizonyult. A **Hetedik Vérháború (Hu. 698)** mindent megváltoztatott. A
 Jégmezők és a Vérszavanna közé terülő roppant **Senkiföldjén** — a gazdátlan vadonban, amelyen a két
@@ -429,6 +443,16 @@ helyes áldozatot: rajtuk keresztül szól a világ a Felsőkhöz.
 feladatait. Aki teljesíti őket, nevet szerez — s a nagy közösségi célok idején az egész birodalom egy
 emberként húz: mert a krónikák csak a győzteseket jegyzik fel.
 
+**Tábortűzi krónikák és szájhagyomány.** A világ története nem csak könyvekben él. Fogadókban,
+őrtüzeknél és hosszú utak pihenőinél ugyanazokat az eseményeket más és más hangon adják tovább.
+A **Krónika** megjelölésű történetek a Kódexben rögzített tényeket mesélik újra, ezért lényegi
+állításuk nem térhet el e könyvtől. A **Szájhagyomány** megjelölésű történetek létezése, témája és
+kódexbeli horgonya ugyanúgy a világ része, de a bennük szereplő párbeszéd, személyes emlék,
+helyi magyarázat, pontos szám vagy kisebb esemény **nem automatikusan történelmi tény**. A
+birodalmak saját szemszögük szerint torzíthatják ugyanazt az emléket; ahol két változat ütközik,
+a Kódexben rögzített állítás az elsődleges authority. Szájhagyomány soha nem fedhet fel olyan rejtett
+igazságot, amelyet a Kódex maga sem ismer vagy szándékosan homályban hagy.
+
 ---
 
 ## Függelék — Időrend (a világ kronológiája)
@@ -641,26 +665,26 @@ megtagadták őket, s tudásuk ma már csak a Kitaszítottak útján szerezhető
 világban. A krónikások tíz Nagyot jegyeztek fel eddig; ledöntésük a birodalmak közös dicsősége,
 s aki elsőként ejti el őket, azt a lajstromok külön említik.*
 
-- **A Gyűrűk Őre** — gyűrűbe zárt harag, amely megelőzi a rengést; a vének szerint a Lapforduló
-  Őrének kisebb visszhangja, amely nem várja meg a fejezet végét.
-- **Lávakohó Behemót** — a Vérszavanna kohóinak szökött szelleme; lépte nyomán megolvad a homok,
-  s a levegő maga is perzsel körülötte.
-- **Fagyott Trón Királya** — bitorló a Jégmezők jegén: Kallan öröksége nélkül való, de annak
-  minden hidegével; ahol megáll, ott a föld trónussá fagy alatta.
-- **Csontkirály** — a sírba szállt nemesség csontjaiból emelt korona; a Királynő átka táplálja,
-  s hívó szavára a holtak sorfalat állnak.
-- **Mélységi Rém** — a törp-tárnák mélyéről felszivárgott iszonyat; a sötétje nem árnyék, hanem
-  a csend maga, amely egyszer visszanézett.
-- **Méreg Anyakirálynő** — a Káoszkor fészekrakója; ivadékai ott várnak a világ minden
-  repedésében, s a marása lassabban öl, mint ahogy felejt.
-- **Vihar Hírnöke** — Kallan viharának elszabadult, gazdátlan visszhangja; égzengés, amely már
-  nem hallgat senkire.
-- **Dögvész Titán** — Eleftheria mérgének járványhordozója; amerre elvonul, a föld is beteg
-  marad utána.
-- **Vas Őrszem** — a Vasművek Akadémiájának őrszeme, amely túlélte az alkotóit — s már nem
-  ismer jelszót, csak betolakodót.
-- **Pokoli Hadúr** — a Kárhozat Kapuján átszivárgott hadúr; a Senkiföldje az ő portyaterülete,
-  s hadizsákmánya minden, ami él.
+- **Körzáró, a Törött Eskü** — elfeledett fogadalmakból kovácsolt börtönt von a párbaj köré;
+  a gyűrűn kívüli biztonságot és a gyűrűn belüli vakmerőséget egyaránt bünteti.
+- **Salakkohó Szíve** — a Vérszavanna kohóinak szökött magja; távoli kohóesővel hevül túl,
+  majd izzó útvonalat tör magának a homokban.
+- **Kallan Elárvult Trónja** — uralkodó nélküli jégakarat, amely fehér ítélettel fagyasztja
+  át a talajt, és dérkíséret mögött rendezi újra a csatateret.
+- **Koronátlan Csontúr** — a sírba szállt nemesség csontjaiból emelt hadrend; kíséretét
+  pajzsként vezényli, és csak a sorfal megtörése után válik igazán sebezhetővé.
+- **A Visszanéző Csend** — a törp-tárnák mélyéről felszivárgott figyelem; szívverése
+  felgyorsul, mielőtt a csend hangrobbanássá szakad.
+- **Selyemanya Vezhra** — a Káoszkor fészekrajzolója; mérgező ösvényekkel szabja át a teret,
+  és ivadékai mögé húzódva kényszeríti rossz lépésre a vadászokat.
+- **Orkánénekes Rael** — Kallan viharának gazdátlan hangja; villámjeleket köt össze,
+  majd a biztonságosnak hitt vonalakon cikázik végig.
+- **A Rothadás Hordozója** — Eleftheria mérgének járványteste; nem siet, hanem lassan
+  elfogyasztja a tiszta teret, míg csak a veszélyes közelség marad.
+- **A Jelszó Nélküli** — a Vasművek Akadémiájának őrszeme, amely túlélte alkotóit; a kaput
+  védi, visszaver és lezár, de a menekülőt nem üldözi a világ végéig.
+- **Varkhaz, a Kaputörő** — a Kárhozat Kapuján átszivárgott hadúr; rohamával szétszakítja
+  a rendet, majd testőrséget hív a rövid helyreállási ablaka köré.
 
 ---
 
