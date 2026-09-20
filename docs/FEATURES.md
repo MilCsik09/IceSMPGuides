@@ -345,7 +345,7 @@ Központi játékosmenük, karakteradatok, tematikus navigáció és jogosultsá
 - **Így találkozol vele:** `/menu`, `/profile` és több tematikus parancs GUI-megnyitása. Parancs: /menu (alias: /hub, /m); /profile (alias: /char, /karakter, /status). GUI: Főmenü és tematikus parancsmenük; Karakterlap; Specializációk; Szakmaválasztó; Talent-fa.
 - **Kinek szól:** Játékos, Admin, Tesztelő.
 - **Mitől mozdul meg:** Kizárólag parancs vagy GUI-kattintás.
-- **Egységes first-party keret:** a `/profile` és a `/menu` főhub ugyanazt a frakciószínezett 54-slotos resource-pack shell családot használja. A háttér-, spacing- és badge-glyphök saját fontkomponensben maradnak; a látható címek és tooltip-szövegek explicit vanilla fontot kapnak, így custom bitmap font nem öröklődhet normál karakterekre.
+- **Egységes first-party keret:** a `/profile`, a `/menu` főhub és minden tematikus `/menu` almenü frakciószínezett resource-pack shell családot használ. A command-menu shell sorhelyesen 27/36/45/54 slotos, ezért az almenük eredeti mérete és slotkiosztása nem változik. A háttér-, spacing- és badge-glyphök saját fontkomponensben maradnak; a látható címek és tooltip-szövegek explicit vanilla fontot kapnak, így custom bitmap font nem öröklődhet normál karakterekre.
 - **Ami még kellhet hozzá:** Nincs kötelező világépítési feladat; resource-pack modellek megjelenését ellenőrizni kell.
 - **Fontos határ:** Egyes csempék csak akkor aktívak, ha a kapcsolódó rendszer és permission elérhető.
 

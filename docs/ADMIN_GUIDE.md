@@ -1031,7 +1031,7 @@ A release bundled `config/crates.yml` fájljában a `koznapi` crate permissionje
 ### GUI-biztonság
 
 - A first-party RP GUI-k title/background/badge bitmap-fontja kizárólag a privát glyph komponensre kerülhet; a látható cím, spec-/class-név és státusz explicit `minecraft:default` fontot használ. Tofu/négyzetes karakter = font-inheritance regresszió.
-- A `/menu` főhub és a `/profile` 54-slotos, frakciószínezett shellt használ; a főhub jelenleg a stabil PROFILE shell geometriáját reuse-olja, hogy ne tolja el a már kiadott private-use glyph ID-ket.
+- A `/menu` főhub és minden tematikus almenü a saját 27/36/45/54-slotos magasságához illeszkedő, frakciószínezett command-shellt használ; nincs kényszerített 54-slotra nagyítás. A command-shell glyphök append-only módon az eddigi class/progression private-use tartomány után kerülnek, ezért a már kiadott glyph ID-k nem mozdulnak el.
 - Kattintáskor mindig újra történjen permission- és célállapot-ellenőrzés.
 - Inventory edit, config, crate admin és gazdasági mutáció előtt rögzíts bizonyítékot.
 - GUI bezárása, célpont kilépése, reload vagy disable után ne maradjon függő session.
