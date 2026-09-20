@@ -567,7 +567,7 @@ Pontelosztás, követelmények, attribútumhatások, skill-tree GUI és respec.
 
 > **Aktív és játékosok számára elérhető** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
-Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state kezelés, kedvencek, mastery és varázskönyv.
+Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state kezelés, opcionális aktív spell-lista, mastery és varázskönyv. Üres saját lista mellett minden feloldott spell használható; ★ jelölésekkel legfeljebb hét spellből álló custom lista aktiválható. A Lélekkapocs item-cooldown overlaye mindig a kiválasztott spell hátralévő cooldownját követi.
 
 - **Így találkozol vele:** `/spell`, `/spellbook`, kasztparancs spellágai és Spellbook GUI. Parancs: /spell (alias: /mastery, /mesterseg, /spells); /spellbook (alias: /konyv, /sb, /varazskonyv). GUI: Varázskönyv.
 - **Kinek szól:** Játékos, Admin, Tesztelő, Eventes.
@@ -580,7 +580,7 @@ Regisztrált spellkatalógus, célzás, költség, cooldown, projectile/state ke
 
 - Permission: Kapcsolódó/ágankénti követelmény: `icesmp.admin.job`
 - Config: `spells.*`, `spell-balance.*`, VFX- és ability-beállítások.
-- Tartós állapot: Unlock, kedvenc és mastery játékosonként tartós; aktív cast/state runtime.
+- Tartós állapot: Unlock, aktívlista-jelölések (a meglévő favorites mezőben) és mastery játékosonként tartós; aktív cast/state runtime.
 - Reload: Balance castkor olvasható; registry/új spell struktúraváltása restartot igényel.
 
 </details>
@@ -825,8 +825,8 @@ a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós p
 - **Közös session:** a futó meséhez később leülő játékos a következő beatnél csatlakozik; nem kap saját random történetet. A collectionbe viszont csak az a változat kerül, amelyet a játékos a session elejétől a végéig végighallgatott.
 - **Fair választás:** a saját frakció és a common hang súlyozottan gyakoribb, de minden authored perspektíva hallható. A még nem hallott story/variáns erős súlybónuszt kap, a közelmúlt exact ismétlése kiesik, ugyanazon story rövid időn belüli újrajátszása pedig büntetett. 80% collection fölött külön completion-assist simítja az utolsó hiányzó variánsok RNG-jét.
 - **Collection és elérések:** a PlayerProfile tartósan őrzi a hallott story→perspektíva párokat. Mérföldkövek: 1 / 10 / 50 külön story, minden alaptörténet legalább egy nézőpontból, egy story összes nézőpontja, végül **A világ emlékezete** minden story minden változatáért. Ezek presztízs-elérések; nem adnak harci vagy gazdasági erőbónuszt, és egy már megszerzett elérés későbbi katalógusbővítéskor sem kerül visszavonásra. Mind a hat mérföldkő a JAR-datapack natív Minecraft advancement-fáján is megjelenik és toastot ad; a durable PlayerProfile unlock az authority, a natív advancement ennek idempotens projekciója/backfillje.
-- **Krónikák GUI és visszaolvasás:** az `/achievements` felület külön, lapozható collection nézetet nyit. A hallott storyk címét, `lore-anchor` fejezetét és perspektíva-progressét megmutatja, a még ismeretlen storyk címét/tartalmát spoilermentesen elrejti. Ismert storyra kattintva csak a ténylegesen végighallgatott perspektívák nyithatók meg teljes Minecraft könyvként. A GUI ugyanazt az egyszer, startupkor felépített immutable `CampfireStoryCatalog` példányt használja, mint a runtime selector; nincs GUI-megnyitásonkénti content-újraparszolás.
-- **Prezentáció:** alapból a story címe/típusa/nézőpontja **és minden teljes beat** bekerül a chatbe, így a teljes mese visszaolvasható transcriptként megmarad. Ezzel párhuzamosan az aktuális beat action baron fut: a hosszabb szöveget a runtime természetes írásjeleknél próbálja törni (mondatvég → pontosvessző/kettőspont → vessző/gondolatjel → szóhatár), alapból legfeljebb 88 karakteres részekre. A szegmensek saját olvasási idejük után, sorban lépnek tovább, és a következő beat csak a teljes actionbar-sorozat után indulhat. A presentation flag-ek (`title-chat`, `title-actionbar`, `transcript-chat`, `beat-chat`, `beat-actionbar`, `actionbar-max-characters`) reloadolhatók. A `transcript-chat` külön új default, ezért régi deployed `beat-chat: false` mellett is megmarad a visszaolvasható chatmásolat.
+- **Krónikák GUI és visszaolvasás:** az `/achievements` felület és a `/lore tortenetek` ugyanazt a lapozható collection nézetet nyitja. A hallott storyk címét, `lore-anchor` fejezetét és perspektíva-progressét megmutatja, a még ismeretlen storyk címét/tartalmát spoilermentesen elrejti. Ismert storyra kattintva csak a ténylegesen végighallgatott perspektívák nyithatók meg teljes Minecraft könyvként. A GUI ugyanazt az egyszer, startupkor felépített immutable `CampfireStoryCatalog` példányt használja, mint a runtime selector; nincs GUI-megnyitásonkénti content-újraparszolás.
+- **Prezentáció:** alapból a story címe/típusa/nézőpontja **és minden teljes beat** bekerül a chatbe, így a teljes mese visszaolvasható transcriptként megmarad. Ezzel párhuzamosan az aktuális beat action baron fut: a hosszabb szöveget a runtime természetes írásjeleknél próbálja törni (mondatvég → pontosvessző/kettőspont → vessző/gondolatjel → szóhatár), alapból legfeljebb 88 karakteres részekre. A szegmensek saját olvasási idejük után, sorban lépnek tovább, és a következő beat csak a teljes actionbar-sorozat után indulhat. A story cím/típus/nézőpont alapból chatben **és actionbaron** megjelenik a felolvasás elején. A presentation flag-ek (`title-chat`, `title-actionbar`, `transcript-chat`, `beat-chat`, `beat-actionbar`, `actionbar-max-characters`) reloadolhatók. A `transcript-chat` külön új default, ezért régi deployed `beat-chat: false` mellett is megmarad a visszaolvasható chatmásolat.
 - **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A kis XP-jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
 - **Ami még kellhet hozzá:** Történeti helyszínek, NPC-k és aktiváló blokkok/területek előkészítendők.
 - **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a `LORE.md` a kánon authority, a `tradition: folklore` tábortűzi mesék nem írhatják felül. A campfire oral history szándékosan **nem Prologue-gated**: Season 0 alatt is mind a 135 authored story hallható. A rejtett rendszerek és a világ legmélyebb megfejtései nem későbbi flag mögött várnak, hanem eleve nem kerülnek a nyílt campfire poolba.
@@ -844,6 +844,7 @@ a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós p
 </details>
 
 ### Társak és befogás
+- A durable társ **csak akkor kap XP-t, amikor ténylegesen meg van idézve**. Dismisskor az aktuális HP Profile v2 állapotba kerül, újraidézéskor ugyanarról az abszolút HP-ról folytatja; halálkor ez a mentett HP törlődik, ezért a death cooldown utáni revive max HP-val tér vissza. Harcon kívül a társ konfigurálható késleltetés után lassan regenerál.
 
 <!-- icesmp-doc-id: feature.progression.pets -->
 
@@ -1191,6 +1192,7 @@ Szezonállapot, jutalmak, történetmesélés, finálé, monumentum, holiday, am
 > **Aktív, builder-előkészítést igényel** · A futó JAR-hoz képest: **Jelentősen megváltozott**
 
 Mobskálázás, loot table, dungeon/mob jutalom, minionvédelem, bestiárium és undead
+- A spellből idézett ideiglenes minionok nem ragadnak az első célponton: ACTIVE állásban átveszik a gazda új combat célpontját, amikor a gazda megtámad valakit vagy valaki a gazdát támadja. A durable pet külön PetManager authorityn marad.
 segédszabályok. A combat gear-sor releváns forrásnál authored Itemization 2.0
 template-et választ: level/class/spec/build/üres slot/forrás legfeljebb 1,5× súlyt
 adhat, az utolsó legfeljebb 32 drop pedig csak enyhe, nem garantált diverzitási

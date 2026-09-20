@@ -474,8 +474,12 @@ A játékbeli spellkönyv mindig a tényleges, jelenlegi árat írja ki.
   ismételd.
 - Egyes képességek egymás után használva **kombót** vagy kombóláncot nyitnak.
 - Játékosok ellen az ismételt kemény kontroll rövid időn belül gyengülhet.
-- A kedvenceket a spellkönyvben megjelölve a váltás csak a fontos
-  képességeiden lépkedhet.
+- **Alapból minden feloldott képességed használható és ciklázható**; nincs kötelező hétspelles alaplimit.
+- Shift-kattal legfeljebb hét spellből saját **aktív listát** állíthatsz össze. Amíg van legalább
+  egy ★ jelölésed, a váltás és a gyors slotok ezen a listán dolgoznak; ha minden ★ jelölést leveszel,
+  automatikusan visszaáll a „minden feloldott spell” mód.
+- A Lélekkapocs cooldown-sötétítése mindig az **éppen kiválasztott spell** hátralévő cooldownját
+  mutatja, akkor is, ha a kliens gyors slotjából közben másik spellt sütöttél el.
 
 ### Spell-mesterség
 
@@ -1023,8 +1027,8 @@ harci vagy gazdasági erőbónuszt, és a már megszerzett elérésedet egy kés
 story-bővítés sem veszi el. Ugyanez a hat mérföldkő az IceSMP saját Minecraft
 advancement-fáján is megjelenik és natív advancement toastot ad.
 
-Az `/achievements` felületén a **Krónikák** csempével külön collection nézetet
-nyithatsz: a már meghallgatott történetek címe, Kódex-fejezete és az öt nézőpont
+Az `/achievements` felületén a **Krónikák** csempével, illetve közvetlenül a
+**`/lore tortenetek`** paranccsal külön collection nézetet nyithatsz: a már meghallgatott történetek címe, Kódex-fejezete és az öt nézőpont
 állapota látszik, az ismeretlen történetek címe és tartalma viszont addig rejtve
 marad. A 135 történet négy oldalon lapozható. Ha egy ismert történetre kattintasz,
 a már végighallgatott nézőpontjait teljes Minecraft könyvként bármikor újraolvashatod;
@@ -1294,13 +1298,16 @@ legtöbb művelet a `/menu` felületéről is elérhető.
 | `/bounty` | körözöttek |
 | `/events status` | aktív események |
 | `/kronika` | legutóbbi krónika |
-| `/lore [téma]` | publikus kódexlapok; argumentum nélkül témalista |
+| `/lore [téma]` | publikus kódexlapok; `/lore tortenetek` a már hallott campfire storyk visszaolvasásához |
 | `/komp [útvonal]` | kompjáratok |
 | `/parkour list` | pályák |
 | `/daily` | authored napi/heti megbízások a Küldetésnaplóban |
 | `/crate info <id>` | láda és kulcsinformáció |
 
-A **`/lore`** (alias: `/kodex`) a publikus, kánoni összefoglaló. Argumentum nélkül
+A **`/lore`** (alias: `/kodex`) a publikus, kánoni összefoglaló. A
+`/lore tortenetek` / `/lore mesek` / `/lore kronikak` ugyanakkor a saját,
+durable tábortűzi collectionödet nyitja meg; ott csak a már végighallgatott
+nézőpontokat tudod újraolvasni könyvként. Argumentum nélkül
 kategóriákban kilistázza a ténylegesen elérhető lapokat; például `/lore teremtes`,
 `/lore hasadas`, `/lore verhaboruk`, `/lore felsok`, illetve a birodalmak és
 fontos helyek saját lapjait. Ez nem ugyanaz, mint a tábortűzi Szájhagyomány: a
