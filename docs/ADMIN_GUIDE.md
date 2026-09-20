@@ -2077,6 +2077,12 @@ runtime viselkedést fedik; staging-bizonyíték nélkül nem pipálhatók ki.
 18. `/events caravan|treasure|wild-hunt|cultists|stranger|corruption|archeology` adminindítás:
     az első üzenet csak a keresés/indítás sorba állítását jelezze; siker csak a tényleges
     event callback/broadcast legyen.
+19. Season Finale utolsó nap: a NEUTRAL fővárosfal melletti boss a
+    `season-finale-boss` profilon menjen át; víz/rossz terrain esetén keressen másik
+    oszlopot, és a `boss-spawned-season` receipt csak a tényleges boss entity sikeres
+    létrejötte után kerüljön a `season-finale.yml` fájlba.
+20. Főváros nélküli finale fallback: a normál távoli `world-boss` profilt használja,
+    de továbbra is finale variánst hozzon létre; sikertelen keresés után maradjon újrapróbálható.
 
 #### Frakció-névszínek
 

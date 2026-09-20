@@ -1118,8 +1118,12 @@ A treasure, régészet, rontás és állatvándorlás saját, kisebb léptékű 
 útvonala, az invázió külső hulláma és a rontás belső mobhulláma külön egyoszlopos
 profilt használ. A major-event orchestrator már a folyamatban lévő spawnkeresést is
 aktív foglalásnak tekinti, ezért két nagy esemény nem tud ugyanabban az ablakban
-egyszerre átcsúszni a kapun. Adminindításkor a parancs először csak a keresés
-elindulását igazolja, tényleges sikert az esemény spawn utáni broadcastja jelzi.
+egyszerre átcsúszni a kapun. A Season Finale boss sem guard-bypass többé: külön,
+fővárosfal-közeli profillal lazítja a territory/player-distance szabályt, miközben
+a víz-, terep-, border- és Folia-footprint ellenőrzés megmarad; a tartós
+„már spawnolt” receipt csak valódi entity-spawn után íródik. Adminindításkor a
+parancs először csak a keresés elindulását igazolja, tényleges sikert az esemény
+spawn utáni broadcastja jelzi.
 
 - **Így találkozol vele:** `/events`; admin eventindítók és automatikus eseménytriggerek. Parancs: /events (alias: /esemeny, /event).
 - **Kinek szól:** Játékos, Admin, Builder, Eventes, Tesztelő.
