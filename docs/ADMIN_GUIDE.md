@@ -2083,6 +2083,35 @@ runtime viselkedést fedik; staging-bizonyíték nélkül nem pipálhatók ki.
     létrejötte után kerüljön a `season-finale.yml` fájlba.
 20. Főváros nélküli finale fallback: a normál távoli `world-boss` profilt használja,
     de továbbra is finale variánst hozzon létre; sikertelen keresés után maradjon újrapróbálható.
+21. Természetes Blood Moon WorldBoss/Invázió/Vad Hajsza/Escort/Kultisták aktív vagy
+    éppen spawnhelyet kereső állapota alatt ne induljon; az admin `bloodmoon start`
+    továbbra is explicit force és átmehet a természetes orchestrációs kapun.
+22. Kultista rítus sikeres befejezésekor a rontás a `corruption-scripted` profilt használja:
+    jelen lévő játékosok ne tolják el a gócot 96–256 blokkra, de claim/WG/víz/rossz felszín
+    továbbra is kényszerítsen közeli biztonságos alternatívára.
+23. Treasure crash-recovery: spawn után legyen `treasure-restore.yml`; kényszerített
+    leállás/restart után a markerelt eventláda álljon vissza az eredeti blockdatára és a
+    journal tűnjön el. Ha a helyet közben idegen blokk váltotta fel, azt őrizze meg.
+24. Treasure journal írási hiba esetén a chest blokk egyáltalán ne kerüljön lehelyezésre;
+    recovery alatt új természetes/admin kincs ne indulhasson.
+25. Player caravan crash a kasszalevonás előtt, közvetlenül utána, spawnkeresés közben,
+    aktív őrzési ablakban és settlement közben: `player-caravan-recovery.yml` + treasury
+    receipt alapján ne vesszen és ne duplázódjon pénz. Az el nem rendezett aktív művelet
+    restartkor pontosan egyszer refundolódjon.
+26. Player caravan stale spawn callback: egy korábbi operation-ID callbackje ne hozhasson létre
+    lámát és ne módosíthassa egy később indított, azonos frakciójú/összegű karaván állapotát.
+27. Konvoj unload/eltűnés normál halálesemény nélkül: ne kapjon sikerjutalmat; a rendszer
+    fail-closed refund settlementet készítsen, és a láma legyen non-persistent/transient.
+28. Invázió: a champion kötelező; ha nem spawnol, ne legyen `invasion-started` broadcast.
+    A hullámok region-scheduler pending számlálója fusson nullára, majd csak az összes élő mob
+    kiesése után legyen `invasion-ended` és szabaduljon fel a major-event slot.
+29. Cultists: nullás spawn (minden jelölt blokkolt/authority hiba) ne hirdessen rítust,
+    futárt vagy portyát; a supporters/variant/rite transient state ürüljön.
+30. Ambient animal migration: sikertelen herd spawn ne adjon jutalmat; sikeres csorda
+    `ambient-events.migration-lifespan-seconds` után tűnjön el és ne maradjon tartós mob.
+31. Runtime config-disable aktív keresés közben: WorldBoss/Invasion/Wild Hunt/Escort/Cultists,
+    Meteor/Treasure/Archeology/Stranger/Corruption/Ambient és player-caravan callbackje ne
+    materializáljon új eventet a kikapcsolás után.
 
 #### Frakció-névszínek
 

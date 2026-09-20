@@ -1118,7 +1118,26 @@ A treasure, régészet, rontás és állatvándorlás saját, kisebb léptékű 
 útvonala, az invázió külső hulláma és a rontás belső mobhulláma külön egyoszlopos
 profilt használ. A major-event orchestrator már a folyamatban lévő spawnkeresést is
 aktív foglalásnak tekinti, ezért két nagy esemény nem tud ugyanabban az ablakban
-egyszerre átcsúszni a kapun. A Season Finale boss sem guard-bypass többé: külön,
+egyszerre átcsúszni a kapun; a természetes Blood Moon trigger is tiszteletben
+tartja ezt a kaput, míg az admin force továbbra is explicit felülbírálás.
+A kultista rítusból nyíló rontás külön `corruption-scripted` profilt használ:
+a jelen lévő résztvevők nem tolják el a gócot a rítushelytől, miközben a claim-,
+WorldGuard-, víz-, terep- és border-védelem tovább él.
+A blokkot módosító események restart-határa is védett: a meteor többblokkos recovery
+journalja mellett az elrejtett kincs is write-ahead `treasure-restore.yml` naplót és
+egyedi chest-markert használ. Crash/restart után csak a saját eventládáját állítja
+vissza; idegenül lecserélt blokkot nem ír felül.
+A játékos-indított frakciókaraván gazdasági lifecycle-ja is durable: a kasszalevonás
+idempotens treasury-receipttel, a teljes pending/aktív művelet
+`player-caravan-recovery.yml` journallal fut. Crash/restart esetén a rendszer a receipt
+alapján pontosan egyszer rendezi a refund/success/robbery/loss kimenetet; stale spawn
+callback nem vehet át egy újabb karavánműveletet.
+A lifecycle lezárás minden eventnél explicit: az invázió champion-spawn nélkül nem indul,
+a pending wave-ek kifutása után csak az utolsó élő inváziós mob eltűnésével zárul; a
+kultista event nulla spawn esetén nem broadcastol sikert. A vándorcsorda transient és
+alapból 300 másodperc után eltűnik, jutalom csak tényleges csordaspawn után jár. A
+Stranger és DARK ambient population disable közben is cleanupol, a már elindított async
+spawn callbackek pedig a master toggle-ot újraellenőrzik materializálás előtt. A Season Finale boss sem guard-bypass többé: külön,
 fővárosfal-közeli profillal lazítja a territory/player-distance szabályt, miközben
 a víz-, terep-, border- és Folia-footprint ellenőrzés megmarad; a tartós
 „már spawnolt” receipt csak valódi entity-spawn után íródik. Adminindításkor a
