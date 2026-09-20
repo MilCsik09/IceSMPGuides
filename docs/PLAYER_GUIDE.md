@@ -976,8 +976,10 @@ tábortűz-kattintás nem indít mesét.
 
 A tűz most valódi **közös történet-sessiont** indít. Néhány másodperces gyülekezés után
 egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél minden leült
-játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. Ha később ülsz le,
-a futó történet következő részénél csatlakozol; nem indul neked külön random mese.
+játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. A cím, a
+Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben; maga az aktuális
+történetrész alapból az action baron jelenik meg. Ha később ülsz le, a futó történet
+következő részénél csatlakozol; nem indul neked külön random mese.
 
 A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
 A jelenlegi gyűjtemény **135 alaptörténetet és 675 hallgatható változatot** tartalmaz:
@@ -1008,10 +1010,15 @@ A tábortűzi gyűjteményhez külön presztízs-elérések tartoznak. Az első 
 történet minden nézőpontjának meghallgatásáig. A végső **A világ emlékezete** eléréshez
 minden történetet minden ismert nézőpontból végig kell hallgatnod. Ezek nem adnak
 harci vagy gazdasági erőbónuszt, és a már megszerzett elérésedet egy későbbi
-story-bővítés sem veszi el. Az `/achievements` felületén a **Krónikák** csempével
-külön collection nézetet nyithatsz: a már meghallgatott történetek címe és az öt
-nézőpont állapota látszik, az ismeretlen történetek címe és tartalma viszont addig
-rejtve marad. A 135 történet négy oldalon lapozható.
+story-bővítés sem veszi el. Ugyanez a hat mérföldkő az IceSMP saját Minecraft
+advancement-fáján is megjelenik és natív advancement toastot ad.
+
+Az `/achievements` felületén a **Krónikák** csempével külön collection nézetet
+nyithatsz: a már meghallgatott történetek címe, Kódex-fejezete és az öt nézőpont
+állapota látszik, az ismeretlen történetek címe és tartalma viszont addig rejtve
+marad. A 135 történet négy oldalon lapozható. Ha egy ismert történetre kattintasz,
+a már végighallgatott nézőpontjait teljes Minecraft könyvként bármikor újraolvashatod;
+ismeretlen perspektívát innen sem lehet előre megnyitni.
 
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
