@@ -978,7 +978,9 @@ A tűz most valódi **közös történet-sessiont** indít. Néhány másodperce
 egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél minden leült
 játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. A cím, a
 Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben; maga az aktuális
-történetrész alapból az action baron jelenik meg. Ha később ülsz le, a futó történet
+történetrész alapból az action baron jelenik meg. A hosszabb mondatokat a rendszer rövidebb,
+egymást követő actionbar-részletekre bontja, hogy kisebb GUI-skálán se lógjanak le a képernyőről.
+Ha később ülsz le, a futó történet
 következő részénél csatlakozol; nem indul neked külön random mese.
 
 A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
