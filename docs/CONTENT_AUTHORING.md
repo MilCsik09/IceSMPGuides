@@ -135,6 +135,25 @@ Az authored roster, stage és reward-definíció a megfelelő
 üzemeltetési limitek maradjanak a megfelelő `config/*.yml` fájlban. Ne másold
 ugyanazt a leafet mindkét rétegbe.
 
+### Publikus kódexlap (`/lore`)
+
+A `/lore` runtime szócikkei a
+`content/lore/codex-topics.yml` fájlban élnek. Ez **publikus kánonfelület**,
+nem szájhagyomány: egy lap csak a `docs/LORE.md` már publikus tényeit
+rövidítheti, és nem egészítheti ki új hőssel, párbeszéddel, helyi mendemondával
+vagy titkos magyarázattal.
+
+Minden topic:
+- stabil, ASCII `id`-t kap;
+- egy `kezdetek/birodalmak/helyek/kaoszkor/jelen` kategóriába tartozik;
+- opcionális aliasokat és legalább három megjelenítési sort tartalmaz;
+- restart-required canonical content.
+
+A Suttogók publikus lapja legfeljebb a világban megfigyelhető jelenséget és a
+lelepleződés következményét írhatja le. Az Első Csend valódi természete, a
+Suttogó-mechanika belső működése és a harmadik mondat tartalma itt sem
+jelenhet meg.
+
 ### Tábortűzi történet
 
 A teljes mese, a perspektívák és a beat-időzítés a

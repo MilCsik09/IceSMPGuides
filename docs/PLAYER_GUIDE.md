@@ -1294,11 +1294,18 @@ legtöbb művelet a `/menu` felületéről is elérhető.
 | `/bounty` | körözöttek |
 | `/events status` | aktív események |
 | `/kronika` | legutóbbi krónika |
-| `/lore <téma>` | nyilvános kódexlapok |
+| `/lore [téma]` | publikus kódexlapok; argumentum nélkül témalista |
 | `/komp [útvonal]` | kompjáratok |
 | `/parkour list` | pályák |
 | `/daily` | authored napi/heti megbízások a Küldetésnaplóban |
 | `/crate info <id>` | láda és kulcsinformáció |
+
+A **`/lore`** (alias: `/kodex`) a publikus, kánoni összefoglaló. Argumentum nélkül
+kategóriákban kilistázza a ténylegesen elérhető lapokat; például `/lore teremtes`,
+`/lore hasadas`, `/lore verhaboruk`, `/lore felsok`, illetve a birodalmak és
+fontos helyek saját lapjait. Ez nem ugyanaz, mint a tábortűzi Szájhagyomány: a
+`/lore` nem tesz helyi mendemondát kánonná, és nem fed fel rejtett Suttogó-/late-lore
+magyarázatot.
 
 ### Gazdaság és birtok
 
