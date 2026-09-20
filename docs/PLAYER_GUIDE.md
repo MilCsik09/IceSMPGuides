@@ -986,9 +986,12 @@ következő részénél csatlakozol; nem indul neked külön random mese.
 A történetek a kódex eseményeiből épülnek, de nem mindig ugyanazzal a hanggal.
 A jelenlegi gyűjtemény **135 alaptörténetet és 675 hallgatható változatot** tartalmaz:
 minden történetnek van common, Láng-, Fagy-, Menedék- és Thanaopolis-nézőpontja.
-A különböző változatok a kánontényeket nem írják át, de azt már igen, hogy kit tartanak
-hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény több közösség
-szájhagyományában egészen másnak érződhet.
+A mesék már nem rövid lore-villanások: minden történet kap egy hosszabb, közös narratív
+gerincet, amely köré a választott nézőpont saját értelmezése épül. A Szájhagyományok
+legalább 100 szavasak, a nagyobb Krónikák legalább 150 szavasak; utóbbiak jellemzően
+jóval hosszabbak. A különböző változatok a kánontényeket nem írják át, de azt már igen,
+hogy kit tartanak hibásnak, hősnek, vakmerőnek vagy bölcsnek. Emiatt ugyanaz az esemény
+több közösség szájhagyományában egészen másnak érződhet.
 
 A tűz a cím mellett azt is kiírja, hogy **Krónika** vagy **Szájhagyomány** következik.
 A Krónika a kódexben rögzített események feljegyzésszerű elbeszélése. A Szájhagyomány
@@ -1029,10 +1032,12 @@ egy láthatatlan Prologue-lock mögött vár: egyszerűen nincs benne a nyílt t
 
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
-sessiont. A mesék több ütemben, olvasható tempóban futnak; a legtöbb nagyjából egy
-perc körüli élmény, nem többperces chatfal. Ha felállsz, túl messz mész, elalszik a
-tűz vagy megszűnik a szükséges `szék → levegő → campfire` elrendezés, kikerülsz a
-hallgatók közül.
+sessiont. A mesék több ütemben, olvasható tempóban futnak: a default pacing legalább
+kb. másfél percet hagy egy teljes történetre, a hosszabb Krónikák pedig jellemzően
+két perc körüli vagy hosszabb élményt adnak. Ettől még nem lesz chatfal, mert a
+történet alapból action baron, rövid szegmensekben lépked. Ha felállsz, túl messz
+mész, elalszik a tűz vagy megszűnik a szükséges `szék → levegő → campfire`
+elrendezés, kikerülsz a hallgatók közül.
 
 A krónikák megőrzik a korszak eredményeit, és titkos helyek várják az első felfedezőt.
 Egyes világhelyek vagy NPC-k csak akkor élnek, ha az aktuális szezon térképén a csapat
