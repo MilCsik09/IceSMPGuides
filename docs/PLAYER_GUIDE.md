@@ -979,6 +979,8 @@ egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél 
 játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. A cím, a
 Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben. **Minden teljes
 történetrész is bekerül a chatbe**, ezért később vissza tudod görgetni a teljes mesét.
+Ez külön transcript-beállítás, így egy régebbi szerverkonfigban maradt actionbar-only
+`beat-chat` érték sem kapcsolja ki véletlenül.
 Ezzel párhuzamosan az aktuális rész az action baron is megjelenik; a hosszabb mondatokat
 a rendszer rövidebb, egymást követő actionbar-részletekre bontja, hogy kisebb GUI-skálán
 se lógjanak le a képernyőről. A következő történetrész csak az előző actionbar-szegmenseinek
