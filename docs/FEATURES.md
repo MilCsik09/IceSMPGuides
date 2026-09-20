@@ -683,7 +683,7 @@ mobility/crit/sustain, Mail hybrid/resistance, Plate armor/HP/mitigation budgete
 hangsúlyoz. Csak a katalógusban tényleges consumerrel rendelkező stat használható.
 
 Wrong-family vagy túl magas szintű authored gear birtokolható, rúnázható, listázható
-és megvehető; csak az aktív használata tiltott. A kapu minden canonical armor-,
+és megvehető; csak az aktív használata tiltott. Egy armor-family tárgy main/offhandben csak hordozott tárgy: nem számít equipped duplicate-nak, nem tilthatja le és nem vetetheti le a saját slotjában viselt másik példányt. A kapu minden canonical armor-,
 mainhand- és offhand-úton a jelenlegi kasztszintet hasonlítja az adott ascension-stage
 `level-requirement` értékéhez. Tiltott, no-class vagy underlevel equip nem ad fixed/rolled statot, setet,
 Signature-t, rúnahatást vagy CombatPowert. A market ArmorFamily szerint szűrhető
