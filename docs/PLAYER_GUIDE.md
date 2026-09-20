@@ -1022,6 +1022,11 @@ marad. A 135 történet négy oldalon lapozható. Ha egy ismert történetre kat
 a már végighallgatott nézőpontjait teljes Minecraft könyvként bármikor újraolvashatod;
 ismeretlen perspektívát innen sem lehet előre megnyitni.
 
+A tábortűzi történetek **Season 0 / Prologue alatt sincsenek külön lezárva**. Ezek a világ
+múltjáról és ismert jelenéről szóló történetek, ezért már a prológus alatt is segítenek
+megérteni, milyen világba érkeztél. Ami valódi későbbi titok vagy rejtett rendszer, az nem
+egy láthatatlan Prologue-lock mögött vár: egyszerűen nincs benne a nyílt tábortűzi poolban.
+
 A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
 sessiont. A mesék több ütemben, olvasható tempóban futnak; a legtöbb nagyjából egy
