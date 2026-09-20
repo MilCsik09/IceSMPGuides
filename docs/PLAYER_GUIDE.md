@@ -977,9 +977,12 @@ tábortűz-kattintás nem indít mesét.
 A tűz most valódi **közös történet-sessiont** indít. Néhány másodperces gyülekezés után
 egy hosszabb, több részből álló mese kezdődik, és ugyanannál a tűznél minden leült
 játékos **ugyanazt a történetet, ugyanabban az ütemben** hallja. A cím, a
-Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben; maga az aktuális
-történetrész alapból az action baron jelenik meg. A hosszabb mondatokat a rendszer rövidebb,
-egymást követő actionbar-részletekre bontja, hogy kisebb GUI-skálán se lógjanak le a képernyőről.
+Krónika/Szájhagyomány jelölés és a nézőpont megmarad a chatben. **Minden teljes
+történetrész is bekerül a chatbe**, ezért később vissza tudod görgetni a teljes mesét.
+Ezzel párhuzamosan az aktuális rész az action baron is megjelenik; a hosszabb mondatokat
+a rendszer rövidebb, egymást követő actionbar-részletekre bontja, hogy kisebb GUI-skálán
+se lógjanak le a képernyőről. A következő történetrész csak az előző actionbar-szegmenseinek
+végigolvasása után indul.
 Ha később ülsz le, a futó történet
 következő részénél csatlakozol; nem indul neked külön random mese.
 
@@ -1034,8 +1037,9 @@ A mese meghallgatását a jutalom-cooldown nem tiltja. A kis XP-jutalom külön,
 játékosonként limitált; ugyanaz a konkrét tűz pedig rövid ideig nem kezd rögtön új
 sessiont. A mesék több ütemben, olvasható tempóban futnak: a default pacing legalább
 kb. másfél percet hagy egy teljes történetre, a hosszabb Krónikák pedig jellemzően
-két perc körüli vagy hosszabb élményt adnak. Ettől még nem lesz chatfal, mert a
-történet alapból action baron, rövid szegmensekben lépked. Ha felállsz, túl messz
+két perc körüli vagy hosszabb élményt adnak. A chatben minden beat egyszer kerül ki
+visszaolvasható transcriptként, az action bar pedig ugyanennek az aktuális részét rövid
+szegmensekben „felolvassa”. Ha felállsz, túl messz
 mész, elalszik a tűz vagy megszűnik a szükséges `szék → levegő → campfire`
 elrendezés, kikerülsz a hallgatók közül.
 
