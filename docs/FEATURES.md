@@ -828,7 +828,7 @@ a tűzhöz leült játékosok ugyanazt a történetet és ugyanazt a frakciós p
 - **Prezentáció:** alapból a story címe/típusa/nézőpontja chatben marad meg, az aktuális beat action baron fut. A hosszabb beatet a runtime szóhatáron, alapból legfeljebb 88 karakteres actionbar-részletekre bontja, és ugyanazon olvasási ablakon belül lépteti. A presentation flag-ek (`title-chat`, `title-actionbar`, `beat-chat`, `beat-actionbar`, `actionbar-max-characters`) reloadolhatók, ezért accessibility vagy tesztelés miatt a beat chatre is visszakapcsolható.
 - **Jutalom:** a hallgatás nincs player cooldownhoz kötve. A kis XP-jutalom külön, durable játékos-cooldownt használ; ugyanaz a tűz külön runtime session-cooldownt kap.
 - **Ami még kellhet hozzá:** Történeti helyszínek, NPC-k és aktiváló blokkok/területek előkészítendők.
-- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a `LORE.md` a kánon authority, a `tradition: folklore` tábortűzi mesék nem írhatják felül. A rejtett rendszerek és a világ legmélyebb megfejtései nem kerülnek a nyílt campfire poolba.
+- **Fontos határ:** Csak a regisztrált forrás- és resource-tartalom aktív; a `LORE.md` a kánon authority, a `tradition: folklore` tábortűzi mesék nem írhatják felül. A campfire oral history szándékosan **nem Prologue-gated**: Season 0 alatt is mind a 135 authored story hallható. A rejtett rendszerek és a világ legmélyebb megfejtései nem későbbi flag mögött várnak, hanem eleve nem kerülnek a nyílt campfire poolba.
 
 <details>
 <summary>Admin- és technikai jegyzet</summary>
