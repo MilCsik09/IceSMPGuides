@@ -1,5 +1,12 @@
 # Mi változott a július 12-i szerververzió óta?
 
+## 2026-09-24 — WorldWeaver külön ágra helyezése
+
+A teljes aktív WW-rendszer, kezelőfelület, modellek és saját tesztcsomagja
+kikerült a pluginből. A korábbi megvalósítás külön ágon marad az újratervezéshez.
+A normál jutalmazás és tárgyműveletek már nem igénylik a WW futását.
+
+
 ## 2026-09-24 — Rontás-góc terjedés és visszaállítás
 
 - A tisztító interakció csak a főkézből fut, egyértelmű magyar haladásüzenettel.

@@ -1,5 +1,11 @@
 # IceSMP — a világ rendszerei
 
+## 2026-09-24 — Fejlesztői eszköz kivonása
+
+A WorldWeaver jelenleg nem része a pluginnek. A normál játékrendszerek,
+a jutalmazás, a tárgyfejlesztés és a Csodálatos Bingulus önállóan működnek.
+
+
 ## Frakció–Suttogó kiegészítések, 2026-09-07
 
 Tiszta indulás: a korábbi tagságiadó- és profilmigráció nem követelmény. Elkészült
