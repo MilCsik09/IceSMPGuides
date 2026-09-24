@@ -179,6 +179,16 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
   bizonyítékáig a deklarált `production_ready` érték helyesen `false`; CI nem
   helyettesítheti és nem jelölheti késznek ezt a pontot.
 
+### WorldWeaver — későbbi újratervezés (2026-09-24)
+
+- A teljes aktív rendszer kikerül a staging és a legfelső fejlesztési ág kódjából.
+- A korábbi megvalósítás külön `feature/world-weaver-redesign` ágon marad meg;
+  visszaemelése új tervezést és külön elfogadást igényel.
+- A normál jutalmazás, natív mobidézés, tárgyfejlesztés és Bingulus WW nélkül működik.
+- Kiadási kapu: valódi Paper/Folia playtest normál mobloottal, questjutalommal,
+  rúna/reroll művelettel és Bingulus-interakcióval; ez még nincs elvégezve.
+
+
 ## 2. Builderkapuk
 
 A kód és a csomagolt config önmagában nem építi meg a szezont. A következő

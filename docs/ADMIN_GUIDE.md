@@ -1,5 +1,17 @@
 # IceSMP admin-, moderátori és tesztelői kézikönyv
 
+## 2026-09-24 — WorldWeaver eltávolításának elfogadása
+
+A WW nem indul, nem adható ki, és nincs hozzá kezelőfelület vagy resource-pack modell.
+A régi WW-állapot és auditnapló nem szükséges; a rendszer nem került productionbe.
+A közös tárgy- és játékosadatokat nem szabad emiatt törölni.
+
+Kézi Paper/Folia elfogadás: indulás és leállás WW nélkül; normál mobloot és XP;
+questjutalom egyszeri jóváírással; mobidézés eredetének megőrzése; rúna/reroll
+és Bingulus használata. A korábbi prototípusok továbbra sem válhatnak normál,
+kereskedhető vagy harci előnyt adó tárgyakká. A kézi próbák még függőben vannak.
+
+
 ## Frakció–Suttogó kiegészítések, 2026-09-07
 
 Tiszta indulás: a korábbi tagságiadó- és profilmigráció nem követelmény. Elkészült
