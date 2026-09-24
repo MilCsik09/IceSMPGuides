@@ -211,7 +211,7 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
 - ⬜ **Inventory és életciklus:** shift-kattintás, kurzoros mozgatás, húzás,
   kézcsere, eldobás/felvétel, konténerek, halál, kilépés és újraindítás;
   fantomtárgy, valódi duplikáció és tárgyvesztés kizárása.
-- ⬜ **Integráció és hibautak:** WorldWeaver-vizsgálat/módosítás, mentési
+- ⬜ **Integráció és hibautak:** natív tárgyvizsgálat/módosítás, mentési
   hibák, félbeszakadt műveletek és visszaállítás; Paper/Folia régióbiztonság,
   eseménysorrend és párhuzamos játékosinterakciók.
 - ⬜ **Lezárás:** tárgyankénti elvárt/tényleges eredmény, reprodukálható
@@ -259,24 +259,14 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
   eventenkénti reprodukálható findingek, javítások és kézi playtest.
   A review külön feladat, jelenleg nincs elvégezve.
 
-### WorldWeaver — teljes review (nyitott, 2026-09-17)
+### WorldWeaver — későbbi újratervezés (2026-09-24)
 
-- ⬜ **Teljes design- és provider-review:** a normatív WorldWeaver design
-  összevetése minden providerrel és ténylegesen elérhető művelettel;
-  hiányzó, hibás és csak részben működő útvonalak tételes azonosítása.
-- ⬜ **Interakció és célpont:** jobb kattintás, guggolás, kézcsere,
-  entitás/játékos/blokk/terület/tárgy kiválasztása; offhand és inventory,
-  egymást követő inputesemények, téves vagy elavult célpontok és GUI-navigáció.
-- ⬜ **Végrehajtás és integráció:** inspection, preview, megerősítés,
-  apply/undo, SANDBOX/LIVE_GM, jogosultságok és fejlesztői kizárólagosság;
-  Trash Relic-, event- és egyéb providerek tényleges runtime-hatásai.
-- ⬜ **Állapot és hibabiztonság:** mentés, audit/receipt, recovery, lejárat,
-  megszakítás, kilépés és újraindítás; részleges végrehajtás, duplikáció,
-  elavult snapshot és régiók közötti Paper/Folia műveletek.
-- ⬜ **Lezárás:** providerenként és műveletenként elvárt/tényleges eredmény,
-  reprodukálható findingek, javítások, célzott regressziók és kézi playtest.
-  A korábbi célpont- és inventoryjavítások nem zárják le ezt a review-t;
-  a teljes átvizsgálás jelenleg nincs elvégezve.
+- A teljes aktív rendszer kikerül a staging és a legfelső fejlesztési ág kódjából.
+- A korábbi megvalósítás külön `feature/world-weaver-redesign` ágon marad meg;
+  visszaemelése új tervezést és külön elfogadást igényel.
+- A normál jutalmazás, natív mobidézés, tárgyfejlesztés és Bingulus WW nélkül működik.
+- Kiadási kapu: valódi Paper/Folia playtest normál mobloottal, questjutalommal,
+  rúna/reroll művelettel és Bingulus-interakcióval; ez még nincs elvégezve.
 
 
 ### Inventory- és GUI-hátterek rendezése (nyitott, 2026-09-17)
