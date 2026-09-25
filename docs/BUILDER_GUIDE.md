@@ -63,6 +63,16 @@ Tipikus hookok:
 - lore/chronicle/campfire tér;
 - admin-only maintenance surface, ha valóban szükséges.
 
+### Territory capital kijelölés
+
+A kijelölt WorldEdit-szelekcióból a frakció fővárosi területét a tényleges production commanddal kell rögzíteni:
+
+```text
+/territory setcapital <frakció> selection [név...]
+```
+
+A szelekció, a célfrakció és az opcionális megjelenítési név együtt alkotja az operátori handoffot. A parancs futtatása előtt ellenőrizd a worldöt, a szelekció határait és az érintett protection-területeket; screenshot vagy kézzel leírt koordinátalista nem helyettesíti a runtime által mentett canonical territory state-et.
+
 Ne építs rejtett faction/mechanic információt kötelező, nyilvános signage-dzsé, ha a design szerint discovery része.
 
 ## 5. Prologue és campaign
