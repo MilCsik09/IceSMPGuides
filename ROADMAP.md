@@ -1,4 +1,34 @@
-# IceSMP — fejlesztési ütemterv
+# IceSMP roadmap és nyitott finding authority
+
+<!-- DOC-AUTHORITY: OPEN_FINDINGS_AUTHORITY -->
+
+> **Authority:** ez az egyetlen tracked backlog- és nyitott-finding dokumentum.
+> A `docs/ARCHITECTURE.md` csak implementált current state-et, a
+> `docs/ARCHITECTURE_FOUNDATION_PLAN.md` pedig célállapotot és migrációs tervet ír.
+> Exact inventoryt generált riportból kell venni, nem kézzel karbantartott számból.
+
+## IceSMP 1.0 Architecture Foundation
+
+- **Indulási baseline:** `staging` @ `121c3b9cccca15c3e828f2bd363e8ddb17016b73` (2026-09-25).
+- **Integrációs ág:** `architecture/1.0-integration`.
+- **Aktuális phase ág:** `architecture/1.0-docs-authority`.
+- **DOC-00 állapot:** DONE — a teljes source review, authority-rework, naming cleanup,
+  consistency tooling és a 18 fájlos byte-azonos mirror elkészült.
+- **AR-00 / AR-01 állapot:** nem indult. Java runtime foundation ezen az ágon tilos.
+
+### DOC-00 lezárt exit gate
+
+- [x] Az `IceSMPGuides` mirror minden manifestben felsorolt fájlja byte-azonos.
+- [x] A documentation-authority, consistency, Markdown-link és teljes Gradle build zöld.
+- [x] A phase PR rögzíti a baseline-t, authority-deltát, teszteket és rollbacket.
+- [x] Runtime munka csak a DOC-00 integrációja után indulhat; ezen az ágon nem indult el.
+
+## Ellenőrzött staging backlog a DOC-00 indulási baseline-ról
+
+Az alábbi tartalom a repository aktuális indulási commitján meglévő roadmap teljes
+findingkészlete. A DOC-00 nem töröl gameplay-, persistence-, release- vagy world-
+acceptance pontot pusztán azért, mert az új architektúra külön programot kapott.
+Lezáráskor az egyes pontok saját bizonyíték- és exit conditionje alapján frissítendők.
 
 Ez az IceSMP egyetlen előre tekintő tervdokumentuma. Csak azt tartalmazza,
 ami még valóban nyitott, elkötelezett következő lépés vagy külön
@@ -37,6 +67,36 @@ Jelölések:
 
 ### 1.1. Kiadásblokkoló
 
+- 🚧 **Merge előtti végső átvétel:** a bossjutalom elutasított ACK utáni mozgatása/halála,
+  az attribution és a késleltetett caster régióváltása az ADMIN_GUIDE új esetei szerint
+  valódi Paper/Folia szerveren is próbálandó. A helyi automatizált bizonyíték nem játékosplaytest.
+- 🚧 **Resource-pack kiadási lánc:** a fallback metaadat még a publikált
+  `a20bf6e7234c1d400e3553bf8e0e5506be4cec8f` csomagra mutat. A végleges forrás merge-je
+  után a master publish workflow állítsa elő és ellenőrizze az új immutable csomagot,
+  majd a tényleges URL/SHA-1 alapján frissítse a plugin fallback metaadatát.
+  A helyi javítás nem publikál csomagot és nem ír előre kitalált hash-t.
+
+- ◇ **Eseményindítás ismételt szerverpróbája:** a szeptember 24-i tesztben a normál
+  érkezések chunkhibái és a boss üres közönség miatti eltűnése javítást igényelt.
+  A chunkfoglalás, survival/creative prioritás, boss-élettartam és közös HUD-státusz
+  javítása után a következő élő kör még hiányzó mob-event HUD-ot és egymás utáni
+bossokat mutatott. Az eseménymob teljes élettartamára kiterjesztett chunkfoglalás,
+encounter-UUID szerinti lezárás és a rontás külön vizsgálati/cserekerete után az
+ADMIN_GUIDE eseményes 45–49. eseteit újra kell próbálni valódi Folia szerveren.
+  A normál treasure/stranger helyszínpróbát friss területen is ismételni kell:
+  a terep- és korábbihelyszín-korlátok megtartása szándékos.
+- ◇ **Nagy rontás átvétele:** az 512-es terjedési határ, dinamikus cserekeret,
+  mob-/ölés-/szintfokozatok, magjel, Darkness és építkezés utáni újrafertőzés
+  kódja elkészült. Az ADMIN_GUIDE 50–55. esetét és a 2–4 órás célhoz tartozó
+  tényleges TPS/MSPT/memória/WAL mérést élő Folia szerveren még el kell végezni.
+- ◇ **Rontás-góc kézi átvétel:** a külön driver, a feltételes blokkhelyreállítás,
+  szabálytalan terjedés, fű/páfrány/virág-helyreállítás, két-régiós Folia és megszakított chunkmentés/restart az ADMIN_GUIDE rontásos
+  listája szerint próbálandó. Az automatikus teszt nem helyettesíti a szerverpróbát.
+- ⬜ **Oltárinterakció külön utánkövetése:** az „Ez az oltár nem a te kezedhez szól”
+  válasz az oltárdetektálás ága; ownership/validáció áttervezése nem része a
+  rontás terjedési és visszaállítási javításának.
+
+
 - 🚧 **H-ECON-001 — több tartományt érintő gazdasági crash-ablak.**
   A bank- és claimfolyamatok egy része memóriát, inventoryt és
   több külön állományt módosít, de ezekhez nincs közös, tartós commitpont.
@@ -57,6 +117,19 @@ nincs dupla kifizetés, elveszett tárgy vagy kifizetett, de létre nem jött
 claim.
 
 ### 1.2. Megerősített technikai adósság
+
+- ✅ **2026-09-24, helyi buildkapu rendezve:** a megtartott stack Java 21-es
+  Gradle buildje az audit- és regressziós javításokkal sikeres (160 task).
+  A sérült UTF-8 riport helyreállt, az advancement-, tooltip-, combat- és
+  config/content bizonyíték a jelenlegi forrást követi. A Windows sorvégek és
+  az azonos súlyú Trash-színcsoportok rendezése nem okoznak hamis eltérést;
+  a 357 Trash PNG pixelpontosan megmaradt. Friss, a javításokat tartalmazó CI és
+  a fenti valódi szerveres/klienses átvétel továbbra is szükséges.
+- ⬜ **Dokumentációs leltár triázs:** a helyi report mód 225 FAIL besorolású
+  leltárjelzést ad, miközben a parancs- és alparancs-lefedettség 100%.
+  Ezeket a generált inventory alapján tételenként kell igazolni és rendezni;
+  a report mód sikeres lefutása nem jelent sikeres strict dokumentációs kaput.
+
 
 Ezek nem mind kiadásblokkolók, de a forrásban még létező rések. Az
 implementálásuk előtt tételenként újra kell igazolni a kiváltási utat.
@@ -168,13 +241,109 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
   guild-tagság tárolása is a profilrétegen kívül él — az authority-mátrix alá
   vonásuk (szekció vagy dokumentált kivétel) tulajdonosi döntés.
 
+### Ócska-ökoszisztéma — G fázisú kiadási kapu
+
+- ✅ **Automatizált forráskapuk:** a teljes stacked regresszió, a 30 milliós
+  eloszlásszimuláció, az asset-validáció, valamint a külön Paper/Folia startup-
+  és shutdown-smoke az exact PR HEAD kötelező CI-feladata.
+- ◇ **Production acceptance:** a `docs/development/trash-production-staging.json`
+  evidencia-mátrix szerinti 2–4 órás többjátékos próba, valós kliens-UX és
+  50–60 játékosos terhelési profil továbbra is kézi kapu. Ezek átnézett
+  bizonyítékáig a deklarált `production_ready` érték helyesen `false`; CI nem
+  helyettesítheti és nem jelölheti késznek ezt a pontot.
+
+
+### Trash Relic — teljes review (nyitott, 2026-09-17)
+
+- ⬜ **Teljes, tárgyankénti review:** minden Trash Relic összevetése a normatív
+  designnal és a canonical tartalommal; aktiválás, feltételek, hatás, egyszeri
+  felhasználás, átalakulás, eldobás és a játékosnak látható visszajelzés.
+- ⬜ **Azonos tárgykezelés:** természetes loot, DEV-addolás és átalakult tárgyak
+  azonossága, eredete és history/PDC-megőrzése; főkéz, offhand és inventory.
+- ⬜ **Régészet és tooltip:** normál/force vizsgálat, ismételt elemzés,
+  ideiglenes lore lejárata és tisztítása; kreatív módból visszaérkező adatok,
+  duplikált vagy tartósan beragadt megfigyelések kizárása.
+- ⬜ **Inventory és életciklus:** shift-kattintás, kurzoros mozgatás, húzás,
+  kézcsere, eldobás/felvétel, konténerek, halál, kilépés és újraindítás;
+  fantomtárgy, valódi duplikáció és tárgyvesztés kizárása.
+- ⬜ **Integráció és hibautak:** natív tárgyvizsgálat/módosítás, mentési
+  hibák, félbeszakadt műveletek és visszaállítás; Paper/Folia régióbiztonság,
+  eseménysorrend és párhuzamos játékosinterakciók.
+- ⬜ **Lezárás:** tárgyankénti elvárt/tényleges eredmény, reprodukálható
+  findingek, javítások és célzott regressziók; a végleges commiton kézi
+  playtest. A friss tooltip- és inventoryjavítások még nem jelentik a teljes
+  review lezárását. Ez külön ütemezett feladat, jelenleg nincs elvégezve.
+
+
+### Archaeology — teljes review és szintfüggő információfeltárás (nyitott, 2026-09-17)
+
+- ⬜ **Bejelentett playtesthiba:** a tesztelt story tárgy vizsgálata 50-es
+  Archaeology-szinten ugyanannyi információt mutatott, mint 0-n. Az érintett
+  tárgyazonosító és az összehasonlító kimenet rögzítendő; a kiváltó ok még
+  nincs igazolva, a finding nincs javítottnak tekintve.
+- ⬜ **Tárgyankénti szintmátrix:** minden régészetileg vizsgálható tárgy,
+  különösen a story tárgyak authored információi, szintküszöbei és tényleges
+  eredményei összevetendők a normatív designnal. Ugyanazt a tárgyállapotot
+  0-n, minden információfeloldási küszöb előtt/után és 50-en is ellenőrizni
+  kell; a magasabb szintnek a tervezett többletinformációt kell feltárnia.
+- ⬜ **Teljes adatút:** mentett játékosprofil és DEV-szintállítás, fact engine,
+  history/provenance, szűrés, rendezés, megjelenítési korlátok és esetleges
+  elavult állapot vizsgálata. A már megszerzett ismeret/ismételt vizsgálat
+  jutalmazása és a látható információ ne keveredjen össze.
+- ⬜ **Vizsgálat és visszajelzés:** normál/force elemzés, addolt/természetes
+  és átalakult tárgy, főkéz/offhand, chat és tooltip egyezése; ismételt
+  vizsgálat, szintváltás, újrabelépés és újraindítás utáni eredmények.
+- ⬜ **Lezárás:** a feloldás, fejlődés és információfeltárás teljes review-ja,
+  reprodukálható findingek, javítások, célzott regressziók és kézi playtest.
+  A Trash Relic review-val közös tooltip/inventory esetek összehangolandók;
+  ez a külön Archaeology-review jelenleg nincs elvégezve.
+
+### Eventrendszer — teljes review (nyitott, 2026-09-17)
+
+- ⬜ **Eventenkénti működés:** minden világesemény és kapcsolódó boss/event
+  összevetése a tervezett működéssel és a canonical konfigurációval;
+  automatikus és kézi indítás, feltételek, ütemezés, kizárások, fázisok,
+  siker, kudarc, megszakítás és lezárás.
+- ⬜ **Spawn és részvétel:** helyszínválasztás, betöltött chunkok, terület- és
+  claimvédelem, mobok/bossok életciklusa, résztvevők és hozzájárulás követése;
+  kilépés, halál, világváltás és párhuzamos események.
+- ⬜ **Jutalom és visszajelzés:** jogosultság, loot, egyszeri jutalmazás,
+  exploitok, chat/HUD/bossbar és a megjelenített állapot valóságtartalma.
+- ⬜ **Üzemeltetés és lezárás:** reload, újraindítás, félbeszakadt mentés,
+  cleanup, Paper/Folia régióbiztonság és spawn/számítási terhelés;
+  eventenkénti reprodukálható findingek, javítások és kézi playtest.
+  A review külön feladat, jelenleg nincs elvégezve.
+
+### WorldWeaver — későbbi újratervezés (2026-09-24)
+
+- A teljes aktív rendszer kikerül a staging és a legfelső fejlesztési ág kódjából.
+- A korábbi megvalósítás külön `feature/world-weaver-redesign` ágon marad meg;
+  visszaemelése új tervezést és külön elfogadást igényel.
+- A normál jutalmazás, natív mobidézés, tárgyfejlesztés és Bingulus WW nélkül működik.
+- Kiadási kapu: valódi Paper/Folia playtest normál mobloottal, questjutalommal,
+  rúna/reroll művelettel és Bingulus-interakcióval; ez még nincs elvégezve.
+
+
+### Inventory- és GUI-hátterek rendezése (nyitott, 2026-09-17)
+
+- ⬜ **Teljes felmérés és egységesítés:** minden inventory-alapú menü háttere,
+  kitöltőeleme, kerete és resource-pack hátterének hozzárendelése; hiányzó,
+  hibás vagy egymástól indokolatlanul eltérő megjelenések rendezése.
+- ⬜ **Elrendezés és olvashatóság:** háttér, slotok, ikonok, címek és navigáció
+  illeszkedése minden használt inventoryméretnél; a háttér ne takarja a
+  tartalmat, és a díszítőelemek ne keltsenek kattintható vezérlő benyomást.
+- ⬜ **Kliensoldali átvétel:** resource packkel és nélküle, eltérő GUI scale
+  beállításokkal, valamint menüváltás és újranyitás után végzett vizuális
+  ellenőrzés. A rendezés külön feladat, jelenleg nincs elvégezve.
+
 ## 2. Builderkapuk
 
 A kód és a csomagolt config önmagában nem építi meg a szezont. A következő
 tételek a szervercsapat feladatai:
 
 - ◇ **18 NPC-szerep** fizikai kihelyezése és `/npcbind` kötése a
-  [teljes quest- és NPC-leltár](docs/QUESTS.md) alapján;
+  [teljes quest- és NPC-leltár](docs/QUESTS.md) alapján. Hiányuk naplózott
+  tartalomhiány, nem pluginleállítás; az érintett NPC-útvonalak ettől még nem készek;
 - ◇ a szükséges **4 territory ID** kijelölése, majd a **4 frakcióspawn**
   pontos állóhelyének és nézési irányának mentése;
 - ◇ a `kezdo_parkour` pálya megépítése és bekötése;
@@ -193,6 +362,20 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
 
 ## 3. Runtime- és balanszkapuk
 
+- ◇ A plugin által kezdeményezett védelmi leállítás új parancsbelépést elutasít,
+  a HUD/pack takarítását aktív tulajdonosi ütemezőn kéri, és csak ezután tiltja le
+  a plugint. A két külön Folia-régiós klienssel, más plugin packjával, kilépéssel
+  és külső azonnali letiltással végzett átvételi próba még szükséges
+  (`docs/ADMIN_GUIDE.md`, „Readiness és fallback”). A kliens nélküli smoke nem
+  bizonyítja a vanilla HUD tényleges visszaállását.
+- ◇ A 18 hiányzó canonical quest-NPC miatti readiness-hiba builder-kapu marad;
+  a pontos belső nevekkel authorált NPC-k és a valódi world-kötések nélkül a
+  plugin védelmi letiltása szándékos. Playerdata törlése ezt nem pótolja.
+- ◇ A beküldött `Missing packaged authority: content/progression/classes.yml`
+  reload-hibához a ténylegesen futtatott JAR hashének és bejegyzésének vizsgálata
+  szükséges. A letiltott példány új parancsot már nem fogad; a hiányzó packaged
+  authority továbbra is elutasítást és snapshot-visszaállítást okoz.
+
 - ◇ Az A17 kaszt-HP rendszer alapból aktív. Kiadás előtt egységes
   pajzs/abszorpció-szabály, PvP TTK- és PvE sebzésteszt kell.
 - ◇ A 2026-08-16-i caravan/world-boss spawnkifutás forrásoldali oka javítva: a guard
@@ -200,6 +383,9 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
   első fázis után legfeljebb 24 új chunkos aszinkron mentőfázist használ. Stagingen még
   kötelező ugyanazon `-8513,10055` / `-8533,10036` környezet, óceánpart, erdő és hegyvidék
   runtime próbája; veszélyes víz-, közeli-, látható vagy protection-fallback továbbra sincs.
+- ◇ A 2026-09-24-i eventindítási review javításaihoz az admin spawn-átvétel 32–44.
+  esetei még élő Folia próbát igényelnek: escort önblokkolás, foglalástulajdon,
+  távoli boss, finale-kapu, barlangmagasság, blokkonkénti védelem és helyi jelzések.
 - ◇ A frakciópasszív-rework defaultjai csak konzervatív kiindulópontok. A
   `docs/ADMIN_GUIDE.md` teljes membership/RED/BLUE/NEUTRAL/DARK, vegyes
   játékosos, Suttogó- és lifecycle mátrixát productionközeli Folia stagingen
@@ -213,10 +399,11 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
   mobnál, provokációval és nélküle, régióhatáron át; a játékos–mob retaliation
   lease-ek target-függetlenségét, scheduler rejectiont, retired callbacket és
   state-cleanupot loggal kell bizonyítani.
-- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás és az
-  adóbeszedés WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
+- ◇ Fault-injection stagingen külön bizonyítandó a fizetős frakcióváltás
+  WAL-recoveryje: wallet-write hiba, domain-write hiba, sikeres és
   sikertelen kompenzáció, journal-cleanup hiba, circuit-open és kontrollált
-  restart utáni idempotens folytatás.
+  restart utáni idempotens folytatás. Adóbeszedés nincs; régi adóadatok
+  migrációja nem átvételi követelmény a tiszta indulásnál.
 - ◇ Az Íjász és az Orgyilkos tényleges DPS-ét célbábun és valódi
   harchelyzetben is mérni kell; a DoT és a vanília sebzésréteg miatt a
   papírérték nem elég.
@@ -634,3 +821,28 @@ magyarázata és a Néma Királynő végjátéka; ezek nem #121 hiányosságok.
 - Economy graph/dead-content authority: `docs/development/professions-2-economy-graph.json`.
 - Runtime staging remains required for multiplayer throughput, real market prices, disconnect/packet-sync and 50–60-player balance.
 - Equipment Resource Pack 2.0 and crafting-order escrow marketplace remain future stacked scopes.
+
+## Frakció–bűn–Suttogó rework átvételi kapui
+
+- ✅ 2026-09-07: a tulajdonos szerint nem futott korábbi szerver. Régi profil-/adó-
+  migráció nincs a scope-ban; új rendszer saját WAL/restart adatbiztonsága megmarad.
+- ✅ W3–W5/W7: misztikus meghívó, percenként legfeljebb egy privát hint, normál
+  világ éjszakája, valódi szemtanú esetén áldozat nélküli megszakítás és 60 mp várakozás.
+- ✅ W8–W9: esemény-UUID/típus/idő, tartós egyszeri nyom; láthatatlanság, moderation
+  vanish, halott/spectator és 10 mp belépési/respawn nyugalom kizárva. A sugár blokkjai
+  a saját Folia-régiójukon ellenőrződnek; régióhatár önmagában nem búvóhely.
+- ✅ W28: kétszer megerősített `/suttogas megtagadás`, tiszta állapot és lejárt nyomok
+  mellett; szerepvesztés és 24 óra, jogi reset nélkül.
+- ✅ Jogi útmutató és `civil_penance`: civil feloldozás DARK-belépés nélkül;
+  választási küszöb aktív létszám szerint, élő mandátum védelme.
+- ◇ Folia staging: két régiót érintő tanúzás, láthatatlan/vanish szereplők, rítus
+  disconnect/restart/lemezhiba, három vád, kilépés, civil jóvátétel, Eskü és DARK-tagság.
+  Ismeretlen, kevert rítusmentést admin ellenőriz; automatikus kompenzáció nem állítható.
+- ◇ Builder: civil CAPITAL-zónák, biztonságos DARK-spawn, feketepiac, kultista rítus/hírvivő.
+- ◇ Balance: azonos szint/felszerelés mellett RED/BLUE/NEUTRAL/DARK PvP és PvE,
+  Vérhold/dungeon gyógyítás; túlélés, jutalom, frakcióválasztás és eltérő létszámú szezon.
+  A „nincs legjobb frakció” mérendő cél; kódteszt önmagában nem bizonyítja.
+- ◇ Az aktuális build, CI és inventory eredményét a publikált commit átvételi jelentése
+  rögzíti; korábbi commit zöld jelzése nem igazolja az új HEAD-et.
+- A teljes titkos küldetéshálózat és forgó boltkészlet nem kötelező: W18 minimumát
+  a kultista ametisztátadás teljesíti.

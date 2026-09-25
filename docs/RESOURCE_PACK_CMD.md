@@ -6,6 +6,35 @@ Ez a fájl a textúra-készítő (és a képgenerátor) bemenete. A plugin minde
 
 Minden tétel négy fogódzót ad a művésznek: **Alap-item** (a vanilla sziluett-referencia), **Ábrázolás** (mit ábrázoljon), **Színvilág** (paletta + akcent) és **Hangulat / lore** (a világon belüli érzet).
 
+## Ócska leletek — AI-authored teljes katalógus
+
+A `content/trash/catalog.yml` 330 stable base identityjének és 27 authored lifecycle
+phase-ének mind saját, AI-generált inventory-sprite-ja van. A committed authoring forráslapok a
+`dev-assets/trash/source/` könyvtárban, a hozzájuk tartozó sorrend és cellakiosztás
+a `manifest.json` fájlban található. Az imagegen nem runtime dependency: a build a
+forráslapokból determinisztikusan állítja elő a tényleges pack-asseteket.
+
+Kimeneti szerződés identitynként:
+
+- `assets/icesmp/textures/item/trash/<id>.png` — 64×64 RGBA, bináris alfa,
+  legfeljebb 8 szín;
+- `assets/icesmp/models/item/trash/<id>.json` — a saját textúrára mutató modell;
+- `assets/icesmp/items/trash/<id>.json` — a modern `ITEM_MODEL` bekötés.
+
+Nem használható közös placeholder, kategóriánként újrahasznált sprite, glint,
+emissive réteg, aura vagy ritkaságkeret. A vizuál nem árulhatja el a tárgy belső
+besorolását; a játékos minden base és lifecycle tárgyat az egységes **Ócska** prezentációval lát.
+
+Kötelező ellenőrzés:
+
+1. `python3 scripts/process_trash_sprite_sheets.py --check --require-complete`
+2. `python3 scripts/resource_pack.py validate --source resource-pack`
+3. `./gradlew trashSpriteAssetAudit trashCatalogRegressionTest trashHistoryRegressionTest resourcePackRegressionTest`
+
+A processzor pontosan a katalógus 330 base + 27 lifecycle texture/item/model hármasát engedi, ellenőrzi
+a fájlhalmazt, felbontást, alfát, palettát és SHA-256 alapján a képi egyediséget.
+Az offline audit nem helyettesíti a valódi Minecraft kliensben végzett teljes vizuális QA-t.
+
 ## Wearable / equipment render-szerződés
 
 A custom armor és wearable itemeknél két külön azonosítót kell kezelni:
@@ -495,6 +524,12 @@ A frakció-akcentek angol fordítása a prompthoz: RED = „glowing ember orange
 - **Ábrázolás:** lila ametiszt pecsétszilánk vésett démonrúnával, hideg ibolyafény
 - **Színvilág:** sötét ibolya; akcent: hideg lila derengés
 - **Hangulat / lore:** Démon-pecsét — a Boszorkánymester paktum-tokenje; egy név a szilánkban, egy démon a hívásra.
+
+### `capture_pet_armor` — Társvért
+- **Fájl:** nincs külön IceSMP PNG; a modell a vanilla `minecraft:item/leather_horse_armor` textúrát használja &nbsp;|&nbsp; **Alap-item:** `LEATHER_HORSE_ARMOR`
+- **Ábrázolás:** stabil vanilla bőrlóvért fallback, amíg külön Társvért-ikon nem készül
+- **Színvilág:** barna bőr; akcent: arany név és companion-tooltip
+- **Hangulat / lore:** Mesterien szabott társ-felszerelés; jobb katt a saját aktív companionon, és tartós armor/HP bónuszt ad.
 
 ## Spell-reagensek
 
@@ -2691,3 +2726,10 @@ Minecraft klienssel külön kell bizonyítani; a build csak asset-, renderer- é
 - **Ábrázolás:** türkiz szívkagyló ezüst foglalatban, gyöngyház-erezet, halvány kék derengés
 - **Színvilág:** prizmarin-türkiz, gyöngyház, ezüst; akcent: halvány kék fény
 - **Hangulat / lore:** Halász-recept eredménye (Ritkaság kategória, 44. szint).
+
+
+## Semantic UX mapping
+
+The TooltipEngine and UnifiedGuiManager expose presentation seams, not new gameplay identifiers. Use semantic mappings for tooltip sections, GUI navigation and resource-pack music events. Do not place raw Unicode magic glyphs, uncontrolled CustomModelData values or sound-file paths in gameplay logic. The vanilla tooltip and GUI fallback must remain usable without the pack.
+
+<!-- icesmp-ux-foundation-doc -->
