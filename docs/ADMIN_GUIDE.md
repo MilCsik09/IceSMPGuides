@@ -177,6 +177,10 @@ Kötelező:
 - ender/main inventory megkülönböztetés csak tényleges támogatásnál;
 - destructive action confirmation és rollback/evidence.
 
+## Release acceptance checklist
+
+Az alábbi staging matrix és build gate együtt alkotja a kiadás előtti átvételi ellenőrzést.
+
 ## 13. Staging matrix
 
 ### Startup/shutdown
