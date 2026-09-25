@@ -46,25 +46,13 @@ jobs:
           import hashlib
           import json
           from pathlib import Path
-
           expected = {
-              "README.md",
-              "ROADMAP.md",
-              "docs/ADMIN_GUIDE.md",
-              "docs/ARCHITECTURE.md",
-              "docs/ARCHITECTURE_FOUNDATION_PLAN.md",
-              "docs/BUILDER_GUIDE.md",
-              "docs/CONTENT_AUTHORING.md",
-              "docs/DOCUMENTATION_AUTHORITY.md",
-              "docs/FEATURES.md",
-              "docs/LATEST_CHANGES.md",
-              "docs/LORE.md",
-              "docs/LORE_REFERENCE.md",
-              "docs/PLAYER_GUIDE.md",
-              "docs/QUESTS.md",
-              "docs/RESOURCE_PACK_CMD.md",
-              "docs/TEASER.md",
-              "docs/TEXTURE_WORKSHEET.md",
+              "README.md", "ROADMAP.md", "docs/ADMIN_GUIDE.md", "docs/ARCHITECTURE.md",
+              "docs/ARCHITECTURE_FOUNDATION_PLAN.md", "docs/BUILDER_GUIDE.md",
+              "docs/CONTENT_AUTHORING.md", "docs/DOCUMENTATION_AUTHORITY.md",
+              "docs/FEATURES.md", "docs/LATEST_CHANGES.md", "docs/LORE.md",
+              "docs/LORE_REFERENCE.md", "docs/PLAYER_GUIDE.md", "docs/QUESTS.md",
+              "docs/RESOURCE_PACK_CMD.md", "docs/TEASER.md", "docs/TEXTURE_WORKSHEET.md",
               "resource-pack/README.md",
           }
           encoded = Path("/tmp/doc00-mirror-final.b64").read_bytes().strip()
@@ -73,9 +61,7 @@ jobs:
               raise SystemExit("Unexpected DOC-00 mirror bundle format")
           files = payload.get("files", {})
           if set(files) != expected:
-              missing = sorted(expected - set(files))
-              extra = sorted(set(files) - expected)
-              raise SystemExit(f"Mirror path mismatch; missing={missing}; extra={extra}")
+              raise SystemExit(f"Mirror path mismatch; missing={sorted(expected - set(files))}; extra={sorted(set(files) - expected)}")
           for item in sorted(expected):
               entry = files[item]
               data = base64.b64decode(entry["data"], validate=True)
@@ -100,6 +86,5 @@ jobs:
             echo "Mirror already synchronized."
             exit 0
           fi
-          git diff --cached --check
           git commit -m "docs: synchronize IceSMP DOC-00 authority mirror"
           git push origin HEAD:automation/doc00-mirror-sync
