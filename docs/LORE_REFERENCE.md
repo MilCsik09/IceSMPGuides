@@ -17,17 +17,15 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
 |---|---|---|---|---|---|
 | `RED` | **Perinfernicitas** | erős környezeti hővédelem: FIRE/FIRE_TICK/HOT_FLOOR `0.25`, LAVA `0.50`, entitás-tűz `0.75`; `TUZ` alapból változatlan | Pyralingrad | **Parázsló Parals** | Soleil / Főnix |
 | `BLUE` | **Cryghaliris** | fagyás `0`, fulladás `0.50`; a kijelölt természetes exhaustion okok `25%`-a elmarad | Glatziendorf | **Hópihér-veret** | Kallan / Sárkány |
-| `NEUTRAL` | **Ryanora & Caldestera** | zuhanás `0.50`; csak spontán békés/semleges mob- és Enderman-stare aggró szűrése; adómentes polgár | Caldestera | **Creutzér / Smaragdkő** | Arkynn / Szarvas |
-| `DARK` | **A Kitaszítottak** (lelepleződött Suttogók + bűnösök) | Wither sebzés/idő `0.50/0.50`; ambient városi és enyhített éjszakai vad undead-truce, harci kivételekkel | **Thanaopolis** (rom) | **Csontveret** | Eleftheria / Néma Királynő |
+| `NEUTRAL` | **Ryanora & Caldestera** | zuhanás `0.50`; csak spontán békés/semleges mob- és Enderman-stare aggró szűrése | Caldestera | **Creutzér / Smaragdkő** | Arkynn / Szarvas |
+| `DARK` | **A Kitaszítottak** (száműzöttek tudatos esküje után) | Wither sebzés/idő `0.50/0.50`; ambient városi és enyhített éjszakai vad undead-truce; normál gyógyítás `0.70`, civil kizárás és kétszeres kompár | **Thanaopolis** (rom) | **Csontveret** | Eleftheria / Néma Királynő |
 
 > **Vendég ≠ NEUTRAL:** az új Felső a Menedék oltalmában érkezik, de explicit
 > `/faction join neutral` nélkül nem Menedék-polgár. Nem kap frakciópasszívot,
 > frakcióquestet, tanácsi szavazatot, community- vagy season-creditet, és nem
-> kerül az aktuális polgári adóbeszedési körbe. Egy korábban választott játékos
-> assignment-hiánya azonban nem törli a már fennálló hátralékot vagy
-> adócsalási strike-ot; az adósság az azt kivető frakció valutájához és
-> kasszájához kötődik, így a zászlóváltás sem mossa vagy konvertálja át. Az
-> onboarding fix `NEUTRAL` valutája caldesterai
+> kerül automatikus frakciós gazdasági vagy politikai körbe. A periodikus
+> frakcióadó megszűnt; a korábbi adósság/outbox mezők csak kompatibilitási
+> maradványok, új beszedés nélkül. Az onboarding fix `NEUTRAL` valutája caldesterai
 > Creutzér-útravaló, nem tagsági jutalom.
 
 > **DARK vizuális azonosító (textúra/art irányelv):** csont-törtfehér + éjfekete-lila alap,
@@ -48,7 +46,7 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
 | A Felsők halhatatlansága (V.) | respawn a frakció-spawnon (`/territory setspawn`) |
 | Szent Zóna (V.) | benefit-free Menedék-vendég introspawn a Fa alatt; védett, PvP-tiltott territórium-zóna; a frakcióválasztó hírnök Caldesterában — az út a kettő közt a zarándoklat, nem automatikus `NEUTRAL` assignment |
 | A Fa fényköre (V.) | táv-alapú mob-skálázás (`world.zone-ramp`): blocks-per-level blokkonként +1 mob-szint (max 10), több XP + lélekkő-esély; spawner-mobok nem skálázódnak |
-| **A negyedik hatalom nem választás** (VII.) | A világban négy hatalom van, de három nyílt polgári út áll a vendég előtt: Láng, Fagy vagy Menedék (`RED/BLUE/NEUTRAL`). A Fa és Caldestera oltalma nem választ helyette; az első explicit join hozza létre a tagságot. A Kitaszítottak közé KERÜLNI lehet: 4 bűnnél automatikus száműzetés (`SinManager.exileToDark`), vagy lelepleződött Suttogóként — önként is csak BŰNÖS léphet be (`faction-dark-sinners-only`), kétlépcsős megerősítéssel és örök paktummal. A haladás-fa ezt tükrözi: `faction_join` → rejtett `exiled` → `redeemed`, és mindhárom Kitaszított-út (bűn-küszöb, Suttogó-lelepleződés, önkéntes paktum) UGYANEZT az `exiled` bejegyzést adja. A Suttogó-lét külön, rejtett bejegyzés (`whisperer`), toast és chat-broadcast NÉLKÜL — az álca a mechanika lényege, egy felugró toast lebuktatná. **Szabály: SEHOL ne írjuk, hogy a játékos négyből választ** — a „négy hatalom" világ-állításként helyes, választás-állításként nem. |
+| **A negyedik hatalom nem választás** (VII.) | A világban négy hatalom van, de három nyílt polgári út áll a vendég előtt: Láng, Fagy vagy Menedék (`RED/BLUE/NEUTRAL`). A Fa és Caldestera oltalma nem választ helyette; az első explicit join hozza létre a tagságot. A Kitaszítottak útja három külön döntés: előbb `Exile`, utána `/faction status eskü`, végül a kétszer megerősített `/faction join dark`. A bűnküszöb és a Suttogó-leleplezés csak száműz, nem tesz esküt és nem vált frakciót. A haladás-fa ezt tükrözi: `faction_join` → rejtett `exiled` → `redeemed`. A Suttogó-lét külön, rejtett bejegyzés (`whisperer`), toast és chat-broadcast NÉLKÜL — az álca a mechanika lényege. **Szabály: SEHOL ne írjuk, hogy a játékos négyből választ** — a „négy hatalom" világ-állításként helyes, választás-állításként nem. |
 | **Frakciópasszív-precedencia** (III./VII./VIII.) | `FactionPassivePolicy`: admin/scriptelt kényszercélzás → boss/dungeon/rontás/invázió/event/quest marker → koronaátok → provokáció/megtorlás → Vérhold → markerelt ambient polgárjog → vad passzív → vanilla. Thanaopolis ambient lakói provokációig békések; támadás után a DARK játékos `60 s`-re elveszíti a békét és `16` blokkon belül közeli undead reagálhat. A vad DARK előny csak éjjel és `50%` target-cancel, Vérhold alatt alapból leáll. A kódteszt nem production-AI vagy szezonbalansz bizonyíték. |
 | **A hálózat két fele** (VII.) | A Suttogók a Néma Királynő REJTETT népe, a Kitaszítottak a NYÍLT — kódban ez egyetlen csatorna: `WhisperManager.deliverWhisper` a Suttogók MELLETT a DARK-frakciónak is kézbesít (`factions.whisper.dark-hears-channel`), és DARK-ból is lehet írni bele. Ára: a csatorna-sor kiírja a feladó nevét, tehát a Kitaszítottak megtudják, ki Suttogó — ez tudatos tét, nem hiba. A DARK-játékos maga NEM lehet Suttogó (`canBecomeWhisperer`), mert a rejtőzésnek nincs értelme, ha a bélyeg már látszik. |
 | Király-választás (IV.) | frakciónkénti szavazás (`KingManager`); király = raid-indítás + kassza |
@@ -62,6 +60,7 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
 | Az elveszett emlékek (V.) | K8 Emlékszilánkok (él): Opálos Emlékszilánk + `/emlek` beváltó — a gyűjthető emlék-progresszió narratív alapja |
 | Ryanora (III.) | a NEUTRAL vidék/tartomány neve (a Bokic-mente); Caldestera = a fővárosa — territórium-elnevezésnél így használd |
 | A fél-álomban alvó Királynő (VII.) | a vérhold + horda/invázió/világboss események narratív tétje; a K9 Suttogók célja (teljes ébresztés); végjáték-horgony — a „harmadik mondat" apokalipszisa NEM implementálandó, narratív tét marad |
+| **Rontás-góc** (V.) | A megtisztítható mag sculk-katalizátor; a belőle induló vanilla blokkterjedés tiltott. Saját naplózott, halk sculk-hanggal járó terjedése csak közvetlen (akár átlós) szomszéd teljes, szabad felületére lép: fára, lombra és barlangfelületre is, levegőrés átugrása nélkül. Kibányászás után a feltárt szomszédos felületeket újravizsgálja, így megnyitott barlangba is bejuthat. Véletlen ágakban, szabálytalan szegéllyel terjed. Fű/páfrány/talajon álló virág naplózottan eltűnhet a talaj fölül, majd visszaáll; növény helyére sosem kerül sculk. Más növények, részleges blokkok és nem biztonságosan visszaállítható állapotok kimaradnak. Víz alatt a teljes mederblokkokra is terjed, a víz és vízinövények érintetlenek. Szabályos restart után a fertőzés folytatódik; tisztítás után feltételesen helyreáll; más katalizátorok működése változatlan. A nagyobb fertőzés több és erősebb fajzatot nevel; a mag jelzést ad, a saját sculk méret- és korfüggő, szünetekkel elválasztott Darkness-pulzussal hat. Az indulás eltolt keresési támpontot ad; a nagy növekedési mérföldkövek egyszer jeleznek. Tisztításkor a helyreállítás a góctól kifelé halad, a megfertőzött játékosépítmény is visszaáll. |
 | A Királynő kósza hívei (V./VII.) | N25b kultista világesemény (`cultists.*`): portya / rítus (beteljesülve rontás-gócot nyithat — H2-kapocs) / hírvivő a Kitaszítottak földje felé; a Suttogók (K9) rejtett rétegének NYÍLT, világbeli tükre |
 | A gyógyuló Fa (V.) | a szezonok/progresszió/közösségi célok narratív tétje („minden rendbe tett darab gyógyítja a Fát"); jövőbeli horgony: a repedés állapota mint szerver-szintű mérce/esemény |
 | Az Ünnepek (VIII.) | tervezett: D1 szezonális ünnepek — Hasadás Napja (Hu. 1: gyász/PvP-szünet?), Ultimátum Napja (Hu. 547: caldesterai vásár-esemény), Vérhold-virrasztás (vérhold-kiegészítő), Érkezés Napja (Hu. 978: szezon-évforduló) |
@@ -75,7 +74,7 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
 | Hadi-ablak (IV.) | RED↔BLUE hadicselekmény-idősáv: `factions.war-window.*` (menetrend, ölésenkénti liga-pont, napi plafon, áldozat-cooldown); a szezonliga „war" pontforrása |
 | Égi Jelek (VIII.) | világesemények (vérhold, Bőség-idő, meteor/hulló csillag, északi fény, köd/szellemek, Vad Hajsza, karaván, kincs/gyűjtő-lázak, invázió/világboss, kollektív szerver-kihívás) — mind config-vezérelt; a spawn-helyeket esemény×védelem mátrix szűri a jelölt pontokon (world-events.spawn-rules: territórium/claim/WG-régió/víz — a WG-híd WG nélkül fail-open, a karaván-útvonal mintavételes), az esemény-mobok nem zombisodnak és nappal sem égnek |
 | Fa Alatt Testvérek (VIII.) | party-rendszer: frakció-független, osztott XP, personal loot, párton belüli PvP-tiltás |
-| Arany Áramlása (VIII.) | bank/piac/aukció, dinamikus árfolyam, adók/illetékek mint pénz-nyelő, „nincs addolt pénz" elv; caldesterai ládák = crate-rendszer (kulcs-ár = valuta-nyelő); **adó = 2% + fejadó**, a fedezetlen rész hátralék, a tartós nem-fizetést a Számvevők bűnként jelentik fel (bűn-küszöb → száműzetés a Kitaszítottak közé) |
+| Arany Áramlása (VIII.) | bank/piac/aukció, dinamikus árfolyam, piaci díjak és szolgáltatási költségek mint pénz-nyelők, „nincs addolt pénz" elv; caldesterai ládák = crate-rendszer (kulcs-ár = valuta-nyelő); a korábbi periodikus frakcióadó megszűnt |
 | Korszakok Könyve (VIII.) | szezonliga: frakció-pontverseny, szezon-végi jutalom |
 | Oltárok és Ereklyék (VIII.) | egy-példányos relikviák, PvP-átvétel, inaktivitás-elenyészés; multi-block rituálé-oltárok |
 | **Az Ismert Ereklyék** (függelék) | `relics.yml definitions` — a 7 relikvia kánon-szövege a kódexben: Mételytépő, Eleftheria Könnye, a 4 szárny-ereklye (Főnix-/Zúzmara-/Csontszárny, Vándorszél — `wings` repülés-mechanika) és a Sárkánytojás-töredék (Sárkányidéző Eszencia-bővítés); átvétel/elenyészés a VIII. törvény szerint |
@@ -83,6 +82,8 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
 | **A Lapforduló Őre** (VIII.) | a szezonzáró kihívás-boss (`world.yml` season challenge `boss`) — a korszak/fejezet lezárásának közös próbája, bónusz szezonpont |
 | **A Források Iskolái** (függelék) | `SpecializationType` — mind a 35 iskola kaszt-bontásban, kánon egy-mondatosokkal; az 5 †-es (sötét) iskola sinner-kapus (lásd a „Kasztok forrásai" sort) |
 | Hírnökök és Krónikák (VIII.) | quest-rendszer, NPC quest-adók, napi rotáció, frakció-közösségi célok, achievementek/ranglisták |
+| **Publikus kódexlapok (I–VIII.)** | `content/lore/codex-topics.yml` + `LoreCommand`: a `/lore` / `/kodex` kizárólag spoiler-safe, rövidített kánonfelület. A témák, kategóriák és aliasok Git-authored contentből jönnek; a Java nem birtokol kódexszöveget. A Suttogók publikus lapja a megfigyelhető jelenségig mehet, az Első Csend valódi természetét és a harmadik mondatot nem fejtheti meg. |
+| **Tábortűzi szájhagyomány (I–VIII.)** | `content/lore/campfire-stories.yml` + `CampfireStoryCatalog` + `CampfireStoryListener`: 135 alaptörténet / 675 hallgatható változat; mindegyiknek `common/RED/BLUE/NEUTRAL/DARK` perspektívája és kötelező I–VIII/APPENDIX `lore-anchor` mezője van. A katalógus két explicit hagyományt különít el: **20 `chronicle`** = a `LORE.md` kánontényeinek feljegyzésszerű elbeszélése; **115 `tradition: folklore`** = ugyanazon lore-horgonyokra épülő helyi szájhagyomány, amely tartalmazhat bizonytalan/utólagos részletet, és ezért önmagában NEM válik kánon-authorityvá. A `LORE.md` külön rögzíti az oral-history authority szabályát és az első hat Vérháború töredékes kánoni vázát. A runtime és a Krónikák GUI ezt `Krónika` / `Szájhagyomány` címkével láthatóvá teszi; minden story egy semleges, story-szintű `shared-beats` narratív gerincet és öt perspektíva-overlayt hordoz, ezért a történeti mag hosszabb marad anélkül, hogy a frakciós értelmezés külön kánonná válna. A bundled long-form floor Szájhagyománynál 100 szó / 7 beat, Krónikánál 150 szó / 9 beat perspektívánként; a cím/típus/nézőpont és minden teljes beat alapból chatben is megmarad visszaolvasható transcriptként; ezt a külön `transcript-chat` default garantálja régi deployed `beat-chat: false` mellett is, miközben az aktuális beat rövid, egymás után időzített actionbar-szegmensekben fut. A frakciós változatok az ismert lore-horgonyokat nem írják át, csak értelmezik és torzítják; egy konkrét campfire egyszerre egy story+perspective sessiont futtat minden hallgatónak. A választás collection-aware: saját/common hang súlyozottan gyakoribb, de minden perspektíva elérhető, a még nem hallott változatok és a késői completion külön boostot kapnak, a közelmúlt exact ismétlései pedig szűrődnek. A PlayerProfile a teljesen végighallgatott story→perspektíva párokat és a bounded recent historyt tartósan őrzi; a Krónikák GUI csak ezekből enged teljes Minecraft-könyves visszaolvasást. A hat presztízs mérföldkő ugyanebből a durable authorityból kerül az `/achievements` felületre és az `AdvancementService` által kiosztott natív JAR-datapack advancement-fára is, egészen **A világ emlékezete** teljes collectionig. A nyílt pool nem fedheti fel a Suttogó-mechanikát, és az Első Csend valódi természetét / a harmadik mondat tartalmát továbbra sem magyarázhatja meg. A campfire oral history **phase-independent**: nincs `available-during-prologue` mező és a selector nem függ a `PrologueContentPolicy`-tól; Season 0 alatt is a teljes 135-story katalógus hallható. A későbbi titkokat nem phase-lock, hanem authored-content exclusion védi. |
 
 > **Nem-kánon mechanika:** a kaszt-mester NPC-láncok + parkour-próbapályák a kódban léteznek
 > (TALK_TO_NPC + PARKOUR_TRIAL), de a „mesterek" narratíva **egyelőre kikerült a kódexből** — a
@@ -103,11 +104,12 @@ A kód generikus `RED/BLUE/NEUTRAL/DARK` azonosítókat használ; a lore ezekre 
   kaszt-XP / +1 talentpont / spec szint-kapu feloldás / emlék-töredék. Class-váltás NINCS
   (a kaszt állandó — kánon); költségek: `memory-shards.*`.
 - **✅ K9 — Suttogók (KÉSZ):** rejtett státusz a látható frakció fölött — Sötét Rítus
-  (Suttogás-meghívó, éjjel/sculk/egyedül/vér-ár), /suttogas titkos csatorna + tanú-vád,
-  gyanú→leleplezés→bűn→száműzetés a meglévő pipeline-on. A rejtett undead-előny nem teljes
-  truce: alapból éjszakai `0.35` target-cancel, provokációra játékos–mob páronként
-  `60 s` retaliation, Vérhold alatt kikapcsol, és a szemtanú `0.02` eséllyel
-  gyanút adhat (`factions.whisper.*`).
+  (Suttogás-meghívó, éjjel/sculk/vér-ár), `/suttogas` titkos csatorna + tanú-vád.
+  A tanú pontosan ahhoz kap egyszer használható bizonyítékot, akit látott; három
+  érvényes vád fixen `CLEAN → OBSERVED → SUSPECTED → EXPOSED`, a leleplezés pedig
+  Exile állapotot ad Infamy, eskü és automatikus DARK-tagság nélkül. A rejtett
+  undead-előny alapból éjszakai `0.35` target-cancel, provokációra játékos–mob
+  páronként `60 s` retaliation, Vérhold alatt kikapcsol.
 - **✅ K10 — Caldestera feketepiac (KÉSZ):** fegyvertilalom + körözött-kapu a NEUTRAL
   fővárosban (CapitalLawListener); Botera-negyed feketepiac-bolt Csontveretért — Bokic-menti
   Sétapálca (rejtett penge) és Hamisított Menlevél (`territory.capital-law.*`).
@@ -135,7 +137,7 @@ A tárgyak **kanonikus lore-szövege a kódexben él** ([LORE.md → A Legendás
 | Főnix-Tollköpeny | RED | kiegészítő (K3) | ✅ implementálva: viselve tűz/láva/forró-blokk immunitás (`signature.tollkopeny.fire-immunity`) |
 | I. Zhoris Lángnyelve | RED | kard (2. hullám, loot-only tervrajz) | ✅ implementálva: gyújtás-esély + égő célon +15% (`signature.langnyelv.*`) |
 | Napfogyatkozás | RED | íj (2. hullám) | ✅ implementálva: éjjel gyorsabb lövedék + +25% sebzés (`signature.napfogyatkozas.*`) |
-| Fűszeres Főnixtojás-Rántotta | RED | étel (K6) | ✅ implementálva: séf-recept + tűz-ellenállás; tojás-kötelezettség él (`factions.food-duty`); a buff fogyasztáskor élő RED-tagságot kér |
+| Fűszeres Főnixtojás-Rántotta | RED | étel (K6) | ✅ implementálva: séf-recept + tűz-ellenállás; nincs ételkötelezettség vagy rejtett időzítő; a buff fogyasztáskor élő RED-tagságot kér |
 | Vasművek Akadémiájának Csákánya | NEUTRAL | szerszám (K4) | ✅ implementálva: érc-töréskor +20% extra drop, bányász-láz alatt szünetel (`signature.csakany.*`) |
 | Bokic-menti Horgászbot | NEUTRAL | szerszám (K4) | ✅ implementálva: +20% dupla fogás, halászati láz alatt szünetel (`signature.horgaszbot.*`) |
 | Asterlayna Gyümölcse (Tiltott Kakaóbabos Sütemény) | NEUTRAL | süti (K6) | ✅ implementálva: „robbanó csemege" — feldobás + Speed II + effekt |
@@ -247,7 +249,7 @@ build-döntés; a generikus Rúnavért bármelyik mellett fér.
 
 ## Publikálási döntés — a Suttogók rejtve maradnak
 
-A Suttogó-réteg (Sötét Rítus, titkos csatorna, gyanú- és vádrendszer, lelepleződés)
+A Suttogó-réteg (Sötét Rítus, titkos csatorna, pontos bizonyíték és fix leleplezési fokozatok)
 **tulajdonosi döntésre nem szerepel a publikus dokumentációban** — sem a
 játékoskézikönyvben, sem a funkciókatalógusban, sem a kampányanyagban. Az álca a
 mechanika lényege: egy nyilvánosan leírt rejtett frakciónak nincs tétje. A rendszer
@@ -284,9 +286,18 @@ Season 2 admin-eseményig.
 A finálé egy külön checkpointolt Prologue-orchestrator, nem a Season 1+ `SeasonFinaleManager`
 átnevezése. A finale közben a Doom Gate PvP-szabályt csak ideiglenes event-context ceasefire
 írja felül. A győzelmi lánc idempotens sorrendje: boss-victory receipt → Gate-unlock →
-participant reward-plan/Profile v2 prestige státusz → rendkívüli Krónika → Prologue emlékmű →
+participant reward-plan/PlayerProfile prestige státusz → rendkívüli Krónika → Prologue emlékmű →
 Season 1 prepare/activate. A Founder/finale státusz presztízs, nem combat power.
 
 **Lore-korlát:** a Prologue sem az **Első Csend** természetét, sem a **Néma Királynő**
 végjátékát nem fejti meg. A Néma Királynő nem Prologue-finale boss; ezek a rejtélyek a későbbi
 kánon számára változatlanul nyitva maradnak.
+
+## Suttogó-fedezék és a Kitaszított esküje
+
+A titkos rítus a kettős élet kezdete. A harmadik hiteles tanúvád a civil közösségből
+való száműzetést jelenti; nem tesz automatikusan DARK-taggá és nem helyettesít esküt.
+A külön Sötét Eskü után a belépést a játékos kétszer megerősíti. A kultista rítus vagy
+hírvivő segítése egy ametisztszilánkkal konkrét kockázat: a siker egy fokozatnyi
+fedezéket adhat, de az átadást mások is megfigyelhetik. A sötét csatornán tartós
+álnevek jelennek meg. Részletes szabályok: [FACTION_REWORK](FACTION_REWORK.md).

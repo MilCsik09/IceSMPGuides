@@ -1,5 +1,13 @@
 # IceSMP quest- és NPC-builder kézikönyv
 
+A frakció-rework új feladata: **Civil vezeklés — Jóvátétel** (`civil_penance`).
+Felvétel a `/quest log` Megbízások fülén, kizárólag rendezetlen jogi állapotú,
+nem DARK játékosnak. Harminc legalább 3-as szintű mob új legyőzése automatikus
+feloldozást ad; nincs pénz vagy XP. Ismételhető; az új felvétel új teljesítést kér.
+A DARK Vezeklés I–III. útja külön marad. A Suttogó szerep és várakozás nem törlődik.
+A csomagolt katalógus így 196 küldetést tartalmaz.
+
+
 <!-- icesmp-doc-id: guide.quest-and-npc-builder -->
 
 > Ez a dokumentum a világépítőnek és a tartalomadminnak szól. Megmutatja, melyik
@@ -10,12 +18,12 @@
 <details>
 <summary>Dokumentum-forrásállapot és lefedettség</summary>
 
-- Forráság: `master`.
-- Dokumentált commit: `73508dfa1bb40e6be54ab215bbe02dd0ae003e54`.
-- Questforrás: `src/main/resources/config/quests.yml`.
+- Forráság: `staging`.
+- Dokumentált commit: `121c3b9cccca15c3e828f2bd363e8ddb17016b73`.
+- Questforrás: `src/main/resources/content/progression/quests.yml`.
 - Runtimeforrás: `QuestManager`, `FancyNpcsQuestBridge`, `QuestCommand`, `NpcBindCommand` és `NpcBindingManager`.
 - Loreforrás: `docs/LORE.md` és `docs/LORE_REFERENCE.md`; a tervezetet az owner lore-baseline-jával is összeolvastuk.
-- Bundled questek: **195/195** — 160 világ-/történeti küldetés és 35
+- Bundled questek: **196/196** — 161 világ-/történeti küldetés és 35
   specializációs csúcspróba.
 - Quest-NPC belső ID-k: **18/18**.
 - Játékos-látható `dialogue` blokkot tartalmazó questek: **45/45**.
@@ -83,7 +91,7 @@ A 18 ID-t pontosan kisbetűvel és aláhúzással használd. Átnevezés előtt
 ellenőrizd a questkonfigot, a FancyNpcs állapotot és az `npc-bindings.yml`
 leltárát.
 
-Egy NPC-kattintás runtime sorrendje forrásból biztos (Quest Framework v2 —
+Egy NPC-kattintás runtime sorrendje forrásból biztos (Quest framework —
 MMO-prioritás, a döntést a központi forrás-authority hozza):
 
 1. minden KÉSZ (minden célját teljesített) quest, amelynek a leadási pontja ez
@@ -469,7 +477,7 @@ körülbelül 1,5 másodpercenként követik egymást.
 
 ## 7. Teljes bundled questkatalógus
 
-A katalógus **195/195** quest ID-t fed le. A 7.1–7.6 fejezet megtartja a 160
+A katalógus **196/196** quest ID-t fed le. A 7.1–7.6 fejezet megtartja a 160
 világ- és történeti küldetés stabil leltári számozását; a 7.7 külön sorolja a
 35 specializációs csúcspróbát. A player-facing név és leírás szó szerinti. A rejtvények konkrét megoldását ez a builderdoc sem
 írja ki: a világban csak a verset és a tematikus környezetet használd, ne tegyél
@@ -638,7 +646,7 @@ ki megoldótáblát.
 |---|---|---|---|---|
 | **133.** `onboarding_herald` | **Beszélj a hírnökkel**<br>Keresd fel a hírnököt a semleges fővárosban, és válaszd ki a királyságodat. | beszélgetés NPC-vel; NPC: `hirnok` | következő: `onboarding_hunt` | 15 `NEUTRAL` valuta (vendég-útravaló) |
 | **134.** `onboarding_hunt` | **Első csata**<br>Bizonyítsd, hogy készen állsz: ölj meg 5 szörnyet. | szörny legyőzése; ×5 | előfeltétel: `onboarding_herald`; következő: `onboarding_gather` | 20 `NEUTRAL` valuta (vendég-útravaló) |
-| **135.** `onboarding_gather` | **Első gyűjtögetés**<br>Vágj ki 10 rönköt — kezdő felszerelés vár érte. | tárgy összegyűjtése; ×10; anyag: `OAK_LOG`, `BIRCH_LOG`, `SPRUCE_LOG`, `JUNGLE_LOG`, `ACACIA_LOG`, `DARK_OAK_LOG`, `MANGROVE_LOG`, `CHERRY_LOG` | előfeltétel: `onboarding_hunt`; következő: `onboarding_utmutatas` | 25 `NEUTRAL` valuta (vendég-útravaló); item: `WOODEN_PICKAXE:1`, `BREAD:8`; crate-kulcs: `koznapi:1` |
+| **135.** `onboarding_gather` | **Első gyűjtögetés**<br>Vágj ki 10 rönköt — kezdő felszerelés vár érte. | blokk kitermelése; ×10; anyag: `OAK_LOG`, `BIRCH_LOG`, `SPRUCE_LOG`, `JUNGLE_LOG`, `ACACIA_LOG`, `DARK_OAK_LOG`, `MANGROVE_LOG`, `CHERRY_LOG` | előfeltétel: `onboarding_hunt`; következő: `onboarding_utmutatas` | 25 `NEUTRAL` valuta (vendég-útravaló); item: `WOODEN_PICKAXE:1`, `BREAD:8`; crate-kulcs: `koznapi:1` |
 | **136.** `onboarding_utmutatas` | **Az utad kezdete**<br>Térj vissza a hírnökhöz — elmondja, hogyan válassz kasztot (/class), szakmát (/profession join), és hol vár a kaszt-próbád (/quest list). | beszélgetés NPC-vel; NPC: `hirnok` | előfeltétel: `onboarding_gather` | 50 kaszt-XP; 25 `NEUTRAL` valuta (vendég-útravaló) |
 | **137.** `napi_ospatak` | **A vén halász kérése**<br>Az Őspatak öreg halásza már nem bírja a hálót. Fogj helyette nyolc halat — a fele a tiéd. | hal kifogása; ×8 | ismételhető: 24 óra; rotáció: `napi-npc` | 120 kaszt-XP; 35 `OWN` valuta |
 | **138.** `napi_erclelet` | **Ércjárat**<br>A kovácsműhely kifogyott a nyersanyagból. Fejts ki huszonnégy vas- vagy rézércet a környék tárnáiból. | blokk kitermelése; ×24; anyag: `IRON_ORE`, `DEEPSLATE_IRON_ORE`, `COPPER_ORE`, `DEEPSLATE_COPPER_ORE` | ismételhető: 24 óra; rotáció: `napi-npc` | 120 kaszt-XP; 35 `OWN` valuta |
@@ -665,13 +673,19 @@ ki megoldótáblát.
 | **159.** `heti_nagyvadaszat` | **A nagy hajtóvadászat**<br>A krónikás hetente megnyitja a vadászlajstromot: százhúsz szörny, aki győzi. A neved a lap tetejére kerül — a jutalom a lap aljára. | szörny legyőzése; ×120 | ismételhető: 168 óra | 400 kaszt-XP; 150 `OWN` valuta; crate-kulcs: `ritka:1` |
 | **160.** `heti_nagyhalaszat` | **A nagy fogás**<br>A kikötő heti fogadása: negyven hal egy hét alatt. A vén halászok szerint lehetetlen. A vén halászok sok mindent mondanak. | hal kifogása; ×40 | ismételhető: 168 óra | 300 kaszt-XP; 120 `OWN` valuta; crate-kulcs: `koznapi:2` |
 
-### 7.7. Specializációs csúcspróbák (35)
+### 7.7. Civil vezeklés (161)
+
+| # / ID | Játékosnak látható név és leírás | Objektíva | Feltétel / lánc | Jutalom |
+|---|---|---|---|---|
+| **161.** `civil_penance` | **Civil vezeklés — Jóvátétel**<br>Győzz le harminc, legalább 3-as szintű mobot, hogy a rendezetlen civil jogi állapotod feloldozást kapjon. | szörny legyőzése; ×30; minimum mob-szint: 3 | csak rendezetlen jogi állapotú, nem `DARK` játékos; ismételhető, minden felvétel új teljesítést kér | automatikus feloldozás; nincs pénz vagy XP |
+
+### 7.8. Specializációs csúcspróbák (35)
 
 Mindegyik sor `category: SPECIALIZATION`, `visibility: PREREQUISITES_MET`,
 `requires-level: 50` és `objective.type: CAST_SPELLS` értékkel fut. A próba a
 megnevezett kaszt mesterpróbáját követeli, csak a megnevezett aktív
 specializációval halad, és 18 sikeres, a saját allowlistáján szereplő
-képességhasználat után oldja fel a Profile v2 capstone-t. Ezekhez nem kell
+képességhasználat után oldja fel a PlayerProfile capstone-t. Ezekhez nem kell
 world-hook.
 
 | Kaszt | Specializáció → quest ID | Előfeltétel |
@@ -699,7 +713,7 @@ world-hook.
 - [ ] `TALK_TO_NPC` egy kattintással halad; `DELIVER_ITEMS` kevés tárggyal nem vesz el semmit, elég tárggyal pontosan a szükséges mennyiséget veszi át.
 - [ ] A több questet adó NPC config-sorrendje és napi rotációja végigpróbálva.
 - [ ] Minden explicit `/npcbind` esetén dokumentált, hogy a legacy giver-scan miért hagyható el.
-- [ ] FancyNpcs nélküli stagingben `/quest talk <npc-id>` működik; aktív híd mellett a fallback policy megfelel a confignek.
+- [ ] FancyNpcs nélkül és inkompatibilis verzióval külön-külön determinisztikus fail-closed startup látszik; normál játékosnak nincs spoofolható parancsos fallback.
 - [ ] A négy territory ID létezik; a `dark-capital` ↔ `thanaopolis` eltérés rendezve.
 - [ ] A `kezdo_parkour` teljesítése haladást ad az `acrobat_challenge` questhez.
 - [ ] Mind az öt biome túlélő módban és tiltott portál nélkül elérhető.
@@ -713,7 +727,7 @@ world-hook.
 
 ### Gyors számellenőrzés
 
-- Questek: `195` (`160` világ-/történeti + `35` specializációs csúcspróba).
+- Questek: `196` (`161` világ-/történeti + `35` specializációs csúcspróba).
 - Egyedi quest-NPC ID-k: `18`.
 - Dialógusos questek: `45`.
 - Territory ID-k: `4`.

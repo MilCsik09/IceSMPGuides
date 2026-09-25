@@ -1,81 +1,76 @@
 # IceSMP
 
-> *Két mondat rombolta le a régi világot. A harmadikat senki élő nem akarja hallani.*
+<!-- DOC-AUTHORITY: REPOSITORY_ENTRY -->
 
-Egy megrepedt Élet Fája, négy egymásnak feszülő hatalom és üresen álló trónok:
-az **IceSMP** egy magyar nyelvű, történetvezérelt fantasy SMP, ahol a következő
-korszakot a játékosok írják. Ez a repó a világot működtető plugin forrása.
+Az IceSMP egyetlen Java 21 Paper/Folia pluginból, first-party resource packből, authored config/content rétegből és determinisztikus build/validation toolingból álló Minecraft SMP projekt.
 
-Technikailag: Folia-alapú Minecraft 1.21.11 plugin Java 21-hez. Egy
-fantasy SMP szerver játékmenet-rendszereit fogja össze: frakciók, kasztok,
-specializációk, képességek, szakmák, gazdaság, küldetések, események,
-területek, relikviák, társak és adminisztráció.
+## Aktuális executable snapshot
 
-## Dokumentáció
+- repository: `MilCsik09/IceSMP`;
+- elsődleges fejlesztési ág: `staging`;
+- DOC-00 indulási commit: `121c3b9cccca15c3e828f2bd363e8ddb17016b73`;
+- Minecraft/Paper API: `1.21.11`;
+- Java toolchain: 21;
+- Folia metadata: támogatott;
+- plugin entrypoint: `hu.taliann.icesmp.IceSMP`;
+- jelenlegi runtime: `IceSMP` közvetlenül birtokolja az `IceSMPCore` kompatibilitási runtime-ot, valamint a resource-pack, Prologue és transient-entity lifecycle elemeket.
 
-Az embernek szánt, mérvadó dokumentáció öt kézikönyvből áll:
+A modular runtime, module graph, DataPlatform és natív Event Platform még célarchitektúra; nem része a jelenlegi executable állapotnak.
 
-| Kézikönyv | Mire való? |
-|---|---|
-| [Minden funkció](docs/FEATURES.md) | Az aktív, részleges, letiltott és tervezett rendszerek teljes katalógusa |
-| [Legújabb változások](docs/LATEST_CHANGES.md) | A futóként átadott JAR és az integrált release közötti eltérések, plugin-rollout |
-| [Játékos kézikönyv](docs/PLAYER_GUIDE.md) | Kezdés, gameplay, parancsok és játékosoldali korlátok |
-| [Builder kézikönyv](docs/BUILDER_GUIDE.md) | Világhelyszínek, crate-ek, NPC-k, régiók és builder-checklistek |
-| [Admin kézikönyv](docs/ADMIN_GUIDE.md) | Admin/moderáció, parancsok, permissionök, GUI-k, config, recovery és playtest |
-
-A teljes command-, route-, alias-, permission-, config-, message- és
-komponensleltárt a **Repository Docs Inventory** GitHub Actions workflow
-letölthető artifactja készíti. Ez gépi ellenőrzési réteg, nem hatodik
-kézikönyv.
-
-Kiegészítő belső források:
-
-- [architektúra](docs/ARCHITECTURE.md);
-- [resource pack modelljegyzék](docs/RESOURCE_PACK_CMD.md);
-- [lore-kódex](docs/LORE.md) és [technikai lore-megfeleltetés](docs/LORE_REFERENCE.md);
-- [teljes quest- és NPC-builder leltár](docs/QUESTS.md);
-- [fejlesztési roadmap és ötletbank](ROADMAP.md);
-- [Discord- és képi teaser-csomag](docs/TEASER.md).
-
-Az aktív dokumentáció minden fenti Markdown-oldala szó szerint tükröződik
-az `IceSMPGuides` repóba, azonos könyvtárszerkezettel. Régi auditnaplók és
-párhuzamos redirect-oldalak nem részei az aktív dokumentációs készletnek.
-
-## Jelenleg futó baseline
-
-Az auditált szerver-JAR az `IceSMP-1.0-TESTING.jar`, SHA-256:
-`da039f0e2bdf0e67b216ce82d7d3fe3b6da0af6e18f6fa175762c37493795a05`.
-A resource- és bytecode-összevetés alapján a legvalószínűbb forrásállapot
-`775d9e247be675db1c7c9beaaecf4a90349bfcd3` (2026. július 12.).
-Ez `HIGH_CONFIDENCE`, nem exact mapping, mert a JAR nem tartalmaz Git SHA-t
-vagy valódi build-időt. A részletes bizonyíték a
-[legújabb változásokban](docs/LATEST_CHANGES.md#bizonyíték-és-ismert-határok)
-olvasható.
-
-## Build és ellenőrzés
-
-Követelmény: Java 21, Python 3 + Pillow (`python3 -m pip install Pillow`)
-és elérhető Gradle-dependency repositoryk. A Pillow a HUD-assetek build alatti
-generálásához és auditjához kell.
+## Build
 
 ```bash
-./gradlew clean build --no-daemon --stacktrace
+./gradlew build --console=plain --no-daemon
 python3 scripts/check_consistency.py
-python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
-python3 scripts/generate_repository_inventory.py \
-  --root . --output build/repository-inventory --mode strict
-python3 scripts/check_documentation_coverage.py \
-  --root . \
-  --inventory build/repository-inventory/repository-inventory.json \
-  --output build/repository-inventory \
-  --mode strict
 python3 scripts/check_markdown_links.py --root .
-git diff --check
+python3 scripts/check_documentation.py
 ```
 
-A zöld build kód- és regressziós bizonyíték. Production rollout előtt az
-[admin kézikönyv acceptance checklistjét](docs/ADMIN_GUIDE.md#release-acceptance-checklist)
-is végig kell futtatni staging/Folia környezetben.
-## PlayerProfile platform
+A teljes Gradle build a mérvadó. Részleges task vagy cache-es fordítás csak preflight.
 
-The modular PlayerProfile platform is the canonical authority for restart-durable, player-owned IceSMP state. See the PlayerProfile platform chapter in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md#playerprofile-platform), including the structured YAML format and the read-only API contract.
+## Dokumentációs authority
+
+| Kérdés | Elsődleges forrás |
+|---|---|
+| Engineering és agent workflow | [`AGENTS.md`](AGENTS.md) |
+| Dokumentumszerepek és mirror | [`docs/DOCUMENTATION_AUTHORITY.md`](docs/DOCUMENTATION_AUTHORITY.md) |
+| Implementált architektúra | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| 1.0 célarchitektúra és migráció | [`docs/ARCHITECTURE_FOUNDATION_PLAN.md`](docs/ARCHITECTURE_FOUNDATION_PLAN.md) |
+| Nyitott findingek/backlog | [`ROADMAP.md`](ROADMAP.md) |
+| Content authoring | [`docs/CONTENT_AUTHORING.md`](docs/CONTENT_AUTHORING.md) |
+| Narrative canon | [`docs/LORE.md`](docs/LORE.md) |
+| Resource-pack authoring | [`resource-pack/README.md`](resource-pack/README.md) |
+
+### Öt kanonikus human guide
+
+- [`docs/FEATURES.md`](docs/FEATURES.md) — capability-katalógus;
+- [`docs/LATEST_CHANGES.md`](docs/LATEST_CHANGES.md) — rövid változáslista;
+- [`docs/PLAYER_GUIDE.md`](docs/PLAYER_GUIDE.md) — játékos útmutató;
+- [`docs/BUILDER_GUIDE.md`](docs/BUILDER_GUIDE.md) — építő/content handoff;
+- [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md) — live-ops és recovery.
+
+Az exact command-, permission-, class-, config-, quest-, item- és assetinventory gépi riportból származik. Ne használj régi dokumentumban szereplő kézi számlálót executable truthként.
+
+## Repository-felépítés
+
+```text
+src/main/java/          plugin runtime és domain/application/adapters
+src/main/resources/     packaged config, content, messages, datapack és metadata
+src/regression/         dependency-light regressziós suite-ok
+resource-pack/          kicsomagolt first-party pack forrás
+scripts/                deterministic audit/generator/consistency tooling
+docs/                   current, workflow, supporting, future és historical dokumentáció
+.github/workflows/      CI, build, audit és publish kapuk
+```
+
+## Fejlesztési szabály röviden
+
+- Ne commitolj közvetlenül `staging`re.
+- Egy state-nek egy canonical authorityja legyen.
+- Ne vezess be új Core reflectiont, statikus service locatort vagy hidden dual-write-ot.
+- Folia owner-thread szabályt minden entity/location mutationnél tartsd be.
+- Java/gameplay változás ugyanabban a PR-ben frissíti a releváns current-state dokumentációt.
+- Nyitott finding kizárólag a `ROADMAP.md`-ba kerül.
+- Új architektúra- vagy feature-branding nem használhat `V2`, `v2`, `2.0` vagy `next-gen` megnevezést; valódi technikai verzió és kompatibilitási ID kivétel lehet.
+
+A részletes szabályokért mindig az `AGENTS.md` az authority.
