@@ -37,8 +37,33 @@ Jelölések:
 
 ### 1.1. Kiadásblokkoló
 
+- 🚧 **Merge előtti végső átvétel:** a bossjutalom elutasított ACK utáni mozgatása/halála,
+  az attribution és a késleltetett caster régióváltása az ADMIN_GUIDE új esetei szerint
+  valódi Paper/Folia szerveren is próbálandó. A helyi automatizált bizonyíték nem játékosplaytest.
+- 🚧 **Resource-pack kiadási lánc:** a fallback metaadat még a publikált
+  `a20bf6e7234c1d400e3553bf8e0e5506be4cec8f` csomagra mutat. A végleges forrás merge-je
+  után a master publish workflow állítsa elő és ellenőrizze az új immutable csomagot,
+  majd a tényleges URL/SHA-1 alapján frissítse a plugin fallback metaadatát.
+  A helyi javítás nem publikál csomagot és nem ír előre kitalált hash-t.
+
+- ◇ **Eseményindítás ismételt szerverpróbája:** a szeptember 24-i tesztben a normál
+  érkezések chunkhibái és a boss üres közönség miatti eltűnése javítást igényelt.
+  A chunkfoglalás, survival/creative prioritás, boss-élettartam és közös HUD-státusz
+  javítása után a következő élő kör még hiányzó mob-event HUD-ot és egymás utáni
+bossokat mutatott. Az eseménymob teljes élettartamára kiterjesztett chunkfoglalás,
+encounter-UUID szerinti lezárás és a rontás külön vizsgálati/cserekerete után az
+ADMIN_GUIDE eseményes 45–49. eseteit újra kell próbálni valódi Folia szerveren.
+  A normál treasure/stranger helyszínpróbát friss területen is ismételni kell:
+  a terep- és korábbihelyszín-korlátok megtartása szándékos.
+- ◇ **Nagy rontás átvétele:** az 512-es terjedési határ, dinamikus cserekeret,
+  mob-/ölés-/szintfokozatok, magjel, Darkness és építkezés utáni újrafertőzés
+  kódja elkészült. Az ADMIN_GUIDE 50–55. esetét és a 2–4 órás célhoz tartozó
+  tényleges TPS/MSPT/memória/WAL mérést élő Folia szerveren még el kell végezni.
+- ◇ **Rontás auditjavítások élő átvétele:** a fenntartott cserekeret, chunkhatár, újrapróbálás,
+  robbanás utáni forrásellenőrzés, restart/claim-védelem és Drowned hullámok
+  új ADMIN_GUIDE esetei még valódi Folia-próbát igényelnek.
 - ◇ **Rontás-góc kézi átvétel:** a külön driver, a feltételes blokkhelyreállítás,
-  két-régiós Folia és megszakított chunkmentés/restart az ADMIN_GUIDE rontásos
+  szabálytalan terjedés, fű/páfrány/virág-helyreállítás, két-régiós Folia és megszakított chunkmentés/restart az ADMIN_GUIDE rontásos
   listája szerint próbálandó. Az automatikus teszt nem helyettesíti a szerverpróbát.
 - ⬜ **Oltárinterakció külön utánkövetése:** az „Ez az oltár nem a te kezedhez szól”
   válasz az oltárdetektálás ága; ownership/validáció áttervezése nem része a
@@ -66,14 +91,17 @@ claim.
 
 ### 1.2. Megerősített technikai adósság
 
-- **2026-09-24, #168 alapág buildkapuja:** a `b632135b` változat külön, módosítatlan
-  munkapéldányán is hibás a `compileRegressionTestJava`: a MobNaturalContext-teszt
-  konstruktorából hiányzik a requiredAnyTags argumentum, a RuntimeBugfix-tesztben
-  nincs definiálva a `generator`. Emellett stale Trash sprite/combat report,
-  advancement inventory, quest-item source assertion és config-content evidence
-  drift blokkolja a teljes buildet. Windows alatt a `python3` Store-alias külön
-  környezeti akadály. Ezek a rontásjavítás előtti baseline hibái; az önálló
-  `corruptionRegressionTest` nem váltja ki a teljes kiadási kaput.
+- ✅ **2026-09-24, helyi buildkapu rendezve:** a megtartott stack Java 21-es
+  Gradle buildje az audit- és regressziós javításokkal sikeres (160 task).
+  A sérült UTF-8 riport helyreállt, az advancement-, tooltip-, combat- és
+  config/content bizonyíték a jelenlegi forrást követi. A Windows sorvégek és
+  az azonos súlyú Trash-színcsoportok rendezése nem okoznak hamis eltérést;
+  a 357 Trash PNG pixelpontosan megmaradt. Friss, a javításokat tartalmazó CI és
+  a fenti valódi szerveres/klienses átvétel továbbra is szükséges.
+- ⬜ **Dokumentációs leltár triázs:** a helyi report mód 225 FAIL besorolású
+  leltárjelzést ad, miközben a parancs- és alparancs-lefedettség 100%.
+  Ezeket a generált inventory alapján tételenként kell igazolni és rendezni;
+  a report mód sikeres lefutása nem jelent sikeres strict dokumentációs kaput.
 
 
 Ezek nem mind kiadásblokkolók, de a forrásban még létező rések. Az
@@ -211,7 +239,7 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
 - ⬜ **Inventory és életciklus:** shift-kattintás, kurzoros mozgatás, húzás,
   kézcsere, eldobás/felvétel, konténerek, halál, kilépés és újraindítás;
   fantomtárgy, valódi duplikáció és tárgyvesztés kizárása.
-- ⬜ **Integráció és hibautak:** WorldWeaver-vizsgálat/módosítás, mentési
+- ⬜ **Integráció és hibautak:** natív tárgyvizsgálat/módosítás, mentési
   hibák, félbeszakadt műveletek és visszaállítás; Paper/Folia régióbiztonság,
   eseménysorrend és párhuzamos játékosinterakciók.
 - ⬜ **Lezárás:** tárgyankénti elvárt/tényleges eredmény, reprodukálható
@@ -259,24 +287,14 @@ az alábbi rések kódban visszaigazoltak, javításuk tételenként külön dö
   eventenkénti reprodukálható findingek, javítások és kézi playtest.
   A review külön feladat, jelenleg nincs elvégezve.
 
-### WorldWeaver — teljes review (nyitott, 2026-09-17)
+### WorldWeaver — későbbi újratervezés (2026-09-24)
 
-- ⬜ **Teljes design- és provider-review:** a normatív WorldWeaver design
-  összevetése minden providerrel és ténylegesen elérhető művelettel;
-  hiányzó, hibás és csak részben működő útvonalak tételes azonosítása.
-- ⬜ **Interakció és célpont:** jobb kattintás, guggolás, kézcsere,
-  entitás/játékos/blokk/terület/tárgy kiválasztása; offhand és inventory,
-  egymást követő inputesemények, téves vagy elavult célpontok és GUI-navigáció.
-- ⬜ **Végrehajtás és integráció:** inspection, preview, megerősítés,
-  apply/undo, SANDBOX/LIVE_GM, jogosultságok és fejlesztői kizárólagosság;
-  Trash Relic-, event- és egyéb providerek tényleges runtime-hatásai.
-- ⬜ **Állapot és hibabiztonság:** mentés, audit/receipt, recovery, lejárat,
-  megszakítás, kilépés és újraindítás; részleges végrehajtás, duplikáció,
-  elavult snapshot és régiók közötti Paper/Folia műveletek.
-- ⬜ **Lezárás:** providerenként és műveletenként elvárt/tényleges eredmény,
-  reprodukálható findingek, javítások, célzott regressziók és kézi playtest.
-  A korábbi célpont- és inventoryjavítások nem zárják le ezt a review-t;
-  a teljes átvizsgálás jelenleg nincs elvégezve.
+- A teljes aktív rendszer kikerül a staging és a legfelső fejlesztési ág kódjából.
+- A korábbi megvalósítás külön `feature/world-weaver-redesign` ágon marad meg;
+  visszaemelése új tervezést és külön elfogadást igényel.
+- A normál jutalmazás, natív mobidézés, tárgyfejlesztés és Bingulus WW nélkül működik.
+- Kiadási kapu: valódi Paper/Folia playtest normál mobloottal, questjutalommal,
+  rúna/reroll művelettel és Bingulus-interakcióval; ez még nincs elvégezve.
 
 
 ### Inventory- és GUI-hátterek rendezése (nyitott, 2026-09-17)
@@ -338,6 +356,9 @@ koordinátája, pozitív és negatív próbája, valamint visszaállítható men
   első fázis után legfeljebb 24 új chunkos aszinkron mentőfázist használ. Stagingen még
   kötelező ugyanazon `-8513,10055` / `-8533,10036` környezet, óceánpart, erdő és hegyvidék
   runtime próbája; veszélyes víz-, közeli-, látható vagy protection-fallback továbbra sincs.
+- ◇ A 2026-09-24-i eventindítási review javításaihoz az admin spawn-átvétel 32–44.
+  esetei még élő Folia próbát igényelnek: escort önblokkolás, foglalástulajdon,
+  távoli boss, finale-kapu, barlangmagasság, blokkonkénti védelem és helyi jelzések.
 - ◇ A frakciópasszív-rework defaultjai csak konzervatív kiindulópontok. A
   `docs/ADMIN_GUIDE.md` teljes membership/RED/BLUE/NEUTRAL/DARK, vegyes
   játékosos, Suttogó- és lifecycle mátrixát productionközeli Folia stagingen

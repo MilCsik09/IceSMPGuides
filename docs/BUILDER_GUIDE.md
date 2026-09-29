@@ -694,6 +694,27 @@ Ha egy lore-elemet megépítetek, de nincs hozzá aktív runtime-út, jelöld:
 
 ## 9. Eseményhelyszínek, bossarénák és karaván
 
+Kézi próba: `/event world-boss`, `/event escort`, `/event meteor` és a többi
+eseményindító azonnali keresést kér a normál spawnprofillal és nagy-event kapuval.
+A parancs a véletlen dobásra és az automatikus időzítőre nem vár. A `--force`
+végződés közeli bemutatóindítást kér, a természetes távolság-, látóirány-, biom-,
+helyszín-cooldown és nagy-event korlát nélkül. Szabad testtér, száraz talaj és
+érvényes területvédelem mindkét módban kell. A végső üzenet adja a valódi spawn
+koordinátáját. Menüben sima kattintás normál, Shift+kattintás force indítás.
+A teljes automatikus időzítést továbbra is parancs nélkül teszteld; a spawn-debug
+csak a helyszínkeresést vizsgálja.
+Takarítás: `/event stop <esemény>` vagy `/event stop all`; új terepmódosító
+esemény indítása előtt várd meg a korábbi helyszín helyreállítását.
+
+Egyedül creative módban is tesztelhető a helyszínkeresés. Ha van online survival
+játékos, a rendszer őt választja kiindulópontnak, force módban is; ezt vedd
+figyelembe a kapott koordinátáknál. Spectator/adventure nem helyettesíti a survival
+vagy creative tesztelőt. A fix eseményspawnpontokat ez nem írja felül.
+
+Az események próbáján távolról is ellenőrizd az `/event status` és a HUD összhangját,
+majd menj a helyszínre: az aktív eseménymoboknak meg kell maradniuk. Force módban
+együtt indított boss, rontás és kultisták neve egyidejűleg is jelenjen meg.
+
 ### 9.1. Fix eseményspawnpont
 
 ```text
@@ -723,7 +744,13 @@ footprint-/vízpuffer legfeljebb 7 blokk. Ez szándékos Folia-határ: a teljes
 terepvizsgálat ugyanabban a chunkban/régióban marad. A fix pontot a rendszer
 először a megadott oszlopon ellenőrzi; ha az alkalmatlan vagy régióhatárt
 érintő footprint miatt nem olvasható biztonságosan, közeli chunk-közepes
-fallbacket keres. Új területet a kereső nem generál.
+fallbacket keres. A nagy események a normál keresés kimerülése után korlátozott
+terepbővítő fázisban új chunkot is generálhatnak.
+
+Fedett profilon a rögzített Y közelében keres talajt, ezért a pontot az aréna vagy
+barlang tényleges járószintjén vedd fel. Legalább három szabad testblokk szükséges;
+alkalmas közeli talaj hiányában felszíni alternatívát is kereshet. A vízpuffer
+alapértéke 3 blokk. A helyi szerver konfigurációja felülírhatja a csomagolt értékeket.
 
 ### 9.2. Világboss-aréna
 
@@ -742,8 +769,8 @@ A `world-events.spawn-rules` eseménytípusonként szabályozza a territory,
 claim, WorldGuard-régió és víz kerülését. A fix pont megléte nem kerül meg
 minden további spawn-validációt.
 
-A boss szabad spawnmagját ezért legalább a chunk közepén mért 7 blokkos körre
-tervezd; a nagyobb aréna továbbra is ajánlott a harci mozgáshoz, de nem növeli
+A boss és invázió alap footprintje 4 blokk, megengedett szintkülönbsége 8 blokk,
+nyílt ég nem szükséges. A nagyobb aréna továbbra is ajánlott a harci mozgáshoz, de nem növeli
 a régiószálon egyszerre bejárt validációs footprintet.
 
 Teszteld az arénát normál és szezonbosszal, második fázissal,
@@ -1172,6 +1199,13 @@ A DARK-tagság és a száműzetés önálló belépési tiltás; a Wanted-menlev
 A sötét menedék biztonságos érkezőhelyét `/territory setspawn dark` rögzíti.
 Ez a civil városban bejelentkező vagy újraéledő száműzött visszairányításához is kell;
 hiányzó pontnál az üzenet megjelenik, de a teleport nem hajtható végre.
+
+A rontás építési próbájához legyen összefüggő teljes talaj, füves/virágos rész,
+barlangszáj, valamint láda/üllő/félblokk alatti teljes talaj. A láda tartalma maradjon
+érintetlen, a fertőzésbe utólag épített torony sculkosodjon és tisztításkor álljon vissza.
+A védett zónahatár és a levegőrés továbbra is megállítja a terjedést; a mag megtalálását
+időszakos vizuális villám és HUD-irány segíti. A nagy sugárhoz az ADMIN_GUIDE
+többórás Folia-terheléspróbája is szükséges.
 
 A rítushoz nem kell új NPC vagy új területazonosító: sötétben, sculk/sculk catalyst
 felületen állva a meghívó főkézben, SHIFT + jobb kattintással használható. A meghívó

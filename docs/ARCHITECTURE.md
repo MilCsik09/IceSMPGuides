@@ -24,6 +24,16 @@ adminvizsgálatot kér; az újraindítási integritás nem kompatibilitási adap
 
 ## 1. Nagy kép — életciklus
 
+A világesemények restart-állapotát az `EventRestartStore` a többi persistent store
+után tölti be. A `RestartableWorldEvent` adapterek tiszta értékeket adnak át;
+az `EventRestartState` a határidőkből hátralévő időt ment. A native chunkmentés
+őrzi az entitásokat, a régióra ütemezett visszakötés megtartja UUID-jukat és HP-jukat.
+A `TransientEntities` csak mentésben szereplő, még visszatöltésre váró UUID-t tekint
+ideiglenesen élőnek. Leálláskor checkpoint készül a destruktív admin-stop helyett.
+A rontás a saját metadata- és blokk-WAL-jából építi újra a folytatható terjedést;
+csak a régióján ellenőrzött sculk lehet új terjedés forrása.
+
+
 ```
 IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
   └─ IceSMPCore                ← a teljes rendszer összeszerelése
@@ -48,7 +58,7 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | Csomag | Fájlok | Szerep |
 |--------|-------:|--------|
 | `core/` | 5 | `IceSMPCore` — összeszerelés, életciklus, ütemezés — + az élő config-apply hidak (`ConfigRuntimeReloadBridge`, `AdvancedConfigRuntimeBridge`) és a megőrzött Paper-parancsok életcikluskapuja (`CommandLifecycle`). |
-| `managers/` | 128 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
+| `managers/` | 134 | Üzleti logika és állapot (gazdaság, frakciók, kasztok, szakmák, loot/raritás, recept-katalógus, pet, territórium-védelem, stb.). |
 | `listeners/` | 126 | Bukkit eseménykezelők (gameplay + GUI-klikk + loot/craft/védelem + esemény-spawn debug); a procedural daily listenert az authored quest authority kiváltotta. |
 | `spells/` | 61 | Spell-rendszer: `Spell` SPI, `BaseSpell`, `ConfiguredSpell` builder, `SpellCatalog`, egyedi spellek. |
 | `commands/` | 96 (65 + al-csomagok) | Parancsok. A `commands/<terület>/` al-csomagok a dispatch-stílusú alparancsokat tartják. |
@@ -56,7 +66,7 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | `quest/` | 11 | Quest Framework v2 pure magja: forrás-policy + kontextus, kategória/láthatóság szótárak, gráf-validátor, választó-token registry, marker-paletta, közös quest-valuta resolver, az izolált content-integrity runtime probe, valamint az első belépés üdvözlő-szövegének egyetlen szabálya (`OnboardingWelcomeCopy`: canonical copy + elavult stock-config felismerése, custom szöveg érintetlenül). |
 | `gui/` | 72 | Inventory-menük + `GuiUtil` közös helperek + adat-vezérelt `CommandMenu` rendszer + staged config-editor lapok (root/kategória/operational/world/crate + reward-editor). |
 | `crates/` | 14 | Dependency-free crate domain: strict validáció, selector/key plan, atomi opening lifecycle, recovery/kompenzáció, scheduler gate, audit és thread-safe formázás. |
-| `factions/` | 18 | Immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és a központi frakció-névszín paletta; a tartós tagság és bűnállapot a PlayerProfile faction szekciójában él. |
+| `factions/` | 14 | Immutable passzív-config snapshot, tiszta damage/exhaustion/target policy, központi combat-marker katalógus, mobkontextus-resolver, mulandó retaliation state és a központi frakció-névszín paletta; a tartós tagság és bűnállapot a PlayerProfile faction szekciójában él. |
 | `data/` | 15 | Enumok és értékobjektumok (`CurrencyType`, `FactionType`, `JobType`, `SpecializationType`, `Territory`/`TerritoryType`, `BlockCuboid`…). |
 | `relics/` | 12 (9 + `ability/`) | Relikvia-keret: `RelicRegistry`, `RelicDefinition`, triggerek, transfer-elvárás, immutable világ-pillanatkép + single-writer store. |
 | `items/` | 14 | Item-gyárak (katalizátor/Lélekkapocs, befogó item, tervrajz, egyedi alapanyag…), viselhető és közös ritkaság-prezentáció. |
@@ -77,7 +87,7 @@ IceSMP (JavaPlugin)            ← Bukkit/Paper belépő (onEnable/onDisable)
 | `wizard/` | 2 | Varázsló gameplay vertical slice: transiens állapot + konkrét runtime (Rúnaszövés öt tételes párral, három ráhangolódás Konvergenciával/Elemi Koronával; a lecsengés rögzített horgonyból számol, ezért lekérdezés-gyakoriságtól független). A Holtak Udvara NEM transziens: egyetlen authorityja a durable `necromancer.court` companion névsor, és ugyanaz a felvételi szabály (`ClassSpecCatalog.admitsCompanion`) dönt a cast előtt és a commitban. |
 | `storage/` | 10 | `YamlStore` (atomikus írás) + `PersistentStore` SPI + fail-closed életciklus-koordinátor. |
 | `session/` | 1 | `PlayerStateCleanup` SPI (per-player állapot takarítása). |
-| `utils/` | 28 | `MessageManager`, `ExperienceUtil`, `TerritoryDestination`, `PlatformCapabilities`, egyebek. |
+| `utils/` | 30 | `MessageManager`, `ExperienceUtil`, `TerritoryDestination`, `PlatformCapabilities`, egyebek. |
 | `integration/` | 6 | Soft-depend reflexiós hidak: PlaceholderAPI, LibsDisguises, FancyNpcs, WorldGuard, LuckPerms. |
 
 ---
@@ -267,7 +277,7 @@ egyébként legacy. Sose feltételezd egyik formátumot sem; használd a generik
   fejlődés és egyenleg továbbra is a PlayerProfile authorityjához tartozik.
 - **`storage/YamlStore.saveAtomic(file, yaml)`**: egyedi temp-fájl + atomikus rename (konkurens-biztos).
   **Minden** YAML-mentés ezen át megy — soha ne `yaml.save(file)` közvetlenül.
-- **`storage/PersistentStore { load(); save(); }`**: a 39 fájlt-író store implementálja. Az
+- **`storage/PersistentStore { load(); save(); }`**: a 40 fájlt-író store implementálja. Az
   `IceSMPCore` egy `List<PersistentStore>`-t iterál: `load()` az enable-ben, `save()` a disable-ben
   (a player-cleanup ELŐTT, hogy ne vesszen adat).
 - **`storage/PersistentStoreCoordinator`**: az enable során **fail-closed** tölti be a teljes
@@ -296,13 +306,19 @@ egyébként legacy. Sose feltételezd egyik formátumot sem; használd a generik
   - **Encounter reward receipt/outbox** (PlayerProfile v2 `OPERATIONS`): a világboss
     meaningful-contribution küszöbénél először bounded eligibility receipt készül.
     Settlementkor ez COMMITTED állapotba kerül, majd a személyes delivery külön PREPARED
-    receiptet kap. A sorrend `receipt → inventory → player.saveData() → COMMITTED`;
-    full inventory nem dob tárgyat a földre, az exact markeres item reconnect után commitolható.
+    receiptet kap. A sorrend `PREPARED → inventory + playerdata witness → ellenőrzött
+    playerdata-mentés → COMMITTED`. A witness csak műveletazonosítókat tárol a játékos
+    PDC-jében, ugyanabban az NBT-mentésben, mint az inventory; nem az itemen utazik.
+    Mozgatás, használat, átadás vagy halál után is megmarad a sikertelen ACK recovery-bizonyítéka.
+    Full inventory nem dob tárgyat a földre. Minden késleltetett callback az aktuális
+    receiptállapotot olvassa; COMMITTED után csak a technikai witness takarítható.
     A boss transient, ezért restart után a COMMITTED eligibility újrakézbesíthető, a csak
     PREPARED jelölt exact-before állapotként rollbackelhető.
   - **Frakcióváltás**: a `PlayerProfileFactionStore` a tagságot, historyt, díjat és
     szezonváltási számlálót egy PlayerProfile WAL-tranzakcióban rögzíti. A külön DARK-join
     ugyanabban a faction-szekció commitban ellenőrzi az Exile/Oath előfeltételt és a szezonplafont.
+    Nincs külön WW adjustment/projection authority vagy periodikus offline profilsöprés;
+    a natív tagsági projection betöltése és a sikeres commit utáni frissítése megmarad.
     Az adóproducer végleg üres; a régi outbox formátum kompatibilitási maradvány, nem új adóforrás.
   - **Suttogó**: a `PlayerProfileWhisperStore` egyetlen faction-szekció mutációban váltja be
     a tanú–gyanúsított bizonyítékot, lépteti a fokozatot és leleplezéskor rögzíti az Exile-t,
@@ -487,7 +503,7 @@ cooldown-szint alapján); egyébként a spell saját `hasRequiredCost`/`consumeC
 > A korábbi „teli állapotban kirobbanás + empowered ablak" jutalom-mechanika **megszűnt** — a csík
 > most költség (spend-modell), ami ugyanazon a sávon kizárta a build→discharge-ot.
 
-### 3.8.1 Kaszt/spec rework — Profile v2 authority és adapterhatárok
+### 3.8.1 Kaszt/spec rework: Profile v2 authority és adapterhatárok
 
 A 13 kaszt / 35 specializáció reworkje elkészült és a Profile v2 mindig aktív,
 egyetlen kaszt/spec authorityjára épül; nincs legacy gameplay fallback vagy
@@ -522,6 +538,60 @@ A registry fizikai és mágikus technique-et ugyanabban a common runtime-ban kez
 A tíz stable boss ID teljesen új, egyedi kitet kapott. Minden boss kitje tartalmaz HEALTH_THRESHOLD fázist, positioning problémát és bestiary counterplayt. A Warden carrier különösen alacsony template HP-multiplierrel normalizálódik, így a vanilla Warden alapstat és a rank/encounter scaling nem robban össze. Phase graph vagy új encounter DSL nem készült.
 
 ### Event Enemy Design
+
+Az `EventSpawnGuard.SpawnAction` külön completion-visszajelzést kér a tényleges
+materializálásról. A keresési és spawnállapot külön zárul; recent-location csak
+egyszeri sikeres completion után íródik. A foglalás SearchContext-tulajdonú,
+compare-remove felszabadítással; debug és útvonalvalidálás nem commitol helyszínt.
+A normál parancs `admin=false` SearchContextet használ a természetes keresési
+profillal és érkezéssel; csak az ütemezett/véletlen trigger marad ki. A még függő
+keresés is foglalja a MajorEventGate-et. Kizárólag a `--force` indítás kap külön
+SearchContext-policyt, közeli és determinisztikus
+jelöltsorrenddel; a manager végső ellenőrzése a saját foglalásán keresztül kapja
+meg ezt a policyt. A természetes érkezés látóirány-engedélye csak a már elfogadott
+helyszínre és a közvetlen kultista formációra vonatkozik, a többi védelmet nem
+kerüli meg. A guard nyilvántartja és megszakítja a keresési és érkezési fázist;
+a konvoj későbbi callbackje a konkrét context azonosságához kötött. Az invázió
+generációja megakadályozza a stop előtti hullámcallbackek későbbi materializálását.
+Az admin stop a normál cleanupot használja; a rontás és szerverkihívás külön
+runtime stopja nem állítja be a plugin végleges shutdown állapotát.
+Az `EventPlayerSelection` az online UUID-ket a `GameModeCache` alapján szűri:
+survival elsőbbség, kizárólag annak hiányában creative fallback. Más entitás
+gamemode-ját nem olvassa régiószálon kívül. A boss indulási közönsége ezen belül
+is világ- és sugárkorlátos `PositionCache`-snapshot; az üres közönség érvényes,
+skálázatlan encounter, amely nem jelent passzív jutalomjogosultságot.
+Az `EventChunkTickets` régiószálon szerzett, referencia-számlált plugin ticketje
+a kiválasztott chunkot a késleltetett érkezéstől a spawn receiptig tartja életben.
+Az eseménymobok `TransientEntities.retainChunk` opt-in handle-je ugyanebből a
+referenciaszámlálóból vesz külön foglalást: az entity scheduler frissíti a mozgást,
+új chunkot előbb foglal, csak utána engedi el a régit. Retire/halál/stop/disable
+elengedi a foglalást. Más plugin megfigyelt CUSTOM mobja nem kap ilyen foglalást.
+A késői boss-removal csak az azonos encounter-UUID állapotát zárhatja le.
+A settlement, cancel és callback-timeout ugyanazt az egyszeri release-t használja;
+idegen régióból a felszabadítás visszaugrik a chunk tulajdonosára.
+A `WorldEventStatus` közös aktív állapotforrás a HUD, parancs és menü számára.
+
+A `CorruptionTerrain` a góctól mért, irányonként véletlen súlyozású prioritási
+sorral terjed; a sugárkorlát kör alakú felső határ, nem azonnali kitöltés. A
+tényleges sculk-számláló állandó idejű, a meglátogatott helyek chunkonként bitkészletben
+élnek. A folyamatban lévő próbák és a tényleges blokkcserék kerete külön korlátos;
+csak sikeres, még szomszédos sculk-csere viszi tovább a 26 érintkező szomszédot.
+Az építés/törés tulajdonosrégiós utánkövetése újranyitja a vizsgálatot, és az új
+építmény saját állapotát naplózza. A részleges tárgyak alatti teljes talaj is célpont.
+A chunkbetöltés aszinkron és korlátozott, a callback generációt ellenőriz, majd
+visszatér a tulajdonosrégióra. A restore rendezett indexe belső gyűrűnként halad;
+támasz előbb, növény utána, ugyanígy restart után is. Nagy naplónál a leállítás a
+már tartós WAL-t zárja, nem épít második, hatalmas YAML-objektumgráfot.
+A `CorruptionManager` méretfokozatokból olvassa a mobplafont, szintbónuszt és
+ölésküszöböt; az elért küszöb reteszelődik. A mobsűrűség tulajdonosrégión frissülő
+pozíciótükörből számolódik, a spawn a fertőzött chunkindexből választ, játékosok közelében.
+A `CorruptionAuraListener` külön kezeli a magsebzést és a ritka Darkness-pulzust;
+a cooldown a közös `PlayerStateCleanup` életciklusba tartozik. A `MobScalingListener`
+csak a `world_boss` jelölt mobon enged Glowingot, a játékosok jelölése változatlan.
+A `SeasonFinaleManager` csak a bosskeresést regisztrálja a nagy események kapujában;
+az élő boss állapotát a `WorldBossManager` adja. Üres közönségnél külön
+`unattendedSnapshot` őrzi az üres résztvevőlistát és az alap szorzókat.
+A ledger későbbi valódi hozzájáruláskor regisztrál résztvevőt.
 
 Invasion, Prologue, Cultist, Corruption, Wild Hunt, Escort és dungeon producer `AuthoredCreatureSpawnService.Request.template` kérést ad le. Az invasion hullámok determinisztikusan váltanak frontline/ranged/control szerepeket; nincs raw compatible EntityType casino. Summoned add egyszerűbb marad a bossnál, de stable template identityt visel.
 

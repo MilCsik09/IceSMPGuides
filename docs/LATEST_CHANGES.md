@@ -1,11 +1,247 @@
 # Mi változott a július 12-i szerververzió óta?
 
+## 2026-09-29 — Rontás auditjavítások és vízi fajzatok
+
+- Az ellenőrzött terjedési jelöltek külön cserekeretet foglalnak: a chunkhatáron
+  átnyúló felületellenőrzés és a lassabb régió nem veszíti el a sorát. A növények
+  eltávolítása is beleszámít a közös blokkírási keretbe.
+- Az átmenetileg védett vagy fedett teljes blokkok korlátozott újravizsgálatot kapnak.
+  A góc minden érintkező szomszédja indulási jelölt; egy nem fertőzhető alap nem
+  akadályozza meg a többi elérhető felületet. Robbanás után az elpusztult sculk
+  nem marad terjedési forrás, és a feltárt felületek is újra sorra kerülnek.
+- Hibás/ismeretlen WorldGuard-válasz mellett a rontás nem fertőz. Aktív gócot
+  sem új claim, sem függőleges claimbővítés nem foglalhat magába.
+- A visszatöltés nem veszi át a worldbosst vagy más jelölt harci esemény mobját.
+  A rontásmob mentett lejárata nem indul újra restartkor; a mob élettartama valós
+  időben telik, a szerver állásidejét is beleértve. A kényszerített hullámindítás
+  kivétele megmarad restart után, az aura intervalluma pedig élőben újratölthető.
+- Fertőzött meder fölött a **Fulladt Maradvány** (`DROWNED`) jelenhet meg.
+  Két blokk magas víztér kell; vízinövényzet nem számít száraz spawnhelynek.
+  Alapból legfeljebb a közös mobplafon fele lehet vízi mob; ugyanúgy skálázódik,
+  és ölésével ugyanúgy tisztítható a góc. Kiterjedt fertőzéstől 10% eséllyel
+  szigonyt kap, amely nem eshet ki zsákmányként. A vízi kapcsoló, keretrész és
+  szigonyesély a konfigurációs menüből is állítható.
+
+
+## 2026-09-29 — Többfrontos rontás, kezdettől teljes sugárhatár
+
+- A sugárhatáron túl várakozó blokkok külön sorban várnak, így nem szorítják ki
+  a még megfertőzhető falrészeket a feldolgozásból. Adminisztrátori sugárbővítéskor ismét sorra kerülnek.
+- A megengedett sugár kezdettől 512 blokk: megszűnt a külön kezdeti sugár és a
+  percenkénti sugárnövekedés. A tényleges fertőzés mérete szabja meg a blokkcsere sebességét.
+  A régi aktív események restartkor az új teljes határral folytatódnak.
+- A hibakeresési állapot külön jelzi a terjedési sor és a sugárra váró sor méretét.
+- A különböző irányok és magasságsávok felváltva kapnak terjedési lehetőséget:
+  a talaj, falak és lomb több fronton fejlődhet. Minden front közös blokkcsere- és
+  vizsgálati keretet használ; az összesített sebesség és a területvédelem változatlan.
+
+## 2026-09-29 — Rontás a frakcióterületeken
+
+- A wildernessből induló rontás normál `FACTION` területre is beterjedhet;
+  a megfertőzött talajon saját fajzatai is megjelenhetnek.
+- A gócok indulási szabályai változatlanok. A személyes claimek, védett régiók
+  és minden más territory-típus továbbra is akadály, frakcióterületen belül is.
+
+## 2026-09-25 — Eventek folytatása restart után, víz alatti rontás
+
+- Szabályos restart után a futó világesemények megőrzik az állapotukat és hátralévő
+  idejüket. A mobok a natív világmentésből, ugyanazzal az UUID-val és életerővel térnek vissza.
+- A boss-hozzájárulások, kincsigénylők, kihíváshaladás és karavánelszámolás megmarad;
+  a rontás kora, területe és tisztítási haladása sem nullázódik. Az állásidő szünet.
+- A rontás a víz alatti teljes talajblokkokon is terjed; a víz és a vízinövények
+  nem válnak sculkká. A védett területek és nem visszaállítható blokkok továbbra is kimaradnak.
+- Az explicit event-stop lezárja az eseményt. Az első frissítés előtti, régi build
+  még nem tudja az új mentést létrehozni; a restarttesztet már az új builden indítsd.
+
+
+## 2026-09-25 — Rontásterjedés ásás után
+
+- Sculk vagy más takaró blokk kiütése után a feltárult szomszédos teljes blokkok
+  újra megfertőződhetnek. A megmaradt fertőzés egy feltárt barlangba is bejuthat,
+  a szomszédossági, területvédelmi és sugárkorlátok megtartásával.
+- Az ismételt blokkeditek nem sokszorozzák meg a várakozó terjedési próbákat.
+  Tisztításkor a fertőzött barlangfelület visszaáll, a kiásott lyuk üres marad.
+
+
+## 2026-09-24 — Kereshető eventek és öregedő rontás
+
+- A helyszínes eventek értesítése eltolt X/Z támpontot közöl: a valódi indulási
+  hely annak 128 blokkos vízszintes sugarán belül van. Az ismételt támpont stabil,
+  a pontos hely az admin spawn-debugban és a naplóban marad elérhető.
+- A saját sculkon kapott Darkness mérettel erősödik: 3/30, 4/25, 5/20, 6/18
+  másodperces hossz/időköz. Legalább 8192 blokknál 180 perc után +1/−2,
+  300 perc után összesen +2/−3 mp korbónusz jár. Korlát: 8 mp hossz, 15 mp időköz.
+- Növekedési chatjelzés csak 8192, 65536 és 262144 sculk blokknál jön,
+  mérföldkövenként egyszer. A hangolás élő konfigurációból és az adminmenüből elérhető.
+
+
+## 2026-09-24 — Futó tesztszerver és build elkülönítése
+
+- A fejlesztői Paper/Folia indító külön plugin-JAR-másolatból indítja a szervert.
+  A következő build így nem írja felül a futó szerver által használt archívumot.
+- A korábbi közös JAR futás közbeni felülírása sebzéskövetésnél, automatikus
+  mentésnél és leállításnál is osztálybetöltési hibákat okozhatott.
+  A már érintett szerverfolyamatot teljesen újra kell indítani.
+
+
+## 2026-09-24 — Csendesebb rontásterjedés
+
+- A növekvő rontás nem küld ismétlődő sugárértesítést a chatbe.
+  Az indulási és tisztítási értesítések, valamint a terjedés működése megmaradnak.
+
+
+## 2026-09-24 — Rontásmag robbanásvédelme
+
+- Creeper, TNT és blokk eredetű robbanás nem pusztíthatja el a rontás saját
+  katalizátorát, így nem lehet robbantással idő előtt lezárni az eseményt.
+- A védelem a magra vonatkozik, a visszaállítás végéig; a környező blokkok és
+  a közönséges katalizátorok a szokásos robbanási szabályokat követik.
+
+
+## 2026-09-24 — Rontás- és világboss-indítás javítása
+
+- A rontás újraindítás utáni terepvisszaállítása a távoli chunkot még a régiófeladat
+  ütemezése előtt betölti. A korábbi góc takarítása így nem blokkolja végleg az új eseményt.
+  Ugyanez a betöltési sorrend védi a terjedést is; a sikertelen betöltés újrapróbálható.
+- A világboss elfogadja a gyengébb játékoshoz számolt életerő-csökkentést is.
+  Ha az indítás későbbi lépése hibázik, eltűnik a mob és felszabadul az aktív esemény/HUD állapota.
+- A rontás saját katalizátorára a kasztoltár-rendszer nem reagál, visszaállítás közben sem.
+  A közönséges katalizátoros oltárok működése és kasztkövetelménye megmarad.
+
+
+## 2026-09-24 — Növekvő rontás és visszafogott mobjelölések
+
+- A rontás terjedési határa 512 blokk (a szeptember 29-i módosítás óta kezdettől);
+  a tényleges sculk mennyiségével gyorsul, az elméleti sík terület célideje 2–4 óra.
+- A mobszám, az új mobok szintje és a tisztítás követelménye méretfüggő. A már
+  megszerzett tisztíthatóság az esemény végéig megmarad.
+- Utólagos építés, valamint láda, üllő és részleges blokkok alatti talaj is
+  fertőződhet. A világ és az új építmény a magtól kifelé áll vissza.
+- Ritka, rövid Darkness-pulzus a tényleges sculkon; ártalmatlan villámjelzés és
+  HUD-irány a maghoz. Glowingot a mobok közül csak a világboss tart meg.
+- A terjedés tömörített helynyilvántartást és korlátozott aszinkron chunkbetöltést
+  használ. A többórás valós Folia-terheléspróba továbbra is kiadási ellenőrzés.
+
+
+## 2026-09-24 — Aktív események követése és folyamatos rontás
+
+- A kultisták, világboss, invázió, vadászat, kíséret, karaván, idegen és
+  hangulat-eseménymobok saját chunkfoglalást tartanak az életük végéig. Mozgáskor
+  a foglalás követi őket; halál, stop és eltávolítás után felszabadul. Az érkezés
+  vége így nem teszi rögtön kirakodhatóvá az aktív eseményt és annak HUD-állapotát.
+- Egy korábbi boss késői eltávolítása nem zárhatja le az új boss eseményét.
+  A kultista HUD-lekérdezés csak állapotot olvas, nem törli az eseményt.
+- A rontás külön keretet használ a sikertelen tereppróbákra és a valódi
+  blokkcserékre. A levegő és növény vizsgálata nem fogyasztja el a fertőzés keretét;
+  a kiválasztás gyakrabban visszatér a kihagyott szomszédokhoz, szabálytalan foltot
+  építve. A fű és virág alatti talaj rövid terjedési próbában is ellenőrzött.
+
+A száraz fű rövid és magas változata is eltávolítható, visszaállítható növényfedés: az alatta lévő talaj fertőződhet.
+
+## 2026-09-24 — Eseményindítás a szerverteszt után
+
+- A játékoshoz kötött helyszínkeresés az online survival játékosokat részesíti
+  előnyben. Ha egy sincs, creative játékos körül is indulhat esemény, automatikusan
+  és parancsból is. Ez a jutalomjogosultságokat nem változtatja meg.
+- A kiválasztott chunk az érkezési előjelzéstől a spawn visszaigazolásáig betöltve
+  marad. Siker, hiba, leállítás vagy időtúllépés után a foglalás felszabadul.
+- A világboss üres résztvevőlistával is érvényes esemény; emiatt nem tűnik el
+  a következő tickben. Creative-only tesztnél a közeli creative játékos bekerülhet
+  az indulási létszámskálázásba.
+- A HUD eseménysora, az `/event status` és a menü közös eseménylistát használ;
+  a rontás, ásatás, kultisták, idegen és a további korábban kihagyott típusok is látszanak.
+- A normál parancs új próbája friss véletlen helyszínmintát vesz. A területvédelem,
+  terepfeltételek és a sikeres helyszínek újrafelhasználási korlátja megmarad.
+
+## 2026-09-24 — Normál/force eseményindítás és szabálytalan rontás
+
+- A `/event corruption` és a többi indító normál spawnfeltételekkel próbálkozik;
+  a `--force` végződés kényszerített, közeli indítást kér. A sima parancs is azonnal
+  próbálkozik, de megtartja a nagy-event kaput és az érkezési előjelzést.
+- A flag tabbal kiegészíthető. Az admin menüben sima kattintás normál,
+  Shift+kattintás force indítást kér; a stop parancsok változatlanok.
+- A rontás a katalizátor alatti sculktól, a már átalakított blokkok szomszédain
+  terjed tovább. A véletlen ágak és eseményenként eltérő szegély megtörik a köralakot;
+  csak érintkező, legfeljebb átlós blokkokra léphet, a sugárkorláton belül.
+- A fű, páfrány és talajon álló virág nem akadályozza többé az alatta lévő talaj átalakítását.
+  A növényt naplózottan levegő váltja fel, tisztításkor a talaj után visszaáll.
+  A magas változatok mindkét fele helyreáll, restart után is; virág helyére sem
+  kerül sculk. A kétblokkos virágok és a sziromfoltok állapota is visszaáll;
+  más növények tartóblokkja továbbra is megmarad.
+
+## 2026-09-24 — Eseményindítás és spawnfeltételek
+
+- A `/event ... --force` kényszerített helyszínkeresése az admin környékéről indul, és kihagyja a
+  természetes események látótáv-, biom-, világspawn- és korábbihelyszín-korlátait.
+  A chunkokat szükség esetén betölti; a védelem, a száraz talaj és a szabad testtér
+  továbbra is kötelező. A parancs a tényleges indulást koordinátákkal igazolja,
+  sikertelenségnél hibaüzenetet ad. Folyamatban lévő indítást nem dupláz.
+- Új adminparancs: `/event stop <esemény>` és `/event stop all`. A futó keresést
+  és érkezést is megszakítja, eltávolítja az esemény szereplőit, és elindítja az
+  eseményblokkok helyreállítását. A `/menu` admin Események lapján is elérhető.
+- A bejelentett természetes érkezés felé fordulás már nem törli a spawnt.
+  A kereső a lombkorona alatt is keres állóhelyet, a száraz sár pedig elfogadott talaj.
+- Csak tényleges spawn indít helyszín-cooldownt. A sikertelen callback és a
+  debugkeresés nem foglalja le más esemény helyét; az escort útvonalának végpontja
+  sem tiltja le többé a saját konvoj indulását.
+- A távoli boss közeli résztvevő nélkül alap skálázással indul. A finale hete
+  önmagában nem blokkolja a természetes eseményeket, csak a boss keresése/harca.
+- Fedett helyszínen a kereső figyelembe veszi a megadott magasságot, és érkezés
+  előtt ugyanazt az állóhelyet ellenőrzi újra. A vízpuffer alapértéke 3 blokk.
+- A rontás 384 blokkos világspawn-kizárása már kereséskor érvényesül. A rontás
+  és régészet érkezési jelzése helyi. Meteor és régészet minden átírandó blokk
+  territory-, claim- és WorldGuard-védelmét külön ellenőrzi.
+
+## 2026-09-24 — Rontás teljes blokkokon és barlangfelületeken
+
+- A terjedés fa-, levél- és más teljes építőblokkok szabad felületét is követi.
+  Csak közvetlen, legfeljebb átlós szomszédra lép; levegőrést nem ugrik át.
+- A felszín és a bánya ugyanazon oszlopban is külön bejárható; a terjedés a
+  bejárattól befelé és kifelé is haladhat, járatlevegő és tömbbelső kitöltése nélkül.
+- Egyéb növény és tartóblokkja (a fű/páfrány/talajon álló virág kivételével), lépcső, slab, részleges forma, vizes blokk,
+  blokkentitás és dugattyú nem alakul át. Az eredeti fa-/levéladat naplózott;
+  a közeli, nem naplózott lombok átmeneti levélkorhadás-védelmet kapnak.
+- A régió-, terület- és claimvédelem, a halk terjedési hang és a Catalyst-mag megmarad.
+
+## 2026-09-24 — Rontás-katalizátor és terjedési hang
+
+- A Rontás közepe ismét sculk-katalizátor. A belőle induló vanilla blokkterjedés
+  külön tiltást kapott, ezért a közeli ölések nem terjesztenek naplózatlan sculk-ot.
+- A tiltás a még helyreállításra váró magokra is él; más katalizátorokat nem érint.
+- A saját terjedés sikeres talajcseréi halk sculk-hangot adnak. A mag tisztítása
+  és az eredeti blokk visszaállítása a katalizátor felvillanása közben is működik.
+
+## 2026-09-24 — Jutalom-, harci és helyreállítási javítások
+
+- A személyes bossjutalom playerdata-beli kézbesítési bizonyítéka sikertelen profil-ACK
+  után is megmarad; az item mozgatása, használata vagy halál nem nyit új kiosztást.
+- A játékos/pet/minion találat környezeti utósebzése megőrzi a friss kill-creditet;
+  más támadó új találata felülírja. A cache korlátos, önálló lejárati takarítással.
+- A késleltetett mobsebzés a célpont és a caster végrehajtáskori régióját és életciklusát
+  ellenőrzi; eltűnt vagy idegen régióban lévő casterrel nem hív sebzést.
+- A rontás aktív helyreállítási munkája külön él a chunkmentést még védő naplótól.
+  Lezárt események történetét az üres tick és az új blokkcsere nem járja végig.
+- Megszűnt a WW offline profilsöprése és a használatlan faction/territory/mob projection
+  és adjustment API. A natív frakció- és területvédelmek megmaradtak.
+- A megtartott tooltipstílusok auditja a jelenlegi renderert ellenőrzi. Menü-, profil-
+  és parancsos container-háttér nem került vissza.
+- A build auditjai újra a jelenlegi forrást ellenőrzik; a szigorú UTF-8-olvasás,
+  a sorvégek egységes kezelése és a determinisztikus Trash-színrendezés mellett
+  az artwork változatlan marad.
+
+## 2026-09-24 — WorldWeaver külön ágra helyezése
+
+A teljes aktív WW-rendszer, kezelőfelület, modellek és saját tesztcsomagja
+kikerült a pluginből. A korábbi megvalósítás külön ágon marad az újratervezéshez.
+A normál jutalmazás és tárgyműveletek már nem igénylik a WW futását.
+
+
 ## 2026-09-24 — Rontás-góc terjedés és visszaállítás
 
 - A tisztító interakció csak a főkézből fut, egyértelmű magyar haladásüzenettel.
 - Saját másodperces driver ad folyamatos nappali/éjszakai terjedést és gyorsabb mobutánpótlást.
 - A sculk-mag és a talaj előzetes naplózást és feltételes visszaállítást kap; félbeszakadt esemény induláskor takarít.
-- Az inert mag nem indít vanilla katalizátorterjedést; a normál katalizátorok működése változatlan.
+- A magból induló vanilla katalizátorterjedés tiltott; a normál katalizátorok működése változatlan.
 - Az oltárkezelés külön feladat marad; a Folia-playtest kiadási kapu.
 
 
@@ -44,7 +280,7 @@ alatta egy rövid classification sor és tömör mechanikai sorok jelennek meg, 
 másodlagos blokk. A canonical gear fix és rollolt azonos statjai összevonódnak; a currency tooltip
 `VALUTA • <kanonikus kibocsátó>` formát használ külön értéksor nélkül; az archaeology megfigyelés
 tördelt és a kliensoldali inspection copy nem mutatja a vanilla attribute blokkot. A production
-semantic jelölések nem függnek private-use font glyphoktól, így nem válhatnak tofu négyzetté.
+semantic jelölések a csomagolt `icesmp:tooltip` fontot és a hozzá tartozó glypheket használják.
 A belső fejlesztői artifactok külön, a normál debug/probe tárgyaktól elkülönített profilt kaptak.
 A második live visual kör után maga a chrome is V2-re váltott: a korábbi közel-opaque fekete panel
 helyett félig áttetsző, enyhén textúrázott/family-tintelt háttér készült. A reference-kör után a
@@ -58,18 +294,6 @@ alacsony szint, rossz armor family, explicit class és specialization restrictio
 megjelenhet, miközben a szerveroldali canonical ItemStack változatlan marad. A blueprint nem ismétli
 külön a tárgynevét receptként, a profession output nem mutat belső recipe-kind taxonómiát, a
 fejlesztői artifactok és a Mételytépő mechanikai sorai pedig kompakt label/value formára váltottak.
-
-A fejlesztői eszköz eltétele vagy fegyverre váltás nem zárja le többé a
-rávetítések munkamenetét. A munkamenethez kötött harci változtatások így
-megmaradnak a kézváltás után; a kilépési és jogosultsági törlés továbbra is
-érvényes. A változás buildje és szerveres ellenőrzése még hátravan.
-
-A rejtett fejlesztői artifacttal való ütés közbeni item-ellenőrzés átmeneti hibája sem
-érvényteleníti többé a rávetítéseket.
-
-A fejlesztői rávetítések mentés utáni visszaütemezése nem keres többé
-entitást a háttérszálról a világokban. A célpont ellenőrzése a saját
-régiószálán történik; a javítás Folia-playtestje még hátravan.
 
 A mellékkézben tartott ecset rövid jobb kattintáskor nem tiltja le a normál
 tárgy- és blokkhasználatot. A vizsgálat legalább fél másodperces nyomva

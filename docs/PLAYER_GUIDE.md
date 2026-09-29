@@ -871,11 +871,26 @@ a kereskedés és a kísérletezés a kaland része.
 
 ## 10. Világesemények
 
+A szerver szabályos újraindítása nem fejezi be a futó eseményeket. Visszatéréskor
+folytathatjátok a harcot, keresést vagy tisztítást: a haladás, a hátralévő idő és
+a már felvett jutalmak állapota megmarad. A leállás alatt nem ketyeg az eventek
+időzítője, és a rontás sem öregszik. Az admin leállító parancsa továbbra is lezárja őket.
+
 *A világ nem díszlet körülötted. Néha megmozdul, és neked kell eldöntened,
 elmész-e megnézni.*
 
 Az aktuális helyzetet a `/events status` vagy a `/menu` Események része mutatja.
 A nagy harci események alapból nem torlódnak egymásra.
+
+Az eventes admin `/event corruption` paranccsal normál feltételekkel,
+`/event corruption --force` paranccsal kényszerítve indíthat eseményt.
+A helyszínválasztás survival játékost követ; ha nincs online survival játékos,
+creative játékos körül is indulhat esemény. A HUD eseménysora és az eseménymenü
+a rontást, ásatást és a többi aktív világeseményt is jelzi.
+A `/event stop <esemény>` vagy
+`/event stop all` paranccsal lezárhatja őket. Ilyenkor az esemény szereplői
+eltűnnek, az ideiglenesen módosított terep visszaállítása megkezdődik; ez nem
+számít győzelemnek. A parancshoz adminjog szükséges.
 
 ### Milyen hírekre figyelj?
 
@@ -911,15 +926,133 @@ választ a környezethez illő, spawn után stabil template-ek közül.
 | Kollektív kihívás | közös szervercél és közös jutalom |
 | Karaván-kíséret | mozgó rakomány védelme szörnyhullámoktól |
 | Meteor | ideiglenes kráter és kibányászható ritka anyag |
-| Rontás-góc | nappal és éjjel fokozatosan terjedő sculk-talaj, főkezes SHIFT+jobb kattintással megtisztítható sculk-mag |
+| Rontás-góc | nappal és éjjel fokozatosan terjedő sculk-talaj, főkezes SHIFT+jobb kattintással megtisztítható katalizátormag |
 | Kultisták | portya, rítus vagy hírvivő — eltérő célokkal |
 | Hangulat-esemény | köd, aurora, hullócsillag, szellemek vagy állatvándorlás |
 
-A rontás magjának megtisztításához alapból 10 jogosult fajzatölés kell. Ha még
+A kis rontásmag megtisztításához 6 jogosult fajzatölés kell; növekedéssel ez 60-ig emelkedhet. Ha még
 nem elég az irtás, főkezes SHIFT+jobb kattintásra egyszer kapjátok meg a haladást.
 A fajzatok utánpótlását másodpercenként ellenőrzi a szerver, a beállított létszámhatárig.
-Tisztítás után a mag és a rontott talaj fokozatosan visszaáll, a közben átépített
-blokkok megmaradnak. A mag nem működik vanilla sculk-katalizátorként.
+Tisztítás után a mag és a rontott talaj a góctól kifelé áll vissza, a közben átépített
+blokkok megmaradnak. A mag sculk-katalizátor marad, de a közelében végzett ölések
+nem indítanak belőle vanilla sculk-terjedést. A rontás magját a kasztoltár-rendszer
+nem kezeli oltárként: SHIFT+jobb kattintáskor csak a tisztítás feltétele számít. A magot
+creeperrel vagy más robbanással sem lehet elpusztítani; a tisztítási rituálé szükséges. A Rontás saját talajterjedését halk
+sculk-hang jelzi; a szokásos, más katalizátorokat ez a korlátozás nem érinti.
+
+Új rontásgóc alapbeállítással a wildernessben indul, de a fertőzés a normál
+frakcióterületekre is beterjedhet, saját fajzataival együtt. A személyes claimek,
+védett régiók, védett frakcióterületek, városok, fővárosok, dungeonök és a
+Kárhozat Kapujának területe akadály marad, frakcióterületen belül is.
+
+A rontás víz alatt is követi a szomszédos, teljes blokkok szabad felületét:
+folyómederbe, tófenékre és vízzel elöntött barlangba is beterjedhet. A víz,
+buborékoszlop, hínár és tengeri fű helyére nem kerül sculk; a vízzel átitatott
+építőblokkok és a láva továbbra is kimaradnak. A góc indulási helyének
+spawnfeltételei ettől nem változnak. A területvédelem víz alatt is érvényes.
+
+A terjedés közben nincs ismétlődő sugárértesítés a chatben.
+Csak a 8192, 65536 és 262144 tényleges sculk blokkos mérföldkő ad egyszeri
+értesítést eseményenként; visszaesés és újbóli növekedés nem ismétli meg.
+
+A góc megengedett terjedési sugara kezdettől 512 blokk; nincs idővel táguló
+sugárhatár. A tényleges fertőzés a magból, szomszédos blokkokon haladva tölti ki a területet.
+A cserekeret `ceil(0.16 × sqrt(fertőzött sculk))`, legalább 3, legfeljebb 128 blokk
+másodpercenként. A növények eltávolítása is ebből a blokkírási keretből történik;
+a többblokkos művelethez szükséges keret kis sebességnél összegyűlik. A sík, akadálymentes 512-es kör elméleti kitöltése körülbelül
+3 óra; a cél 2–4 óra, de összetett/védett terep, chunkbetöltés és szerverterhelés
+lassíthatja. A szabálytalan, összefüggő terjedés a góctól kifelé halad.
+A sugárhatáron kívüli részek nem fertőződnek; közben a
+már elérhető szabad falrészeken is továbbhaladhat a fertőzés.
+A különböző irányokban, a talajon és magasabban fekvő felületeken több fronton
+nőhet. Ezek közös sebességkereten osztoznak, ezért nem minden front nő minden másodpercben.
+
+| Fertőzött sculk | Mobplafon | Szükséges ölés | Helyi szinthez adott bónusz |
+|---|---:|---:|---:|
+| 0–1023 | 6 | 6 | +4 |
+| 1024–8191 | 12 | 12 | +6 |
+| 8192–65535 | 24 | 24 | +9 |
+| 65536–262143 | 40 | 40 | +13 |
+| 262144-től | 64 | 60 | +18 |
+
+A fokozatot a ténylegesen naplózott sculk mennyisége adja, a növények és a
+katalizátor nem számítanak bele. A szintbónusz csak az új mobok spawnjakor érvényes;
+a közös mobskálázás szintplafonjai továbbra is érvényesek. A már teljesített
+öléskövetelmény az esemény végéig rögzül, a növekedés nem zárja vissza a magot.
+A mobok játékosok közelében, valóban fertőzött talajon jelennek meg; alapból
+32 blokkon belül, helyileg legfeljebb 12 rontásmobbal a 32 blokkos körzetben.
+
+Víz alatt a fertőzött meder fölött Fulladt Maradvány (`DROWNED`) jelenhet meg,
+legalább két blokk magas víztérben. A közös mobplafon legfeljebb felét foglalhatja
+el; a többi hely megmarad a szárazföldi fajzatoknak. Ugyanúgy erősödik a fertőzéssel,
+és ölésével ugyanúgy halad a tisztítás. Kiterjedt fertőzéstől (8192 sculk) alapból
+10% eséllyel szigonyt kap, amely nem eshet ki zsákmányként.
+Aktív gócot claim létrehozásával vagy függőleges bővítésével nem lehet elfoglalni.
+A rontásmobok 300 másodperces alapélettartama restartkor nem kezdődik újra;
+a mentett lejárat valós idő szerint, az állásidő alatt is telik.
+
+Az események helymegjelölése egy eltolt X/Z támpontot ad: az indulási hely
+biztosan ennek **128 blokkos vízszintes sugarán belül** van. A támpont nem a
+pontos cél, Y-koordinátát nem közlünk. Ugyanaz a helyszín restart után is ugyanazt a támpontot kapja. Mozgó eseménynél ez az induláskor
+jelzett helyet mutatja, nem élő követés. A közeli hangok, részecskék és a rontás
+magjelzése segítenek a keresésben. Az admin spawn-debug pontos helye megmarad.
+
+Legalább 256 fertőzött blokknál, a saját sculkon álló survival/adventure játékos
+méretfüggő Darkness-pulzust kaphat:
+
+| Fertőzött sculk | Pulzus hossza | Legkisebb időköz |
+|---|---:|---:|
+| 256–8191 | 3 mp | 30 mp |
+| 8192–65535 | 4 mp | 25 mp |
+| 65536–262143 | 5 mp | 20 mp |
+| 262144-től | 6 mp | 18 mp |
+
+Legalább 8192 fertőzött blokknál az esemény kora is számít: 180 perc után
++1 mp hossz és −2 mp időköz; 300 perc után összesen +2 mp és −3 mp.
+A két korbónusz nem adódik össze. A pulzus legfeljebb 8 mp, az időköz legalább
+15 mp, így nincs állandó sötétség. Az új event kora nulláról indul;
+szerver-újraindítás után a fertőzés a mentett korával és állapotával folytatódik.
+A szerver állásideje nem növeli a kort és nem fogyasztja az események hátralévő idejét.
+
+Természetes sculk, a katalizátor, repülés, creative és spectator nem jogosít rá;
+a más forrásból meglévő Darkness-t nem írja felül. A rövid effekt kifut magától.
+Ugyanekkora fertőzéstől 60 másodpercenként sebzés és tűz nélküli villámjelzés,
+valamint részecskék jelzik a magot. A közeli játékos HUD-jának forgó sorában a mag
+égtája, vízszintes távolsága és a tisztítás állása is megjelenik.
+
+Ha kibányászol egy fertőzött sculk blokkot, a megnyíló szomszédos felületek
+újra bekerülnek a terjedésbe. Így a feltárt teljes blokkok és egy megnyitott
+barlang falai, mennyezete, talaja is megfertőződhetnek, amennyiben a megmaradt
+fertőzéssel szomszédosak. Levegőt nem tölt ki, hézagot nem ugrik át, és a
+területvédelem, sugárkorlát, valamint a visszaállíthatósági szabályok változatlanok.
+Tisztításkor az újonnan fertőzött blokkok visszaállnak; a játékos által kiásott
+üres hely üres marad.
+
+Az újonnan épített teljes blokkokat is eléri a szomszédos fertőzés: egy tornyot
+alulról növeszt be, levegőrést továbbra sem ugrik át. A láda, üllő és más részleges
+blokk alatti teljes talaj fertőződhet; a fölötte álló tárgy és tárolótartalom megmarad.
+Tisztításkor a világ a góctól kifelé, egymást követő gyűrűkben áll vissza,
+gyűrűnként előbb a tartóblokk, majd a növény. A frissen épített, majd megfertőzött
+torony saját építőblokkjai állnak vissza.
+
+Glowing körvonalat csak a jelölt világboss kap. A többi mobon a régi tartós jelölést
+betöltéskor/mozgáskor eltávolítja a rendszer, az új Glowing-potioneffektet is tiltja.
+A játékosokra ható jelölővarázslatok és a megjelenítő entitások változatlanok.
+
+A rontás érkezési jelzéseit alapból 192, a régészeti lelőhelyét 300 blokkon belül
+kapod meg. A világboss távolabb is megjelenhet, mielőtt bárki odaérne; a jutalomhoz
+részt kell venned a harcban. A szezonfinálé hete alatt is indulhatnak más események,
+amikor a finálé bossának keresése vagy harca nem foglalja a közös eseményhelyet.
+
+A rontás a talaj mellett teljes fa-, levél- és építőblokkok szabad felületét is
+követheti, a bánya bejáratától befelé és kifelé is. A mag alól induló sculk
+véletlenszerű ágakban terjeszkedik, szabálytalan körvonalat adva. Csak közvetlen szomszédra
+lép, legfeljebb átlósan; levegőrést nem ugrik át. Virágból, növényből, lépcsőből,
+félblokkból vagy tárolóból nem lesz sculk. A rövid/magas fű, páfrány és a talajon
+álló virágok átmenetileg eltűnnek, így alattuk is terjedhet;
+tisztítás után a talajjal együtt visszaállnak, ha közben nem építettétek át a helyet.
+Az eredeti fa- és levélállapotot visszaállítja, a közeli lombok elkorhadását
+a helyreállításig megakadályozza. Az építményeket továbbra is claim védi.
 
 A helyi, kisebb jelenségekről csak a közelben járók értesülhetnek. A
 mob-események, meteorok és kincsek védett területet, játékosclaimet és
@@ -928,7 +1061,12 @@ alkalmatlan terepet elkerülnek.
 Egy nagy esemény admin- vagy automatikus indítása előbb biztonságos helyet
 kereshet. A távoli hang/részecske csak érkezési előjel; a világboss, invázió,
 meteor vagy kíséret tényleges indulását a szerver eseményüzenete és az
-`/events status` állapota igazolja.
+`/events status` állapota igazolja. Több aktív esemény egyszerre is megjelenhet
+a HUD eseménysorában; a távol induló mob-események a helyszínük megközelítéséig
+is betöltve maradnak. A rontás a szabálytalan szegély mellett a közeli hézagokat
+is fokozatosan kitölti, a fű és virág alatti talajt is elérve.
+
+A száraz fű rövid és magas változata is eltávolítható, visszaállítható növényfedés: az alatta lévő talaj fertőződhet.
 
 ### A világ nehézsége
 
@@ -961,6 +1099,10 @@ harc előtti padding nem. A boss HP-ja a harc eleji résztvevő-snapshot alapjá
 csökkenő hozadékkal skálázódik, ezért ki-/belépéssel nem ugráltatható. A küszöböt
 elérő játékos személyes ascension komponenst kap. Ha tele az inventoryd, a jutalom
 nem esik a földre: felszabadított hellyel a következő reconnectkor újrapróbálható.
+A már átadott jutalom elmozgatása, felhasználása vagy halál utáni elvesztése nem
+eredményez új példányt visszacsatlakozáskor. A friss játékos-, pet- vagy miniontalálat
+után tűzben elpusztuló mob megtartja az ölési hozzárendelést, amíg új támadó nem
+találja el, illetve a hozzárendelés le nem jár.
 
 Az authored harci felszerelés enyhén figyelembe veszi a szintedet, kasztodat,
 specializációdat, jelenlegi gear-statisztikáidat, üres felszereléshelyedet és a

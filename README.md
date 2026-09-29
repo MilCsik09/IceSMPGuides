@@ -82,4 +82,4 @@ A zöld build kód- és regressziós bizonyíték. Production rollout előtt az
 is végig kell futtatni staging/Folia környezetben.
 ## PlayerProfile platform
 
-The modular PlayerProfile platform is the canonical authority for restart-durable, player-owned IceSMP state. See the PlayerProfile platform chapter in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md#playerprofile-platform), including the structured YAML format and the read-only API contract.
+The modular PlayerProfile platform is the canonical authority for restart-durable, player-owned IceSMP state. See the PlayerProfile platform chapter in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md#381-kasztspec-rework-profile-v2-authority-és-adapterhatárok), including the structured YAML format and the read-only API contract.
